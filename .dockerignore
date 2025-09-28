@@ -1,0 +1,36 @@
+# Node modules và các thư mục build cục bộ
+node_modules
+dist
+dist-ssr
+
+# IDE
+.vscode
+.idea
+
+# Logs, tạm thời
+*.log
+*.tmp
+*.bak
+logs/
+
+# Git metadata
+.git
+.gitignore
+.gitattributes
+
+# Docker dữ liệu volumnes
+pgdata/
+m2cache/
+
+# Cache hoặc temp files của build công cụ
+.vite
+.cache
+
+# Thư mục của VS Code Remote Dev Containers
+.devcontainer
+
+# Các file môi trường và secrets
+.env
+.env.*
+application-local.yml
+application-secrets.yml
