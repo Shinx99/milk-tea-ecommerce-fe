@@ -1,14 +1,14 @@
-version: '3.8'
-services:
-  frontend:
-    build:
-      context: .
-      dockerfile: .devcontainer/Dockerfile
-    volumes:
-      - .:/app-milktea:cached
-    ports:
-      - 5173:5173
-    user: node
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
+# version: '3.8'
+# services:
+#   frontend:
+#     build:
+#       context: .
+#       dockerfile: .devcontainer/Dockerfile
+#     volumes:
+#       - .:/app-milktea:cached
+#     ports:
+#       - 5173:5173
+#     user: node
+#     environment:
+#       - CHOKIDAR_USEPOLLING=true
+#       - WATCHPACK_POLLING=true

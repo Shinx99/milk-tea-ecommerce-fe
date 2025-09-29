@@ -19,6 +19,8 @@ const count = ref(0)
     </p>
     <p>heloeeeeeeeeeeeeeeeeeeeeeeeeeee</p>
     <button class="bg-warning">ab</button>
+    <button class="bg-primary">ab</button>
+
   </div>
 
   <p>
