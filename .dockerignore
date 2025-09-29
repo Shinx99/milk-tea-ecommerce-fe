@@ -26,8 +26,8 @@ m2cache/
 .vite
 .cache
 
-# Thư mục của VS Code Remote Dev Containers
-.devcontainer
+; # Thư mục của VS Code Remote Dev Containers
+; .devcontainer
 
 # Các file môi trường và secrets
 .env
