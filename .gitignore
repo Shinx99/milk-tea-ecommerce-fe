@@ -52,9 +52,6 @@ docker-compose.override.yml
 pgdata/
 m2cache/
 
-# Dev container config
-.devcontainer/
-
 # IDE and Tool specific
 *.iml
 *.suo
