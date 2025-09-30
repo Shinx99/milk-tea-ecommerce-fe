@@ -1,6 +1,6 @@
-import Login from './views/Login.vue'
-import Register from './views/Register.vue'
-import Profile from './views/Profile.vue'
+import Login from './views/LoginView.vue'
+import Register from './views/RegisterView.vue'
+import Profile from './views/ProfileView.vue'
 
 export default [
   { path: '/login',    name: 'login',    component: Login,    meta: { guestOnly: true } },
