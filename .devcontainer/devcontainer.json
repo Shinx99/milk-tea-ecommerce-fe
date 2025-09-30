@@ -1,0 +1,40 @@
+// {
+//   "name": "vue-docker-dev",
+//   "dockerComposeFile": "../docker-compose.yml",
+//   "service": "frontend",
+//   "workspaceFolder": "/app-milktea",
+//   "remoteUser": "node",
+//   "forwardPorts": [5173],
+//   "customizations": {
+//     "vscode": {
+//       "extensions": [
+//         "Vue.volar",
+//         "dbaeumer.vscode-eslint",
+//         "esbenp.prettier-vscode"
+//       ]
+//     }
+//   }
+// }
+
+// devcontainer.json
+{
+  "name": "vue-docker-dev",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/app-milktea",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/app-milktea,type=bind",
+  "remoteUser": "root",  // Dùng root trên Windows để tránh lỗi permission
+  "postAttachCommand": "chown -R node:node /app-milktea", // Chuyển quyền về user node sau khi attach
+  "forwardPorts": [5173],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Vue.volar",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}
