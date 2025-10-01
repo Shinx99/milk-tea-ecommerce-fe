@@ -1,3 +1,30 @@
+<!-- src/milk-tea/account/views/LoginView.vue -->
+<script setup>
+import { ref } from 'vue'
+import { useRouter, useRoute, RouterLink } from 'vue-router'
+import { login } from '@/milk-tea/account/store'
+
+const router = useRouter()
+const route  = useRoute()
+
+const emailOrUsername = ref('')
+const password = ref('')
+const showPass = ref(false)
+const remember = ref(false)
+const err = ref('')
+
+const onSubmit = () => {
+  err.value = ''
+  try {
+    login({ emailOrUsername: emailOrUsername.value, password: password.value })
+    const redirect = route.query?.redirect || '/home'
+    router.push(redirect)
+  } catch (e) {
+    err.value = e.message || 'Đăng nhập thất bại'
+  }
+}
+</script>
+
 <template>
   <section class="py-5" style="background-color:#f8f9fa;">
     <div class="container">
@@ -12,26 +39,15 @@
               <form @submit.prevent="onSubmit" novalidate>
                 <div class="mb-3">
                   <label class="form-label">Email hoặc Tên đăng nhập</label>
-                  <input
-                    v-model.trim="emailOrUsername"
-                    class="form-control"
-                    placeholder="you@example.com hoặc username"
-                    required
-                  />
+                  <input v-model.trim="emailOrUsername" class="form-control" placeholder="you@example.com hoặc username" required />
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Mật khẩu</label>
                   <div class="input-group">
-                    <input
-                      :type="showPass ? 'text':'password'"
-                      v-model="password"
-                      class="form-control"
-                      placeholder="••••••••"
-                      required
-                    />
+                    <input :type="showPass ? 'text':'password'" v-model="password" class="form-control" placeholder="••••••••" required />
                     <button type="button" class="btn btn-outline-secondary" @click="showPass=!showPass">
-                      <i :class="showPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                      <i :class="showPass ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
                     </button>
                   </div>
                 </div>
@@ -45,7 +61,7 @@
                 </div>
 
                 <button class="btn btn-dark w-100 mb-3" type="submit">
-                  <i class="fa-solid fa-right-to-bracket me-2"></i> Đăng nhập
+                  <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập
                 </button>
 
                 <p class="text-center mb-0">
@@ -57,41 +73,10 @@
           </div>
 
           <div class="text-center mt-4">
-            <img src="@/assets/images/logo.png" alt="logo" height="48" />
+            <img src="@/assets/images/logo.jpg" alt="logo" height="48" />
           </div>
         </div>
       </div>
     </div>
   </section>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { login } from '@/milk-tea/account/store'   // ⬅️ dùng hàm login từ mini-store (không Pinia)
-
-const router = useRouter()
-const route  = useRoute()
-
-const emailOrUsername = ref('')
-const password = ref('')
-const remember = ref(false)
-const showPass = ref(false)
-const err = ref('')
-
-const onSubmit = () => {
-  err.value = ''
-  try {
-    login({
-      emailOrUsername: emailOrUsername.value,
-      password: password.value,
-      remember: remember.value
-    })
-    // Nếu bạn có /account/profile thì đổi '/home' -> '/account/profile'
-    const redirect = route.query.redirect || '/home'
-    router.push(redirect)
-  } catch (e) {
-    err.value = e.message || 'Đăng nhập thất bại'
-  }
-}
-</script>
