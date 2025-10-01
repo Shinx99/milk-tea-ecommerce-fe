@@ -4,9 +4,14 @@ import accountRoutes from '@/milk-tea/account/router'
 import { authState } from '@/milk-tea/account/store'
 import productRoutes from '@/milk-tea/product/router'   // ⬅️ dùng default export
 import cartRoutes from '@/milk-tea/cart/router'   // <-- default import
+
+//admin
+import AdminDashboardView from '@/milk-tea/admin/views/AdminDashboardView.vue'
+
 const routes = [
   { path: '/', redirect: '/home' },
   { path: '/home', component: Home },
+  { path: '/admin', component: AdminDashboardView, meta: { authOnly: true } }, // Thêm dòng này cho Admin
   ...accountRoutes,
   ...productRoutes,
   ...cartRoutes,
