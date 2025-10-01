@@ -2,83 +2,96 @@
 import { reactive } from 'vue'
 import { seedUsers } from './data/users'
 
-const LS_CURRENT = 'mt_current_user'
+// Khóa localStorage
 const LS_USERS   = 'mt_users'
+const LS_CURRENT = 'mt_current_user'
 
+// Load danh sách user (nếu chưa có thì seed)
 function loadUsers() {
-  const raw = localStorage.getItem(LS_USERS)
-  if (raw) return JSON.parse(raw)
-  localStorage.setItem(LS_USERS, JSON.stringify(seedUsers))
-  return [...seedUsers]
+  try {
+    const raw = localStorage.getItem(LS_USERS)
+    if (!raw) {
+      localStorage.setItem(LS_USERS, JSON.stringify(seedUsers))
+      return [...seedUsers]
+    }
+    return JSON.parse(raw)
+  } catch {
+    return [...seedUsers]
+  }
 }
-function saveUsers(users) { localStorage.setItem(LS_USERS, JSON.stringify(users)) }
+
+// Lưu danh sách user (phòng khi có chức năng đăng ký/sửa)
+function saveUsers(list) {
+  localStorage.setItem(LS_USERS, JSON.stringify(list))
+}
+
+// Quản lý current user
+function loadCurrent() {
+  try {
+    return JSON.parse(localStorage.getItem(LS_CURRENT) || 'null')
+  } catch {
+    return null
+  }
+}
 function saveCurrent(user) {
   if (user) localStorage.setItem(LS_CURRENT, JSON.stringify(user))
   else localStorage.removeItem(LS_CURRENT)
 }
 
+// ===== STATE CHUNG (reactive) =====
 export const authState = reactive({
-  currentUser: JSON.parse(localStorage.getItem(LS_CURRENT) || 'null'),
-  users: loadUsers()
+  users: loadUsers(),
+  currentUser: loadCurrent() // {id, fullName, email, role, ...} | null
 })
 
-/**
- * Đăng nhập bằng email hoặc username
- * @param {Object} payload
- * @param {string} payload.emailOrUsername
- * @param {string} payload.password
- * @param {boolean} [payload.remember=false] - nếu true sẽ lưu vào localStorage
- */
-export function login({ emailOrUsername, password, remember = false }) {
-  const id = (emailOrUsername || '').trim().toLowerCase()
+// ===== ACTIONS =====
 
-  const found = authState.users.find(u => {
-    return (
-      (u.email && u.email.toLowerCase() === id) ||
-      (u.username && u.username.toLowerCase() === id)
-    )
-  })
-
-  if (!found || found.password !== password) {
-    throw new Error('Thông tin đăng nhập không đúng!')
+// Đăng nhập bằng email hoặc username + password
+export function login({ emailOrUsername, password }) {
+  const found = authState.users.find(u =>
+    (u.email === emailOrUsername || u.username === emailOrUsername) &&
+    u.password === password
+  )
+  if (!found) {
+    throw new Error('Email/Tên đăng nhập hoặc mật khẩu không đúng!')
   }
-
-  authState.currentUser = { ...found, password: undefined }
-
-  // remember = true => lưu phiên vào localStorage, ngược lại chỉ giữ trong RAM (mất khi refresh)
-  if (remember) saveCurrent(authState.currentUser)
-  else saveCurrent(null)
-
+  // Không lưu password vào currentUser
+  authState.currentUser = {
+    id: found.id,
+    fullName: found.fullName,
+    email: found.email,
+    username: found.username,
+    role: found.role,
+    avatar: found.avatar,
+  }
+  saveCurrent(authState.currentUser)
   return authState.currentUser
-}
-
-export function register({ fullName, username, email, phone, address, password, avatar = '' }) {
-  if (!fullName || !username || !email || !password) {
-    throw new Error('Vui lòng nhập đầy đủ Họ tên, Tên đăng nhập, Email, Mật khẩu!')
-  }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) throw new Error('Email không hợp lệ!')
-  if (password.length < 6) throw new Error('Mật khẩu tối thiểu 6 ký tự!')
-  if (authState.users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-    throw new Error('Email đã tồn tại!')
-  }
-  if (authState.users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-    throw new Error('Tên đăng nhập đã tồn tại!')
-  }
-
-  const user = {
-    id: Date.now(),
-    fullName, username, email,
-    phone: phone || '', address: address || '',
-    password, avatar, role: 'USER'
-  }
-
-  authState.users.push(user)
-  saveUsers(authState.users)
-  return { ...user, password: undefined } // KHÔNG auto login
 }
 
 export function logout() {
   authState.currentUser = null
   saveCurrent(null)
+}
+
+// (tuỳ chọn) đăng ký nhanh – nếu bạn cần
+export function register(payload) {
+  const { fullName, username, email, phone, address, password } = payload
+  if (authState.users.some(u => u.email === email || u.username === username)) {
+    throw new Error('Email hoặc tên đăng nhập đã tồn tại!')
+  }
+  const user = {
+    id: Date.now(),
+    fullName, username, email, phone, address,
+    password,
+    avatar: '',
+    role: 'USER'
+  }
+  authState.users.push(user)
+  saveUsers(authState.users)
+
+  // auto login sau đăng ký
+  authState.currentUser = { ...user }
+  delete authState.currentUser.password
+  saveCurrent(authState.currentUser)
+  return authState.currentUser
 }
