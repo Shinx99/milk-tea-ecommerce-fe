@@ -18,7 +18,7 @@ const onSubmit = () => {
   try {
     login({ emailOrUsername: emailOrUsername.value, password: password.value });
     const redirect = route.query?.redirect || "/home";
-    router.push({ name: "Category" });
+    router.push(redirect);
   } catch (e) {
     err.value = e.message || "Đăng nhập thất bại";
   }

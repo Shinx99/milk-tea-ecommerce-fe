@@ -1,97 +1,119 @@
 // src/milk-tea/account/store.js
+// Store quản lý tài khoản đơn giản (chưa có backend, dùng localStorage)
+
+// Dùng reactive để dữ liệu tự động phản ứng trong Vue
 import { reactive } from 'vue'
-import { seedUsers } from './data/users'
+import { seedUsers } from './data/users'   // dữ liệu mẫu ban đầu
 
-// Khóa localStorage
-const LS_USERS   = 'mt_users'
-const LS_CURRENT = 'mt_current_user'
+// Khóa để lưu trong localStorage
+const LS_CURRENT = 'mt_current_user' // user đang đăng nhập
+const LS_USERS   = 'mt_users'        // danh sách user
 
-// Load danh sách user (nếu chưa có thì seed)
+// -----------------------------
+// Hàm tiện ích
+// -----------------------------
+
+// Bỏ password ra khỏi user trước khi hiển thị
+function publicUser(u) {
+  if (!u) return null
+  const { password, ...safe } = u
+  return safe
+}
+
+// Lấy danh sách user từ localStorage (hoặc dùng seed nếu chưa có)
 function loadUsers() {
-  try {
-    const raw = localStorage.getItem(LS_USERS)
-    if (!raw) {
-      localStorage.setItem(LS_USERS, JSON.stringify(seedUsers))
-      return [...seedUsers]
-    }
-    return JSON.parse(raw)
-  } catch {
-    return [...seedUsers]
-  }
+  const raw = localStorage.getItem(LS_USERS)
+  if (raw) return JSON.parse(raw)
+  localStorage.setItem(LS_USERS, JSON.stringify(seedUsers))
+  return [...seedUsers]
 }
 
-// Lưu danh sách user (phòng khi có chức năng đăng ký/sửa)
-function saveUsers(list) {
-  localStorage.setItem(LS_USERS, JSON.stringify(list))
+// Lưu danh sách user vào localStorage
+function saveUsers(users) {
+  localStorage.setItem(LS_USERS, JSON.stringify(users))
 }
 
-// Quản lý current user
-function loadCurrent() {
-  try {
-    return JSON.parse(localStorage.getItem(LS_CURRENT) || 'null')
-  } catch {
-    return null
-  }
-}
+// Lưu user hiện tại (chỉ bản không có password)
 function saveCurrent(user) {
-  if (user) localStorage.setItem(LS_CURRENT, JSON.stringify(user))
+  if (user) localStorage.setItem(LS_CURRENT, JSON.stringify(publicUser(user)))
   else localStorage.removeItem(LS_CURRENT)
 }
 
-// ===== STATE CHUNG (reactive) =====
+// -----------------------------
+// State chung (dùng reactive)
+// -----------------------------
 export const authState = reactive({
-  users: loadUsers(),
-  currentUser: loadCurrent() // {id, fullName, email, role, ...} | null
+  currentUser: JSON.parse(localStorage.getItem(LS_CURRENT) || 'null'),
+  users: loadUsers()
 })
 
-// ===== ACTIONS =====
+// -----------------------------
+// Các hàm API cơ bản
+// -----------------------------
 
-// Đăng nhập bằng email hoặc username + password
+// 1. Đăng nhập
 export function login({ emailOrUsername, password }) {
-  const found = authState.users.find(u =>
-    (u.email === emailOrUsername || u.username === emailOrUsername) &&
-    u.password === password
+  const found = authState.users.find(
+    u =>
+      (u.email === emailOrUsername || u.username === emailOrUsername) &&
+      u.password === password
   )
-  if (!found) {
-    throw new Error('Email/Tên đăng nhập hoặc mật khẩu không đúng!')
-  }
-  // Không lưu password vào currentUser
-  authState.currentUser = {
-    id: found.id,
-    fullName: found.fullName,
-    email: found.email,
-    username: found.username,
-    role: found.role,
-    avatar: found.avatar,
-  }
-  saveCurrent(authState.currentUser)
+  if (!found) throw new Error('Sai email/tên đăng nhập hoặc mật khẩu!')
+  authState.currentUser = publicUser(found)
+  saveCurrent(found)
   return authState.currentUser
 }
 
+// 2. Đăng ký
+export function register({ fullName, username, email, phone, password }) {
+  // Kiểm tra trùng
+  if (authState.users.some(u => u.username === username)) throw new Error('Tên đăng nhập đã tồn tại!')
+  if (authState.users.some(u => u.email === email)) throw new Error('Email đã tồn tại!')
+  if (phone && authState.users.some(u => u.phone === phone)) throw new Error('Số điện thoại đã tồn tại!')
+
+  const user = {
+    id: Date.now(),
+    fullName,
+    username,
+    email,
+    phone,
+    password,
+    role: 'USER',
+    avatar: '',
+    address: ''
+  }
+  authState.users.push(user)
+  saveUsers(authState.users)
+  return publicUser(user)
+}
+
+// 3. Đăng xuất
 export function logout() {
   authState.currentUser = null
   saveCurrent(null)
 }
 
-// (tuỳ chọn) đăng ký nhanh – nếu bạn cần
-export function register(payload) {
-  const { fullName, username, email, phone, address, password } = payload
-  if (authState.users.some(u => u.email === email || u.username === username)) {
-    throw new Error('Email hoặc tên đăng nhập đã tồn tại!')
-  }
-  const user = {
-    id: Date.now(),
-    fullName, username, email, phone, address,
-    password,
-    avatar: '',
-    role: 'USER'
-  }
-  authState.users.push(user)
+// 4. Cập nhật hồ sơ (chỉ sửa fullName, address, avatar, password)
+export function updateProfile({ fullName, address, avatar, password } = {}) {
+  if (!authState.currentUser) throw new Error('Chưa đăng nhập')
+
+  const idx = authState.users.findIndex(u => u.id === authState.currentUser.id)
+  if (idx < 0) throw new Error('Không tìm thấy user!')
+
+  const old = authState.users[idx]
+  const updated = { ...old }
+  if (fullName !== undefined) updated.fullName = fullName
+  if (address !== undefined)  updated.address = address
+  if (avatar !== undefined)   updated.avatar = avatar
+  if (password) updated.password = password
+
+  // Cập nhật
+  authState.users[idx] = updated
   saveUsers(authState.users)
 
-  // auto login sau đăng ký
-  authState.currentUser = { ...user }
-  delete authState.currentUser.password
-  saveCurrent(authState.currentUser)
+  // Cập nhật user hiện tại
+  authState.currentUser = publicUser(updated)
+  saveCurrent(updated)
+
   return authState.currentUser
 }
