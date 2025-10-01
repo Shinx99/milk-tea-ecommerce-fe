@@ -11,7 +11,7 @@ import AdminDashboardView from '@/milk-tea/admin/views/AdminDashboardView.vue'
 const routes = [
   { path: '/', redirect: '/home' },
   { path: '/home', component: Home },
-  { path: '/admin', component: AdminDashboardView, meta: { authOnly: true } }, // Thêm dòng này cho Admin
+    { path: '/admin', component: AdminDashboardView, meta: { authOnly: true } }, // Thêm dòng này cho Admin
 
   ...accountRoutes,
   ...productRoutes,
