@@ -1,56 +1,84 @@
-// Giỏ hàng tách riêng theo user hoặc guest
+// src/milk-tea/cart/store.js
+// Giỏ hàng đơn giản dùng reactive + localStorage (chưa có backend)
+
 import { reactive, watch } from 'vue'
 import { authState } from '@/milk-tea/account/store'
 
-// ===== Helpers cho LocalStorage theo người dùng =====
-function cartKey() {
-  // khách: mt_cart_guest ; user: mt_cart_<id>
+/* =========================
+   1) Helper: tạo "khóa giỏ" theo người dùng
+   - Khách:   mt_cart_guest
+   - Người dùng có id=1: mt_cart_1
+   ========================= */
+function getCartKey() {
   const uid = authState.currentUser?.id
   return uid ? `mt_cart_${uid}` : 'mt_cart_guest'
 }
 
-function loadCartByKey(key) {
-  try { return JSON.parse(localStorage.getItem(key) || '[]') } catch { return [] }
+/* =========================
+   2) Helper: đọc/ghi giỏ theo key
+   ========================= */
+function loadCart(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || '[]')
+  } catch {
+    return []
+  }
 }
-function saveCartByKey(key, items) {
+function saveCart(key, items) {
   localStorage.setItem(key, JSON.stringify(items))
 }
 
-// ====== STATE CHÍNH ======
+/* =========================
+   3) State chính của giỏ hàng
+   - storageKey: đang dùng key nào (guest hay user-<id>)
+   - items: danh sách món trong giỏ
+     Mỗi món: { key, id, name, image, price, qty, options }
+   ========================= */
 export const cartState = reactive({
-  storageKey: cartKey(),            // khoá hiện tại
-  items: loadCartByKey(cartKey()),  // [{key,id,name,image,price,qty,options}]
+  storageKey: getCartKey(),
+  items: loadCart(getCartKey()),
 })
 
-// Khi đổi trạng thái đăng nhập → tự chuyển giỏ sang khoá tương ứng
+/* Khi đăng nhập / đăng xuất
+   -> đổi storageKey
+   -> nạp lại giỏ tương ứng */
 watch(
-  () => authState.currentUser?.id,   // user id (hoặc undefined khi logout)
+  () => authState.currentUser?.id,
   () => {
-    cartState.storageKey = cartKey()
-    cartState.items = loadCartByKey(cartState.storageKey)
+    cartState.storageKey = getCartKey()
+    cartState.items = loadCart(cartState.storageKey)
   }
 )
 
-// ===== Logic tạo key và thao tác với cart =====
-function buildItemKey(product, options) {
+/* =========================
+   4) Tạo "key" duy nhất cho item
+   - cùng sản phẩm nhưng khác size/đường/đá... là món khác
+   ========================= */
+function makeItemKey(product, options) {
   return [
     product.id,
     options?.size ?? 'S',
-    options?.sugar ?? '',
-    options?.tea ?? '',
-    options?.ice ?? '',
+    options?.sugar ?? 'bt',
+    options?.tea ?? 'bt',
+    options?.ice ?? 'bt',
     options?.extraIce ? 'extraIce' : ''
   ].join('|')
 }
 
+/* =========================
+   5) APIs thao tác giỏ
+   ========================= */
+
+// Thêm vào giỏ
 export function addToCart(product, { qty = 1, unitPrice = product.price, options = {} } = {}) {
-  const k = buildItemKey(product, options)
-  const found = cartState.items.find(i => i.key === k)
+  const key = makeItemKey(product, options)
+  const found = cartState.items.find(i => i.key === key)
+
   if (found) {
     found.qty += qty
   } else {
     cartState.items.push({
-      key: k,
+      key,
       id: product.id,
       name: product.name,
       image: product.image,
@@ -59,54 +87,66 @@ export function addToCart(product, { qty = 1, unitPrice = product.price, options
       options
     })
   }
-  saveCartByKey(cartState.storageKey, cartState.items)
+
+  saveCart(cartState.storageKey, cartState.items)
 }
 
+// Cập nhật số lượng
 export function updateQty(key, qty) {
-  const it = cartState.items.find(i => i.key === key)
-  if (!it) return
-  it.qty = qty
-  if (it.qty <= 0) removeFromCart(key)
-  saveCartByKey(cartState.storageKey, cartState.items)
+  const item = cartState.items.find(i => i.key === key)
+  if (!item) return
+  item.qty = qty
+  if (item.qty <= 0) {
+    removeFromCart(key)
+  } else {
+    saveCart(cartState.storageKey, cartState.items)
+  }
 }
 
+// Xoá 1 món khỏi giỏ
 export function removeFromCart(key) {
   cartState.items = cartState.items.filter(i => i.key !== key)
-  saveCartByKey(cartState.storageKey, cartState.items)
+  saveCart(cartState.storageKey, cartState.items)
 }
 
+// Xoá sạch giỏ
 export function clearCart() {
   cartState.items = []
-  saveCartByKey(cartState.storageKey, cartState.items)
+  saveCart(cartState.storageKey, cartState.items)
 }
 
+// Tổng tiền
 export function cartTotal() {
-  return cartState.items.reduce((s, i) => s + i.price * i.qty, 0)
+  return cartState.items.reduce((sum, i) => sum + i.price * i.qty, 0)
 }
 
+// Tổng số lượng (badge ở Header)
 export function cartCount() {
-  return cartState.items.reduce((s, i) => s + i.qty, 0)
+  return cartState.items.reduce((sum, i) => sum + i.qty, 0)
 }
 
-/* ==============
-   (Tuỳ chọn) Nếu sau này bạn muốn gộp giỏ khách vào giỏ user khi login,
-   chỉ cần dùng hàm này trong nơi xử lý đăng nhập:
-   ==============
+/* =========================
+   (Tùy chọn) Gộp giỏ khách vào giỏ user khi đăng nhập
+   - Gọi hàm này ngay sau khi login nếu muốn
+   =========================
 export function mergeGuestCartIntoUser() {
-  const guest = loadCartByKey('mt_cart_guest')
+  const guestItems = loadCart('mt_cart_guest')
   const userKey = `mt_cart_${authState.currentUser?.id}`
-  const user = loadCartByKey(userKey)
-  const map = new Map(user.map(i => [i.key, i]))
-  for (const g of guest) {
+  const userItems = loadCart(userKey)
+
+  const map = new Map(userItems.map(i => [i.key, i]))
+  for (const g of guestItems) {
     if (map.has(g.key)) map.get(g.key).qty += g.qty
     else map.set(g.key, g)
   }
-  const merged = Array.from(map.values())
-  saveCartByKey(userKey, merged)
-  // Chuyển state hiện tại sang giỏ user
+  const merged = [...map.values()]
+  saveCart(userKey, merged)
+
+  // cập nhật state hiện tại sang giỏ user
   cartState.storageKey = userKey
   cartState.items = merged
-  // Xoá giỏ guest nếu muốn:
+
+  // (tuỳ chọn) xoá giỏ guest
   // localStorage.removeItem('mt_cart_guest')
 }
 */

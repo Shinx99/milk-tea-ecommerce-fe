@@ -1,5 +1,6 @@
 <script setup>
 import { updateQty, removeFromCart } from '../store'
+
 defineProps({ item: Object })
 </script>
 
