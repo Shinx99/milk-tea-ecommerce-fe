@@ -1,17 +1,21 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Home from "@/milk-tea/home/views/HomeView.vue";
-import accountRoutes from "@/milk-tea/account/router";
-import { authState } from "@/milk-tea/account/store";
-import productRoutes from "@/milk-tea/product/router"; // ⬅️ dùng default export
-import cartRoutes from "@/milk-tea/cart/router"; // <-- default import
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from '@/milk-tea/home/views/HomeView.vue'
+import accountRoutes from '@/milk-tea/account/router'
+import { authState } from '@/milk-tea/account/store'
+import productRoutes from '@/milk-tea/product/router'   // ⬅️ dùng default export
+import cartRoutes from '@/milk-tea/cart/router'   // <-- default import
 import HomeView from "../milk-tea/home/views/HomeView.vue";
+//import admin category
+import adminCategoryRoutes from "@/milk-tea/admin/router";
+
+
 const routes = [
-  { path: "/", redirect: "/home" },
-  { path: "/home", component: HomeView },
+  { path: '/', redirect: '/home' },
+  { path: '/home', component: HomeView },
   ...accountRoutes,
   ...productRoutes,
   ...cartRoutes,
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
