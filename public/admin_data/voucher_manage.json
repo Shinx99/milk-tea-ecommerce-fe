@@ -1,0 +1,82 @@
+[
+  {
+    "id": "72df403b-b2a8-403a-8aa2-0e0dd8f3123f",
+    "voucher_id": "VOUCHER-8224",
+    "order_id": "622bbcbb-cae0-4758-abb9-79cd6719f80a",
+    "customer_id": "a25aecf4-1eaa-4f58-a7bc-664040d47b61",
+    "redeemed_at": "2025-09-08T12:37:31",
+    "discount_amount": 39700
+  },
+  {
+    "id": "71de24c2-f192-4ddc-a387-c5e6f3c89e0f",
+    "voucher_id": "VOUCHER-8588",
+    "order_id": "78cb72d1-5c3f-40e2-b4df-3ac43fb59ae1",
+    "customer_id": "387e25c3-f588-400a-b0d5-38804bb7e7e3",
+    "redeemed_at": "2025-09-17T15:15:09",
+    "discount_amount": 19213
+  },
+  {
+    "id": "abed1d2c-bad4-4d03-9eae-011e3bc2e715",
+    "voucher_id": "VOUCHER-2065",
+    "order_id": "805748f6-d1a1-4a48-acf3-67aa13a58127",
+    "customer_id": "e0a8841b-a2b1-4fef-a292-35802c364052",
+    "redeemed_at": "2025-09-15T21:35:59",
+    "discount_amount": 43623
+  },
+  {
+    "id": "b14cb007-a62d-4764-8718-2024c325197f",
+    "voucher_id": "VOUCHER-2595",
+    "order_id": "ab29f539-23ac-4c40-a674-7dd420d8dcb5",
+    "customer_id": "04ddc5a8-0b82-48a8-8cea-4af7ff201ecb",
+    "redeemed_at": "2025-09-02T18:53:15",
+    "discount_amount": 36205
+  },
+  {
+    "id": "83f27da8-e121-4364-b87f-71b81775af70",
+    "voucher_id": "VOUCHER-3646",
+    "order_id": "f805f9e2-0cde-45b4-ad5e-8a0e7cc8a097",
+    "customer_id": "733b9be6-ef0c-4b84-8ac9-a41b8ebcd57b",
+    "redeemed_at": "2025-09-04T12:02:15",
+    "discount_amount": 21899
+  },
+  {
+    "id": "4e6983ac-2e2f-44b1-9ffa-5243e1cbdb1e",
+    "voucher_id": "VOUCHER-6521",
+    "order_id": "46d292be-1a21-4c58-acc5-91707a2bf306",
+    "customer_id": "ee75a55b-a910-4615-9bc1-608305e6c1fc",
+    "redeemed_at": "2025-09-04T01:53:37",
+    "discount_amount": 34571
+  },
+  {
+    "id": "ec4edf9c-bf0d-4a38-89d8-82273b1401b2",
+    "voucher_id": "VOUCHER-7430",
+    "order_id": "a92f62b9-4c38-41ea-8f52-2efb4a9967f6",
+    "customer_id": "c87e2468-a3da-42a3-8947-5f9465ecb508",
+    "redeemed_at": "2025-09-20T21:32:52",
+    "discount_amount": 15290
+  },
+  {
+    "id": "aaca2f74-4b3a-4b12-be1d-f0efe078aafd",
+    "voucher_id": "VOUCHER-2541",
+    "order_id": "de5dd589-eabd-49d7-9587-6288e6d5bcae",
+    "customer_id": "9792bcf0-f713-4d70-bd6d-129ac154a7f4",
+    "redeemed_at": "2025-09-30T17:17:39",
+    "discount_amount": 43057
+  },
+  {
+    "id": "447e2dcb-cbf6-4fb3-a57b-3ad5b8dbccec",
+    "voucher_id": "VOUCHER-5741",
+    "order_id": "6e5209f0-62f0-489f-8094-4ed921c7f76d",
+    "customer_id": "274bb546-2a84-420c-b985-8792643f9609",
+    "redeemed_at": "2025-09-13T13:10:54",
+    "discount_amount": 22301
+  },
+  {
+    "id": "08552e98-d192-4c41-81b0-d0fa2e0a7dc3",
+    "voucher_id": "VOUCHER-7731",
+    "order_id": "0bb6134e-b903-4687-837a-3d3d37f4ad47",
+    "customer_id": "fb14cc03-4e27-4e6f-b35a-0a31502b4a92",
+    "redeemed_at": "2025-09-21T06:42:14",
+    "discount_amount": 47980
+  }
+]
