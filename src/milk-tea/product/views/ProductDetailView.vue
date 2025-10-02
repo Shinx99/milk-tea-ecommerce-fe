@@ -1,18 +1,27 @@
+<!-- src/milk-tea/product/views/ProductDetailView.vue -->
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { seedProducts } from '../data/products'
+import { productState, getProductById, loadProducts } from '@/milk-tea/product/store'
 import { addToCart } from '@/milk-tea/cart/store'
+import ProductCard from '@/milk-tea/product/components/ProductCard.vue'
 
 const route = useRoute()
 const router = useRouter()
 
-// lấy sản phẩm theo id
+// ----- Lấy sản phẩm theo id -----
 const id = Number(route.params.id)
-const product = seedProducts.find(p => p.id === id)
-if (!product) router.replace('/products')
+const product = ref(null)
 
-// state
+onMounted(async () => {
+  if (!productState.list.length) {
+    await loadProducts()
+  }
+  product.value = getProductById(id)
+  if (!product.value) router.replace('/products')
+})
+
+// ----- State chọn option -----
 const qty   = ref(1)
 const size  = ref('S')                     // S gốc, M +6000, L +10000
 const sugar = ref('Bình thường')
@@ -20,38 +29,52 @@ const tea   = ref('Bình thường')
 const ice   = ref('Bình thường')
 const extraIce = ref(false)                // đá riêng (không tính phí)
 
-// tính giá
+// ----- Tính giá -----
 const sizeDelta = computed(() =>
   size.value === 'M' ? 6000 : size.value === 'L' ? 10000 : 0
 )
-const unitPrice = computed(() => product.price + sizeDelta.value)
+const unitPrice = computed(() => (product.value?.price || 0) + sizeDelta.value)
 const total     = computed(() => unitPrice.value * qty.value)
 
 const dec = () => (qty.value = Math.max(1, qty.value - 1))
 const inc = () => (qty.value += 1)
 
-// thêm vào giỏ hàng rồi QUAY LẠI TRANG CŨ
-function addToCartNow() {
-  addToCart(product, {
+function addToCartNow () {
+  if (!product.value) return
+  addToCart(product.value, {
     qty: qty.value,
     unitPrice: unitPrice.value,
-    options: { size: size.value, sugar: sugar.value, tea: tea.value, ice: ice.value, extraIce: extraIce.value }
+    options: {
+      size: size.value, sugar: sugar.value, tea: tea.value, ice: ice.value, extraIce: extraIce.value
+    }
   })
-  // quay lại trang trước (sản phẩm / danh sách…)
   router.back()
 }
+
+/* ====== SẢN PHẨM CÙNG LOẠI ======
+   - Cùng category với sản phẩm đang xem
+   - Loại trừ chính nó
+   - Lấy 4 món đầu (tuỳ bạn tăng/giảm)
+*/
+const relatedProducts = computed(() => {
+  const p = product.value
+  if (!p) return []
+  return productState.list
+    .filter(x => x.category === p.category && x.id !== p.id)
+    .slice(0, 4)
+})
 </script>
 
 <template>
-  <section class="container py-4">
+  <section class="container" v-if="product">
     <div class="row g-4 align-items-start">
-      <!-- ảnh: rộng hơn một chút -->
+      <!-- Ảnh -->
       <div class="col-12 col-lg-7 text-center">
         <img :src="product.image" :alt="product.name" class="img-fluid rounded shadow-sm" />
       </div>
 
-      <!-- form: NHỎ GỌN trong card, dùng size-sm của Bootstrap -->
-      <div class="col-12 col-lg-5">
+      <!-- Form chọn option -->
+      <div class="col-12 col-lg-5 px-5">
         <div class="card shadow-sm border-warning-subtle">
           <div class="card-body p-3 p-md-4">
             <h4 class="fw-bold mb-1">{{ product.name }}</h4>
@@ -117,7 +140,7 @@ function addToCartNow() {
               <button class="btn btn-outline-warning btn-sm" @click="inc">+</button>
             </div>
 
-            <!-- Nút thêm vào giỏ -> quay lại trang trước -->
+            <!-- Nút thêm vào giỏ -->
             <button
               class="btn btn-warning w-100 d-flex align-items-center justify-content-center gap-2 btn-sm py-2"
               @click="addToCartNow"
@@ -129,5 +152,27 @@ function addToCartNow() {
         </div>
       </div>
     </div>
+
+    <!-- ========== SẢN PHẨM CÙNG LOẠI ========== -->
+    <div class="mt-5">
+      <div class="d-flex align-items-center mb-3">
+        <h5 class="mb-0">Sản phẩm cùng loại</h5>
+        <span class="text-muted ms-2 small" v-if="relatedProducts.length">
+          ({{ product.category }})
+        </span>
+      </div>
+
+      <div v-if="relatedProducts.length" class="row g-3">
+        <div class="col-12 col-sm-6 col-lg-3" v-for="rp in relatedProducts" :key="rp.id">
+          <ProductCard :product="rp" />
+        </div>
+      </div>
+      <div v-else class="text-muted small">Chưa có sản phẩm cùng loại.</div>
+    </div>
+  </section>
+
+  <!-- fallback khi chưa có product -->
+  <section v-else class="container py-5 text-center text-muted">
+    Đang tải sản phẩm...
   </section>
 </template>
