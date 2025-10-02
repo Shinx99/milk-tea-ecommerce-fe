@@ -1,6 +1,6 @@
 <script setup>
-import { filteredProducts } from '@/milk-tea/product/store'
-import ProductCard from './ProductCard.vue'
+import { filteredProducts } from "@/milk-tea/product/store"
+import ProductCard from "./ProductCard.vue"
 </script>
 
 <template>
