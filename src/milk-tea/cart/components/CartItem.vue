@@ -10,7 +10,9 @@ defineProps({ item: Object })
     <td>
       <div class="fw-semibold">{{ item.name }}</div>
       <div class="small text-muted">
-        Size: {{ item.options?.size }} • Ngọt: {{ item.options?.sugar }} • Trà: {{ item.options?.tea }} • Đá: {{ item.options?.ice }}
+        Size: <b>{{ item.options?.size }}</b> 
+        • Ngọt: <b>{{ item.options?.sugar }}</b> 
+         • Đá: <b>{{ item.options?.ice }}</b>
         <span v-if="item.options?.extraIce">• Đá riêng</span>
       </div>
     </td>

@@ -4,7 +4,7 @@ import { RouterLink, useRouter } from "vue-router";
 import { authState, logout } from "@/milk-tea/account/store";
 import { computed, ref, onMounted } from "vue";
 import { Dropdown } from "bootstrap";
-
+import { cartCount } from '@/milk-tea/cart/store'
 const router = useRouter();
 const isLoggedIn = computed(() => !!authState.currentUser);
 const displayName = computed(() => authState.currentUser?.fullName || "");
@@ -48,7 +48,7 @@ onMounted(() => {
         aria-label="Milk Tea Home"
       >
         <img
-          src="@/assets/images/logo.jpg"
+          src="@/assets/images/logo.png"
           alt="Milk Tea E-commerce Logo"
           height="64"
         />
@@ -77,17 +77,12 @@ onMounted(() => {
       <!-- Icons -->
       <div class="d-flex align-items-center gap-3 ms-4">
         <!-- Cart -->
-        <RouterLink
-          to="/cart"
-          aria-label="Shopping cart"
-          class="btn cart-btn position-relative"
-        >
-          <i class="bi bi-cart3"></i>
-          <span
-            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-            >2</span
-          >
-        </RouterLink>
+        <RouterLink to="/cart" class="btn position-relative">
+  <i class="bi bi-cart3"></i>
+  <span v-if="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    {{ cartCount }}
+  </span>
+</RouterLink>
 
         <!-- User -->
         <template v-if="!isLoggedIn">
