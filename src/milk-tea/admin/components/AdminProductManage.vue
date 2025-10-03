@@ -27,18 +27,7 @@
         >
           Product Detail
         </button>
-        <button
-          class="nav-link"
-          id="nav-contact-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#nav-contact"
-          type="button"
-          role="tab"
-          aria-controls="nav-contact"
-          aria-selected="false"
-        >
-          Contact
-        </button>
+        
       </div>
     </nav>
 
@@ -90,7 +79,7 @@
         aria-labelledby="nav-profile-tab"
         tabindex="0"
       >
-        <form class="row g-3" @submit.prevent="submitProduct">
+        <form class="mt-2 row g-3" @submit.prevent="submitProduct">
   <div class="col-md-6">
     <label for="productName" class="form-label">Tên sản phẩm</label>
     <input
@@ -156,7 +145,7 @@
     ></textarea>
   </div>
 
-  <div class="col-md-12">
+  <div class=" col-md-12">
     <label class="form-label">Hình ảnh sản phẩm</label>
     <div class="d-flex flex-wrap gap-3 border p-2 mb-2" style="min-height: 80px; max-height: 200px; overflow-y: auto;">
       <div v-for="(img, idx) in product.images" :key="idx" class="position-relative" style="width: 80px; height: 80px;">
@@ -203,26 +192,18 @@
     <button type="submit" class="btn btn-primary">
       {{ product.id ? "Cập nhật" : "Thêm mới" }}
     </button>
-  </div>
+    <button type="button" class="btn btn-secondary ms-2" @click="resetForm">Reset</button>  </div>
 </form>
 
       </div>
 
-      <div
-        class="tab-pane fade"
-        id="nav-contact"
-        role="tabpanel"
-        aria-labelledby="nav-contact-tab"
-        tabindex="0"
-      >
-        Liên hệ...
-      </div>
+      
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useProductStore } from "../store/AdminProductManage.js";
 
 const productStore = useProductStore();
@@ -236,6 +217,7 @@ const product = reactive({
   quantity: 0,
   price: 0,
   is_active: false,
+  images: []
 });
 
 const categories = ref([
@@ -244,13 +226,18 @@ const categories = ref([
   { id: "uuid-3", name: "Đồ ăn vặt" },
 ]);
 
+// Gọi loadProducts khi mount component để tự load dữ liệu
+onMounted(() => {
+  loadProducts();
+});
+
 function loadProducts() {
   productStore.loadProducts();
 }
 
 function editProduct(prod) {
   Object.assign(product, prod);
-  // Chuyển sang tab Detail
+  product.images = prod.images ? [...prod.images] : [];
   const tabTrigger = new bootstrap.Tab(
     document.querySelector("#nav-profile-tab")
   );
@@ -267,6 +254,7 @@ function resetForm() {
     quantity: 0,
     price: 0,
     is_active: false,
+    images: []
   });
 }
 
@@ -280,6 +268,7 @@ function submitProduct() {
   }
   resetForm();
 }
+
 function deleteProduct(id) {
   if (confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
     productStore.remove(id);
@@ -289,18 +278,20 @@ function deleteProduct(id) {
 function onImageSelected(event) {
   const files = event.target.files;
   if (!files.length) return;
-
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const reader = new FileReader();
     reader.onload = (e) => {
-      // Thêm ảnh vào mảng ảnh của product (cần reactive)
       product.images.push(e.target.result);
     };
     reader.readAsDataURL(file);
   }
-  // reset input
   event.target.value = "";
 }
+
+function removeImage(idx) {
+  product.images.splice(idx, 1);
+}
+
 
 </script>
