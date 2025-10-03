@@ -1,5 +1,6 @@
 <script setup>
 import adminProduct from '../components/AdminProductManage.vue'
+import AdminOrder from '../components/AdminOrderManage.vue';
 </script>
 
 <template>
@@ -11,5 +12,11 @@ import adminProduct from '../components/AdminProductManage.vue'
     </nav>
 
     <adminProduct />
+
+    <hr>
+
+    <AdminOrder/>
+
+    
   </div>
 </template>
