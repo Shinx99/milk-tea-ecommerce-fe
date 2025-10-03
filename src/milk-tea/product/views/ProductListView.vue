@@ -1,6 +1,9 @@
 <script setup>
-import { productState, categories } from '@/milk-tea/product/store'
-import ProductList from '@/milk-tea/product/components/ProductList.vue'
+import { productState, categories, loadProducts } from "@/milk-tea/product/store"
+import ProductList from "@/milk-tea/product/components/ProductList.vue"
+
+// load sản phẩm khi mở trang
+loadProducts()
 </script>
 
 <template>
@@ -10,7 +13,9 @@ import ProductList from '@/milk-tea/product/components/ProductList.vue'
 
       <input
         v-model="productState.keyword"
-        type="search" class="form-control" style="max-width:260px"
+        type="search"
+        class="form-control"
+        style="max-width:260px"
         placeholder="Tìm theo tên..."
       />
 
@@ -26,8 +31,8 @@ import ProductList from '@/milk-tea/product/components/ProductList.vue'
       </select>
 
       <div class="d-flex gap-2">
-        <input v-model.number="productState.priceMin" type="number" class="form-control" style="width:120px" placeholder="Giá từ">
-        <input v-model.number="productState.priceMax" type="number" class="form-control" style="width:120px" placeholder="Đến">
+        <input v-model.number="productState.priceMin" type="number" class="form-control" style="width:120px" placeholder="Giá từ" />
+        <input v-model.number="productState.priceMax" type="number" class="form-control" style="width:120px" placeholder="Đến" />
       </div>
     </div>
 

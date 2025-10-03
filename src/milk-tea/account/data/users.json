@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "username": "nguyenvana",
+    "email": "a@example.com",
+    "password": "123456",
+    "fullName": "Nguyễn Văn A",
+    "phone": "0900000001",
+    "address": "Q1, TP.HCM",
+    "avatar": "",
+    "role": "USER"
+  },
+  {
+    "id": 2,
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "fullName": "Admin",
+    "phone": "0900000002",
+    "address": "Q3, TP.HCM",
+    "avatar": "",
+    "role": "ADMIN"
+  }
+]

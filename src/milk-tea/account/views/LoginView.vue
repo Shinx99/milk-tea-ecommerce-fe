@@ -13,16 +13,38 @@ const showPass = ref(false);
 const remember = ref(false);
 const err = ref("");
 
-const onSubmit = () => {
+// const onSubmit = () => {
+//   err.value = "";
+//   try {
+//     login({ emailOrUsername: emailOrUsername.value, password: password.value });
+//     const redirect = route.query?.redirect || "/home";
+//     router.push(redirect);
+//   } catch (e) {
+//     err.value = e.message || "Đăng nhập thất bại";
+//   }
+// };
+
+const onSubmit = async () => {
   err.value = "";
   try {
-    login({ emailOrUsername: emailOrUsername.value, password: password.value });
-    const redirect = route.query?.redirect || "/home";
-    router.push(redirect);
+    const user = await login({
+      emailOrUsername: emailOrUsername.value,
+      password: password.value,
+    });
+
+    // Kiểm tra role và điều hướng
+    if (user.role === "ADMIN") {
+      router.push("/admin");
+    } else if (user.role === "USER") {
+      router.push("/home");
+    } else {
+      err.value = "Vai trò không hợp lệ";
+    }
   } catch (e) {
     err.value = e.message || "Đăng nhập thất bại";
   }
 };
+
 </script>
 
 <template>

@@ -1,0 +1,101 @@
+[
+  {
+    "id": 101,
+    "name": "Trà Sữa Truyền Thống",
+    "price": 30000,
+    "category": "Milk Tea",
+    "image": "../assets/images/tra-sua-truyen-thong.jpg",
+    "desc": "Vị trà đậm, béo nhẹ, hợp khẩu vị số đông.",
+    "salesCount": 0
+  },
+  {
+    "id": 102,
+    "name": "Trà Sữa Matcha",
+    "price": 35000,
+    "category": "Milk Tea",
+    "image": "/assets/images/tra-sua-matcha.jpg",
+    "desc": "Matcha thanh mát, hậu vị thơm.",
+    "salesCount": 0
+  },
+  {
+    "id": 103,
+    "name": "Hồng Trà Sữa",
+    "price": 32000,
+    "category": "Milk Tea",
+    "image": "/assets/images/hong-tra-sua.jpg",
+    "desc": "Hồng trà cân bằng vị sữa.",
+    "salesCount": 0
+  },
+  {
+    "id": 201,
+    "name": "Trà Đào Cam Sả",
+    "price": 39000,
+    "category": "Fruit Tea",
+    "image": "/assets/images/tra-dao-cam-sa.jpg",
+    "desc": "Đào ngọt dịu, sả the nhẹ, giải khát.",
+    "salesCount": 0
+  },
+  {
+    "id": 202,
+    "name": "Trà Vải",
+    "price": 36000,
+    "category": "Fruit Tea",
+    "image": "/assets/images/tra-vai.jpg",
+    "desc": "Hương vải dịu nhẹ, rất dễ uống.",
+    "salesCount": 0
+  },
+{
+    "id": 104,
+    "name": "Trà Sữa Truyền Thống",
+    "price": 30000,
+    "category": "Milk Tea",
+    "image": "/assets/images/tra-sua-truyen-thong.jpg",
+    "desc": "Vị trà đậm, béo nhẹ, hợp khẩu vị số đông.",
+    "salesCount": 0
+  },
+  {
+    "id": 105,
+    "name": "Trà Sữa Lài",
+    "price": 35000,
+    "category": "Milk Tea",
+    "image": "/assets/images/tra-sua-matcha.jpg",
+    "desc": "Matcha thanh mát, hậu vị thơm.",
+    "salesCount": 0
+  },
+  {
+    "id": 106,
+    "name": "Hồng Trà Lài",
+    "price": 32000,
+    "category": "Milk Tea",
+    "image": "/assets/images/hong-tra-sua.jpg",
+    "desc": "Hồng trà cân bằng vị sữa.",
+    "salesCount": 0
+  },
+  {
+    "id": 203,
+    "name": "Trà Đào Chanh Sả",
+    "price": 39000,
+    "category": "Fruit Tea",
+    "image": "/assets/images/tra-dao-cam-sa.jpg",
+    "desc": "Đào ngọt dịu, sả the nhẹ, giải khát.",
+    "salesCount": 0
+  },
+  {
+    "id": 204,
+    "name": "Trà Nhãn",
+    "price": 36000,
+    "category": "Fruit Tea",
+    "image": "/assets/images/tra-vai.jpg",
+    "desc": "Hương vải dịu nhẹ, rất dễ uống.",
+    "salesCount": 0
+  },
+  {
+    "id": 107,
+    "name": "Trà Sữa HongKong",
+    "price": 35000,
+    "category": "Milk Tea",
+    "image": "/assets/images/tra-sua-matcha.jpg",
+    "desc": "Matcha thanh mát, hậu vị thơm.",
+    "salesCount": 0
+  }
+]
