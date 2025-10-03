@@ -14,6 +14,9 @@ const handleLogout = () => {
   router.push("/home");
 };
 
+// Is Admin
+const isAdmin = computed(() => authState.currentUser?.role === 'ADMIN')
+
 // Search keyword
 const keyword = ref("");
 function onSearch() {
@@ -165,6 +168,36 @@ onMounted(() => {
             <RouterLink class="nav-link menu-link" to="/contact"
               >Contact</RouterLink
             >
+          </li>
+          <li class="nav-item" v-if="isAdmin">
+            <div class="dropdown">
+              <button
+                class="nav-link menu-link dropdown-toggle"
+                type="button"
+                id="adminMenu"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                ADMIN
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <RouterLink class="dropdown-item" to="/admin/category">CATEGORIES</RouterLink>
+                </li>
+                <li>
+                  <RouterLink class="dropdown-item" to="/admin/order">ORDER</RouterLink>
+                </li>
+                <li>
+                  <RouterLink class="dropdown-item" to="/admin/product">PRODUCT</RouterLink>
+                </li>
+                <li>
+                  <RouterLink class="dropdown-item" to="/admin/voucher">VOUCHER</RouterLink>
+                </li>
+                <li>
+                  <RouterLink class="dropdown-item" to="/admin/statistics">STATISTICS</RouterLink>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
       </div>
