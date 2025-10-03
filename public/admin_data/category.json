@@ -8,5 +8,45 @@
     "is_active": true,
     "created_at": "2025-10-01T08:00:00Z",
     "updated_at": "2025-10-01T10:00:00Z"
+  },
+  {
+    "id": "d2345678-90bc-def1-2345-6789abcdef01",
+    "parent_id": null,
+    "category_name": "Fruit Tea",
+    "slug": "fruit-tea",
+    "sort_order": 2,
+    "is_active": true,
+    "created_at": "2025-10-01T09:00:00Z",
+    "updated_at": "2025-10-01T11:00:00Z"
+  },
+  {
+    "id": "e3456789-01cd-ef23-4567-89abcdef0123",
+    "parent_id": null,
+    "category_name": "Topping",
+    "slug": "topping",
+    "sort_order": 3,
+    "is_active": true,
+    "created_at": "2025-10-01T09:30:00Z",
+    "updated_at": "2025-10-01T11:30:00Z"
+  },
+  {
+    "id": "f4567890-12de-f345-6789-abcdef012345",
+    "parent_id": null,
+    "category_name": "Coffee",
+    "slug": "coffee",
+    "sort_order": 4,
+    "is_active": true,
+    "created_at": "2025-10-01T10:00:00Z",
+    "updated_at": "2025-10-01T12:00:00Z"
+  },
+  {
+    "id": "a5678901-23ef-4567-89ab-cdef01234567",
+    "parent_id": null,
+    "category_name": "Dessert",
+    "slug": "dessert",
+    "sort_order": 5,
+    "is_active": true,
+    "created_at": "2025-10-01T10:30:00Z",
+    "updated_at": "2025-10-01T12:30:00Z"
   }
 ]
