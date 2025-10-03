@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from 'vue'
-import { loadProducts } from '../store/productsBase.js'
+import { loadProducts } from '../store/ProductsBase.js'
 import { listState as productState, categories } from '../store/ProductListView.js'
 import ProductList from '../components/ProductList.vue'
 

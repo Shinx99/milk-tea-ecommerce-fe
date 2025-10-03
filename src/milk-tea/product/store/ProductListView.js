@@ -1,5 +1,5 @@
 import { computed } from 'vue'                        // import API computed của Vue (biến tính toán)
-import { productState } from './productsBase.js'      // import state gốc (danh sách sản phẩm, keyword, sort...)
+import { productState } from '../store/ProductsBase'      // import state gốc (danh sách sản phẩm, keyword, sort...)
 
 export const listState = productState                 // alias: dùng lại state gốc để dễ gọi trong file này
 
