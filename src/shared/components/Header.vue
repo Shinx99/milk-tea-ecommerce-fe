@@ -196,6 +196,9 @@ onMounted(() => {
                 <li>
                   <RouterLink class="dropdown-item" to="/admin/statistics">STATISTICS</RouterLink>
                 </li>
+                <li>
+                  <RouterLink class="dropdown-item" to="/admin/customer">CUSTOMER</RouterLink>
+                </li>
               </ul>
             </div>
           </li>
