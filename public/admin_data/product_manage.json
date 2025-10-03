@@ -1,242 +1,169 @@
 [
   {
     "id": "b4a751ca-73c6-486b-88d1-1036ade0791c",
-    "category_id": "53ae7992-a3a3-498d-bbb2-6cc8b975a715",
+    "category_name": "Trà Sữa",
     "name": "Trà Sữa Pudding Đậu Đỏ",
-    "slug": "tra-sua-pudding-dau-do",
     "description": "Trà sữa kết hợp pudding trứng và đậu đỏ.",
     "quantity": 78,
     "price": 38003,
     "is_active": false,
-    "created_at": "2025-10-02T04:24:00",
-    "updated_at": "2025-10-02T06:23:00"
+    "images": [
+      "https://example.com/images/tra-sua-pudding-dau-do-1.jpg",
+      "https://example.com/images/tra-sua-pudding-dau-do-2.jpg"
+    ]
   },
   {
     "id": "a364b909-d133-47d1-a8c3-b4c5a7662db7",
-    "category_id": "14a7d08e-cb28-4d58-b15d-1633e4aadf68",
+    "category_name": "Trà Xanh",
     "name": "Trà Xanh Lục",
-    "slug": "tra-xanh-luc",
     "description": "Trà xanh tươi mát, thơm ngon.",
     "quantity": 76,
     "price": 30190,
     "is_active": false,
-    "created_at": "2025-10-01T09:53:00",
-    "updated_at": "2025-10-01T11:45:00"
+    "images": [
+      "https://example.com/images/tra-xanh-luc-1.jpg"
+    ]
   },
   {
     "id": "a5d67d67-0e34-4e7a-a5ef-74460d908e27",
-    "category_id": "2c91d3f9-6792-4319-b22e-803133b0b254",
+    "category_name": "Trà Hoa",
     "name": "Trà Hoa Cúc",
-    "slug": "tra-hoa-cuc",
     "description": "Trà hoa cúc thanh mát, cứu sức khỏe.",
     "quantity": 41,
     "price": 28853,
     "is_active": false,
-    "created_at": "2025-10-02T05:04:00",
-    "updated_at": "2025-10-02T05:31:00"
+    "images": []
   },
   {
     "id": "2420a4d7-4a15-4d59-ab15-a25dceaed09d",
-    "category_id": "e874e953-72fb-471b-b104-4c4a7b6d3d48",
+    "category_name": "Trà Sữa",
     "name": "Trà Sữa Khoai Môn",
-    "slug": "tra-sua-khoai-mon",
     "description": "Trà sữa vị khoai môn đặc biệt.",
     "quantity": 58,
     "price": 47104,
     "is_active": true,
-    "created_at": "2025-10-02T12:00:00",
-    "updated_at": "2025-10-02T12:25:00"
+    "images": [
+      "https://example.com/images/tra-sua-khoai-mon-1.jpg"
+    ]
   },
   {
     "id": "42d472da-5e2f-4324-853c-3d6a31814f01",
-    "category_id": "f034c3e0-0297-48a5-9ca3-e37a12c7d408",
+    "category_name": "Trà Sữa",
     "name": "Trà Sữa Khúc Bạch",
-    "slug": "tra-sua-khuc-bach",
     "description": "Trà sữa kết hợp vị béo của chè khúc bạch.",
     "quantity": 60,
     "price": 30650,
     "is_active": false,
-    "created_at": "2025-10-02T09:54:00",
-    "updated_at": "2025-10-02T10:59:00"
+    "images": []
   },
   {
     "id": "0179d6ed-5410-4edf-9794-f3a2917ae77d",
-    "category_id": "750ce81f-a624-4db1-83f7-3b3c491c22b6",
+    "category_name": "Trà Sữa",
     "name": "Trà Sữa Caramel",
-    "slug": "tra-sua-caramel",
     "description": "Trà sữa hòa quyện vị caramel ngọt đậm đà.",
     "quantity": 43,
     "price": 43248,
     "is_active": false,
-    "created_at": "2025-10-02T17:36:00",
-    "updated_at": "2025-10-02T19:45:00"
+    "images": []
   },
   {
     "id": "631a0cb6-91cc-43fc-a4e4-5a8439d86160",
-    "category_id": "3d0fc237-5643-43d6-a6b1-4eeb7f7a7dec",
+    "category_name": "Trà Sữa",
     "name": "Trà Sữa Truyền Thống",
-    "slug": "tra-sua-truyen-thong",
     "description": "Trà sữa vị truyền thống, thơm ngon, béo ngậy.",
     "quantity": 58,
     "price": 44795,
     "is_active": false,
-    "created_at": "2025-10-01T20:39:00",
-    "updated_at": "2025-10-02T00:07:00"
-  },
-  {
-    "id": "01bc31b1-14a8-46b3-b6cb-ae4b9243c20f",
-    "category_id": "d341e7f6-2c56-4b55-8991-64172e3c47c9",
-    "name": "Trà Sữa Trân Châu Đường Đen",
-    "slug": "tra-sua-tran-chau-duong-den",
-    "description": "Trà sữa với topping trân châu đường đen ngọt thơm.",
-    "quantity": 29,
-    "price": 45973,
-    "is_active": false,
-    "created_at": "2025-10-02T07:45:00",
-    "updated_at": "2025-10-02T08:11:00"
-  },
-  {
-    "id": "b282c37d-e0d2-4114-8ad0-a5e3822a6248",
-    "category_id": "1a6c8118-3ef1-40e6-9249-ae6dc6a4077c",
-    "name": "Trà Sữa Oreo Chocolate Cream",
-    "slug": "tra-sua-oreo-chocolate-cream",
-    "description": "Trà sữa Oreo với lớp kem chocolate béo ngậy.",
-    "quantity": 67,
-    "price": 37591,
-    "is_active": true,
-    "created_at": "2025-10-02T20:27:00",
-    "updated_at": "2025-10-02T23:52:00"
-  },
-  {
-    "id": "b103dfdf-2228-4b3c-bec2-72e4ca4ab5fa",
-    "category_id": "d3267e49-1cd1-440b-9f1e-bebde82f2c88",
-    "name": "Trà Lài",
-    "slug": "tra-lai",
-    "description": "Trà lài thơm dịu nhẹ, thanh khiết.",
-    "quantity": 39,
-    "price": 31426,
-    "is_active": false,
-    "created_at": "2025-10-01T09:55:00",
-    "updated_at": "2025-10-01T12:35:00"
+    "images": []
   },
   {
     "id": "b5eba9bd-5737-4473-8693-c0a80e682c4b",
-    "category_id": "ffea495d-b11e-4a87-aea1-1b8756ed3e21",
+    "category_name": "Trà Sữa",
     "name": "Trà Sữa Dâu",
-    "slug": "tra-sua-dau",
     "description": "Trà sữa vị dâu thanh nhẹ, thơm ngọt.",
     "quantity": 74,
     "price": 39214,
-    "is_active": false,
-    "created_at": "2025-10-01T03:54:00",
-    "updated_at": "2025-10-01T07:17:00"
+    "is_active": true,
+    "images": [
+      "https://example.com/images/tra-sua-dau-1.jpg"
+    ]
   },
   {
     "id": "05f48162-aabc-40e6-9930-c0590eb1de32",
-    "category_id": "e5e945b5-c6c8-403e-8eac-a35a4825f657",
+    "category_name": "Trà Sữa",
     "name": "Trà Sữa Matcha",
-    "slug": "tra-sua-matcha",
     "description": "Trà sữa vị matcha thanh mát.",
     "quantity": 20,
     "price": 47495,
     "is_active": true,
-    "created_at": "2025-10-02T19:35:00",
-    "updated_at": "2025-10-02T20:13:00"
-  },
-  {
-    "id": "93e5691c-3adc-4461-8d51-c030554343be",
-    "category_id": "dbd0ae8a-fb34-4a5c-8d8a-8ca16a8a59d4",
-    "name": "Trà Đen Thơm",
-    "slug": "tra-den-thom",
-    "description": "Trà đen thơm ngon, đậm vị.",
-    "quantity": 46,
-    "price": 36833,
-    "is_active": false,
-    "created_at": "2025-10-01T15:17:00",
-    "updated_at": "2025-10-01T17:27:00"
-  },
-  {
-    "id": "186362f2-1d4a-4bde-8b12-2cf2710d2faf",
-    "category_id": "ad6e6f1d-6bb0-4b4d-b560-b5e8fc230be6",
-    "name": "Trà Sữa Ô Long",
-    "slug": "tra-sua-o-long",
-    "description": "Trà sữa vị ô long đặc trưng, thơm mát.",
-    "quantity": 52,
-    "price": 45611,
-    "is_active": false,
-    "created_at": "2025-10-02T16:38:00",
-    "updated_at": "2025-10-02T17:41:00"
-  },
-  {
-    "id": "6a8cbc61-c079-4f5c-9d59-cb863d80741d",
-    "category_id": "6081f799-d59a-4ab8-8751-76ba671a6928",
-    "name": "Trà Sữa Bạc Hà",
-    "slug": "tra-sua-bac-ha",
-    "description": "Trà sữa vị bạc hà mát lạnh, sảng khoái.",
-    "quantity": 38,
-    "price": 44145,
-    "is_active": false,
-    "created_at": "2025-10-02T01:18:00",
-    "updated_at": "2025-10-02T02:47:00"
+    "images": [
+      "https://example.com/images/tra-sua-matcha-1.jpg"
+    ]
   },
   {
     "id": "4ad8326d-8a19-4ab0-a402-77293f071ee7",
-    "category_id": "fe436190-3201-4d76-8988-43b3cd387b19",
+    "category_name": "Trà",
     "name": "Trà Chanh",
-    "slug": "tra-chanh",
     "description": "Trà chanh mát rượi giải khát.",
     "quantity": 33,
     "price": 32571,
     "is_active": true,
-    "created_at": "2025-10-02T15:50:00",
-    "updated_at": "2025-10-02T16:46:00"
-  },
-  {
-    "id": "0b96a033-a5a9-4850-81d0-f4ed1ae336dd",
-    "category_id": "46c5687e-6c1e-4965-83d9-1428a37e208c",
-    "name": "Trà Đào",
-    "slug": "tra-dao",
-    "description": "Trà đào tươi mát, thơm ngọt.",
-    "quantity": 59,
-    "price": 35903,
-    "is_active": false,
-    "created_at": "2025-10-01T12:16:00",
-    "updated_at": "2025-10-01T16:02:00"
-  },
-  {
-    "id": "32d26f41-ec2b-4c7a-8aae-5738f904db69",
-    "category_id": "76a109f5-043b-499f-84ef-04a4f67bf940",
-    "name": "Trà Ô Long Thượng Hạng",
-    "slug": "tra-o-long-thuong-hang",
-    "description": "Trà ô long hảo hạng, hương vị đậm đà.",
-    "quantity": 30,
-    "price": 46743,
-    "is_active": false,
-    "created_at": "2025-10-02T06:11:00",
-    "updated_at": "2025-10-02T06:37:00"
+    "images": [
+      "https://example.com/images/tra-chanh-1.jpg"
+    ]
   },
   {
     "id": "0602dc28-46f8-4937-957d-ae35f4d7e2c9",
-    "category_id": "4e2071f4-de12-4082-813e-cbbab1c0f8b2",
+    "category_name": "Trà",
     "name": "Trà Tắc",
-    "slug": "tra-tac",
     "description": "Trà tắc chua nhẹ, thơm thơm.",
     "quantity": 35,
     "price": 38089,
     "is_active": true,
-    "created_at": "2025-10-02T17:39:00",
-    "updated_at": "2025-10-02T19:03:00"
+    "images": [
+      "https://example.com/images/tra-tac-1.jpg"
+    ]
   },
   {
-    "id": "bdcf0ce3-dafe-4f2f-a05e-165a92e480dc",
-    "category_id": "85e3d7a8-7f61-4ee7-814c-0c1c959ed222",
-    "name": "Trà Sữa Dừa",
-    "slug": "tra-sua-dua",
-    "description": "Trà sữa vị dừa béo ngậy, thơm thơm.",
-    "quantity": 42,
-    "price": 31605,
+    "id": "0b96a033-a5a9-4850-81d0-f4ed1ae336dd",
+    "category_name": "Trà",
+    "name": "Trà Đào",
+    "description": "Trà đào tươi mát, thơm ngọt.",
+    "quantity": 59,
+    "price": 35903,
+    "is_active": true,
+    "images": [
+      "https://example.com/images/tra-dao-1.jpg"
+    ]
+  },
+  {
+    "id": "01bc31b1-14a8-46b3-b6cb-ae4b9243c20f",
+    "category_name": "Trà Sữa",
+    "name": "Trà Sữa Trân Châu Đường Đen",
+    "description": "Trà sữa với topping trân châu đường đen ngọt thơm.",
+    "quantity": 29,
+    "price": 45973,
     "is_active": false,
-    "created_at": "2025-10-01T05:09:00",
-    "updated_at": "2025-10-01T05:19:00"
+    "images": []
+  },
+  {
+    "id": "b282c37d-e0d2-4114-8ad0-a5e3822a6248",
+    "category_name": "Trà Sữa",
+    "name": "Trà Sữa Oreo Chocolate Cream",
+    "description": "Trà sữa Oreo với lớp kem chocolate béo ngậy.",
+    "quantity": 67,
+    "price": 37591,
+    "is_active": true,
+    "images": []
+  },
+  {
+    "id": "b103dfdf-2228-4b3c-bec2-72e4ca4ab5fa",
+    "category_name": "Trà",
+    "name": "Trà Lài",
+    "description": "Trà lài thơm dịu nhẹ, thanh khiết.",
+    "quantity": 39,
+    "price": 31426,
+    "is_active": false,
+    "images": []
   }
 ]

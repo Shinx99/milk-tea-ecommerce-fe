@@ -1,22 +1,23 @@
 [
   {
     "id": "fdc640f2-c80d-4d35-9160-97e021432ad1",
-    "customer_id": "e7850382-049a-4e85-80af-397c32d5be07",
+    "customer_name": "Nguyễn Văn An",
     "status": "COMPLETED",
     "placed_at": "2025-10-01T03:43:34",
     "confirmed_at": "2025-10-01T11:45:12",
-    "completed_at": null,
+    "completed_at": "2025-10-01T15:00:00",
     "cancelled_at": null,
-    "description": "",
+    "description": "Giao hàng nhanh, hàng nguyên vẹn",
     "subtotal": 128659,
     "discount_total": 27356,
     "tax_total": 10293,
     "shipping_fee": 19155,
-    "total": 130751
+    "total": 130751,
+    "voucher": "XUAN2025"
   },
   {
     "id": "9272c87f-ac2b-44df-a5dd-88540aa094ea",
-    "customer_id": "e150a6bb-b59f-4979-a9d2-bf24e7902eea",
+    "customer_name": "Trần Thị Bình",
     "status": "CONFIRMED",
     "placed_at": "2025-09-06T01:26:41",
     "confirmed_at": "2025-09-07T12:19:56",
@@ -27,26 +28,28 @@
     "discount_total": 28307,
     "tax_total": 11067,
     "shipping_fee": 12926,
-    "total": 134029
+    "total": 134029,
+    "voucher": ""
   },
   {
     "id": "b6905c68-0a62-4116-988b-7bde686dba53",
-    "customer_id": "7f3ad89e-aa9f-40d9-892f-172a4f3bfdef",
+    "customer_name": "Lê Văn Cường",
     "status": "CANCELLED",
     "placed_at": "2025-09-15T19:56:14",
     "confirmed_at": "2025-09-25T08:35:32",
     "completed_at": "2025-09-26T12:00:01",
-    "cancelled_at": null,
+    "cancelled_at": "2025-09-27T10:20:00",
     "description": "Đơn hàng số 3",
     "subtotal": 115965,
     "discount_total": 20954,
     "tax_total": 9277,
     "shipping_fee": 13825,
-    "total": 118113
+    "total": 118113,
+    "voucher": "GIAMGIA50K"
   },
   {
     "id": "a3c559c5-ae12-4239-a85a-39feaf6b5c30",
-    "customer_id": "fa4a4211-52cf-46c3-90a4-cb85117877cd",
+    "customer_name": "Phạm Thị Duyên",
     "status": "COMPLETED",
     "placed_at": "2025-09-21T06:39:15",
     "confirmed_at": "2025-09-26T06:19:48",
@@ -57,11 +60,12 @@
     "discount_total": 20700,
     "tax_total": 4787,
     "shipping_fee": 22090,
-    "total": 66011
+    "total": 66011,
+    "voucher": ""
   },
   {
     "id": "758e0e2e-8c86-4886-b92e-4e34b386689c",
-    "customer_id": "783a706c-63b8-4bba-b440-f9b4a667d349",
+    "customer_name": "Hoàng Văn Đông",
     "status": "CONFIRMED",
     "placed_at": "2025-09-30T19:25:06",
     "confirmed_at": "2025-10-01T15:11:26",
@@ -72,11 +76,12 @@
     "discount_total": 18973,
     "tax_total": 6969,
     "shipping_fee": 18181,
-    "total": 93287
+    "total": 93287,
+    "voucher": "FREESHIP"
   },
   {
     "id": "0dbb2aed-51f0-4179-9dd7-45ce697504a3",
-    "customer_id": "8d18bf82-8a6f-4b0f-9960-e682066a1870",
+    "customer_name": "Nguyễn Thị Hà",
     "status": "PENDING",
     "placed_at": "2025-09-24T12:26:32",
     "confirmed_at": "2025-09-29T19:07:28",
@@ -87,11 +92,12 @@
     "discount_total": 24257,
     "tax_total": 10246,
     "shipping_fee": 14213,
-    "total": 128277
+    "total": 128277,
+    "voucher": ""
   },
   {
     "id": "f529c553-7fe7-4d59-ab54-9fdbb9a4054a",
-    "customer_id": "b93ecf2a-d23a-44ae-a152-d1a184be8fd6",
+    "customer_name": "Trần Văn Giang",
     "status": "CONFIRMED",
     "placed_at": "2025-09-11T00:39:06",
     "confirmed_at": "2025-09-30T01:54:01",
@@ -102,11 +108,12 @@
     "discount_total": 4780,
     "tax_total": 15587,
     "shipping_fee": 12081,
-    "total": 217728
+    "total": 217728,
+    "voucher": "LUCKY7"
   },
   {
     "id": "a1b40ac7-c84e-417b-872a-adb282260327",
-    "customer_id": "e6a4035e-b8fe-4572-bca7-a2ef2c8ab49d",
+    "customer_name": "Phạm Thị Hồng",
     "status": "COMPLETED",
     "placed_at": "2025-10-01T16:44:38",
     "confirmed_at": "2025-10-01T19:48:32",
@@ -117,11 +124,12 @@
     "discount_total": 15675,
     "tax_total": 10293,
     "shipping_fee": 19094,
-    "total": 142379
+    "total": 142379,
+    "voucher": ""
   },
   {
     "id": "0b3f1c61-9f7d-463f-9c92-0c78170701a5",
-    "customer_id": "f1fc0667-9253-4556-bb33-983f250e8a29",
+    "customer_name": "Nguyễn Văn Hùng",
     "status": "CONFIRMED",
     "placed_at": "2025-09-26T07:38:41",
     "confirmed_at": "2025-09-29T23:07:33",
@@ -132,11 +140,12 @@
     "discount_total": 1187,
     "tax_total": 9705,
     "shipping_fee": 16704,
-    "total": 146529
+    "total": 146529,
+    "voucher": ""
   },
   {
     "id": "a28ea829-b47b-407f-a30c-1592f6190d03",
-    "customer_id": "950ab12e-72a1-4cb2-8e14-f26620120920",
+    "customer_name": "Lê Thị Kim",
     "status": "CANCELLED",
     "placed_at": "2025-09-18T00:42:32",
     "confirmed_at": "2025-09-25T01:03:57",
@@ -147,6 +156,7 @@
     "discount_total": 7084,
     "tax_total": 8547,
     "shipping_fee": 14785,
-    "total": 123091
+    "total": 123091,
+    "voucher": ""
   }
 ]
