@@ -1,0 +1,163 @@
+[
+  {
+    "id": "0e76eac7-fb8e-483d-aab1-101b5eabdc01",
+    "order_id": "fdc640f2-c80d-4d35-9160-97e021432ad1",
+    "product_name": "Trà Sữa Matcha",
+    "quantity": 2,
+    "price": 47495,
+    "line_total": 94990
+  },
+  {
+    "id": "c7d122c7-8841-462e-9bbb-cc7e58194f09",
+    "order_id": "fdc640f2-c80d-4d35-9160-97e021432ad1",
+    "product_name": "Trà Sữa Dâu",
+    "quantity": 1,
+    "price": 39214,
+    "line_total": 39214
+  },
+  {
+    "id": "4054e7d5-cbb3-43ac-832d-cb41cccdd803",
+    "order_id": "9272c87f-ac2b-44df-a5dd-88540aa094ea",
+    "product_name": "Trà Tắc",
+    "quantity": 2,
+    "price": 38089,
+    "line_total": 76178
+  },
+  {
+    "id": "4250f673-ef14-43b0-9a07-2a3de5bc867b",
+    "order_id": "9272c87f-ac2b-44df-a5dd-88540aa094ea",
+    "product_name": "Trà Chanh",
+    "quantity": 1,
+    "price": 32571,
+    "line_total": 32571
+  },
+  {
+    "id": "61dc9fa9-082e-46ad-a175-ceab8cc175bc",
+    "order_id": "b6905c68-0a62-4116-988b-7bde686dba53",
+    "product_name": "Trà Sữa Truyền Thống",
+    "quantity": 1,
+    "price": 44795,
+    "line_total": 44795
+  },
+  {
+    "id": "e10bea85-d3d7-43a6-9331-b3d7c3fb44c8",
+    "order_id": "a3c559c5-ae12-4239-a85a-39feaf6b5c30",
+    "product_name": "Trà Sữa Caramel",
+    "quantity": 2,
+    "price": 43248,
+    "line_total": 86496
+  },
+  {
+    "id": "222b0eab-496a-41f8-bb07-399f4679da9e",
+    "order_id": "758e0e2e-8c86-4886-b92e-4e34b386689c",
+    "product_name": "Trà Sữa Khoai Môn",
+    "quantity": 1,
+    "price": 47104,
+    "line_total": 47104
+  },
+  {
+    "id": "4163cbfe-3f51-4a3d-b771-cdd2e9f5ed2e",
+    "order_id": "f529c553-7fe7-4d59-ab54-9fdbb9a4054a",
+    "product_name": "Trà Sữa Pudding Đậu Đỏ",
+    "quantity": 1,
+    "price": 38003,
+    "line_total": 38003
+  },
+  {
+    "id": "ee2c2d4e-71ea-47b5-9cb2-8d3eadcaccf3",
+    "order_id": "a1b40ac7-c84e-417b-872a-adb282260327",
+    "product_name": "Trà Sữa Khúc Bạch",
+    "quantity": 2,
+    "price": 30650,
+    "line_total": 61300
+  },
+  {
+    "id": "785e3fab-7d1d-4133-9bed-6304d3411b5e",
+    "order_id": "05f48162-aabc-40e6-9930-c0590eb1de32",
+    "product_name": "Trà Sữa Oreo Chocolate Cream",
+    "quantity": 3,
+    "price": 37591,
+    "line_total": 112773
+  },
+  {
+    "id": "2c040b97-6810-41ea-b75c-17b8fe4fdc1f",
+    "order_id": "b6905c68-0a62-4116-988b-7bde686dba53",
+    "product_name": "Trà Hoa Cúc",
+    "quantity": 2,
+    "price": 28853,
+    "line_total": 57706
+  },
+  {
+    "id": "baaece20-3982-44ca-ae97-0d66e7f32671",
+    "order_id": "a3c559c5-ae12-4239-a85a-39feaf6b5c30",
+    "product_name": "Trà Sữa Khúc Bạch",
+    "quantity": 1,
+    "price": 30650,
+    "line_total": 30650
+  },
+  {
+    "id": "3518c6bc-ef70-4022-872b-5537d04dadb7",
+    "order_id": "758e0e2e-8c86-4886-b92e-4e34b386689c",
+    "product_name": "Trà Sữa Truyền Thống",
+    "quantity": 1,
+    "price": 44795,
+    "line_total": 44795
+  },
+  {
+    "id": "051079be-9b35-4fa6-8a95-0e86417e2512",
+    "order_id": "0dbb2aed-51f0-4179-9dd7-45ce697504a3",
+    "product_name": "Trà Sữa Pudding Đậu Đỏ",
+    "quantity": 2,
+    "price": 38003,
+    "line_total": 76006
+  },
+  {
+    "id": "b73b9ebb-94cb-4b00-a2a8-b595d1450672",
+    "order_id": "a28ea829-b47b-407f-a30c-1592f6190d03",
+    "product_name": "Trà Đào",
+    "quantity": 1,
+    "price": 35903,
+    "line_total": 35903
+  },
+  {
+    "id": "019f1ce1-4e02-497a-bfb5-d643a0bbb045",
+    "order_id": "a1b40ac7-c84e-417b-872a-adb282260327",
+    "product_name": "Trà Sữa Dâu",
+    "quantity": 2,
+    "price": 39214,
+    "line_total": 78428
+  },
+  {
+    "id": "d4bdaa3b-03fd-46c1-bb45-44179b94e10f",
+    "order_id": "f529c553-7fe7-4d59-ab54-9fdbb9a4054a",
+    "product_name": "Trà Sữa Khoai Môn",
+    "quantity": 1,
+    "price": 47104,
+    "line_total": 47104
+  },
+  {
+    "id": "37e2be4a-49f0-4bc8-b0e0-e343e9f30574",
+    "order_id": "0b3f1c61-9f7d-463f-9c92-0c78170701a5",
+    "product_name": "Trà Sữa Oreo Chocolate Cream",
+    "quantity": 2,
+    "price": 37591,
+    "line_total": 75182
+  },
+  {
+    "id": "c3b2e296-3b1b-4e7f-84ad-067111e21d63",
+    "order_id": "0b3f1c61-9f7d-463f-9c92-0c78170701a5",
+    "product_name": "Trà Sữa Caramel",
+    "quantity": 1,
+    "price": 43248,
+    "line_total": 43248
+  },
+  {
+    "id": "ec2c3ab2-247c-477e-bc33-995b28c92725",
+    "order_id": "a28ea829-b47b-407f-a30c-1592f6190d03",
+    "product_name": "Trà Sữa Trân Châu Đường Đen",
+    "quantity": 1,
+    "price": 45973,
+    "line_total": 45973
+  }
+]
+

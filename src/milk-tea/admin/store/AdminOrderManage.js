@@ -1,14 +1,20 @@
 import axios from 'axios'
 import { ref } from 'vue'
 
+// Đường dẫn file json (có thể đổi sang API khi backend thật)
+const ORDERS_URL = '/admin_data/orders_manage.json'
+const ORDER_DETAIL_URL = '/admin_data/order_detail.json' // file chi tiết đơn hàng
+
 export function useOrderStore() {
   const orders = ref([])
   const loaded = ref(false)
-  
+  const orderItems = ref([]) // lưu các dòng sản phẩm chi tiết đơn
+
+  // Load danh sách hóa đơn
   async function loadOrders() {
     if (loaded.value) return
     try {
-      const res = await axios.get('/admin_data/orders.manage.json')
+      const res = await axios.get(ORDERS_URL)
       orders.value = res.data
       loaded.value = true
     } catch (e) {
@@ -16,8 +22,18 @@ export function useOrderStore() {
     }
   }
 
+  // Load chi tiết sản phẩm của hóa đơn (truyền orderId)
+  async function loadOrderItems(orderId) {
+    try {
+      const res = await axios.get(ORDER_DETAIL_URL)
+      orderItems.value = res.data.filter(item => item.order_id === orderId)
+    } catch (e) {
+      console.error('Load order items fail:', e)
+    }
+  }
+
+  // Thêm mới hóa đơn (mock), để gọi API thật thì bỏ comment
   async function addOrder(orderData) {
-    // Giả sử thêm local trước (mock), sau này chuyển thành axios POST
     try {
       // await axios.post('/orders', orderData)
       const newOrder = { ...orderData, id: crypto.randomUUID() }
@@ -27,6 +43,7 @@ export function useOrderStore() {
     }
   }
 
+  // Cập nhật hóa đơn (mock)
   async function updateOrder(orderData) {
     try {
       // await axios.put(`/orders/${orderData.id}`, orderData)
@@ -37,6 +54,7 @@ export function useOrderStore() {
     }
   }
 
+  // Xóa hóa đơn (mock)
   async function removeOrder(id) {
     try {
       // await axios.delete(`/orders/${id}`)
@@ -53,6 +71,8 @@ export function useOrderStore() {
     loadOrders,
     addOrder,
     updateOrder,
-    removeOrder
+    removeOrder,
+    orderItems,
+    loadOrderItems
   }
 }
