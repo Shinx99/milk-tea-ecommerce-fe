@@ -1,22 +1,17 @@
 <script setup>
-import adminProduct from '../components/AdminProductManage.vue'
-import AdminOrder from '../components/AdminOrderManage.vue';
-</script>
+import { ref } from 'vue'
 
+const activeTab = ref('product')
+</script>
 <template>
   <div class="container mt-3">
     <nav class="mb-4">
-      <a href="#" class="btn btn-outline-primary me-2">Categories</a>
-      <a href="#" class="btn btn-outline-primary me-2">Order</a>
-      <a href="#" class="btn btn-primary">Product</a>
+      <router-link to="/admin/category" class="btn btn-outline-primary me-2">Categories</router-link>
+      <router-link to="/admin/order" class="btn btn-outline-primary me-2">Order</router-link>
+      <router-link to="/admin/product" class="btn btn-outline-primary me-2">Product</router-link>
+      <router-link to="/admin/voucher" class="btn btn-outline-primary me-2">Voucher</router-link>
     </nav>
 
-    <adminProduct />
-
-    <hr>
-
-    <AdminOrder/>
-
-    
+    <router-view />
   </div>
 </template>

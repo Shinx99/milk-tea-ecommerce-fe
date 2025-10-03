@@ -8,7 +8,7 @@ export function useOrderStore() {
   async function loadOrders() {
     if (loaded.value) return
     try {
-      const res = await axios.get('/admin_data/orders_manage.json')
+      const res = await axios.get('/admin_data/orders.manage.json')
       orders.value = res.data
       loaded.value = true
     } catch (e) {
@@ -17,6 +17,7 @@ export function useOrderStore() {
   }
 
   async function addOrder(orderData) {
+    // Giả sử thêm local trước (mock), sau này chuyển thành axios POST
     try {
       // await axios.post('/orders', orderData)
       const newOrder = { ...orderData, id: crypto.randomUUID() }

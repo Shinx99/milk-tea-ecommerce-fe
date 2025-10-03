@@ -7,8 +7,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@milk-tea': path.resolve(__dirname, 'src/milk-tea'),
     },
   },
+  
   server: {
     host: true,        // tương đương 0.0.0.0 (cho phép truy cập từ host)
     port: 5173,
