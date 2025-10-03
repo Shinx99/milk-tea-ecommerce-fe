@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'                   // import API reactivity của Vue 3
-import { getProductById } from './productsBase.js'   // hàm lấy sản phẩm theo id từ store products
+import { getProductById } from './ProductsBase.js'   // hàm lấy sản phẩm theo id từ store products
 import { addToCart } from '@/milk-tea/cart/store'    // hàm thêm vào giỏ hàng từ module cart
 import { useRouter } from 'vue-router'               // hook của Vue Router để điều hướng
 

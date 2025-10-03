@@ -2,7 +2,7 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { loadProducts, productState, getProductById } from '../store/productsBase.js'
+import { loadProducts, productState, getProductById } from '../store/ProductsBase.js'
 import { useProductDetail } from '../store/ProductDetailView.js'
 import ProductCard from '../components/ProductCard.vue'
 
