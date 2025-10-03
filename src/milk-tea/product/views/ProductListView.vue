@@ -1,9 +1,12 @@
 <script setup>
-import { productState, categories, loadProducts } from "@/milk-tea/product/store"
-import ProductList from "@/milk-tea/product/components/ProductList.vue"
+import { onMounted } from 'vue'
+import { loadProducts } from '../store/productsBase.js'
+import { listState as productState, categories } from '../store/ProductListView.js'
+import ProductList from '../components/ProductList.vue'
 
-// load sản phẩm khi mở trang
-loadProducts()
+onMounted(async () => {
+  await loadProducts()
+})
 </script>
 
 <template>
@@ -11,14 +14,7 @@ loadProducts()
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
       <h3 class="me-auto mb-0">Sản phẩm</h3>
 
-      <input
-        v-model="productState.keyword"
-        type="search"
-        class="form-control"
-        style="max-width:260px"
-        placeholder="Tìm theo tên..."
-      />
-
+      <input v-model="productState.keyword" type="search" class="form-control" style="max-width:260px" placeholder="Tìm theo tên..." />
       <select v-model="productState.category" class="form-select" style="max-width:160px">
         <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
       </select>

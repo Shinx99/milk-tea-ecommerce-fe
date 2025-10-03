@@ -1,6 +1,6 @@
 <script setup>
-import { categories, productState } from '@/milk-tea/product/store'
-const setCat = (c) => productState.category = c
+import { categories, listState as productState } from '../store/ProductListView.js'
+const setCat = (c) => (productState.category = c)
 </script>
 
 <template>
@@ -9,7 +9,8 @@ const setCat = (c) => productState.category = c
       v-for="c in categories" :key="c"
       class="btn"
       :class="c===productState.category ? 'btn-dark' : 'btn-outline-dark'"
-      @click="setCat(c)"
-    >{{ c }}</button>
+      @click="setCat(c)">
+      {{ c }}
+    </button>
   </div>
 </template>

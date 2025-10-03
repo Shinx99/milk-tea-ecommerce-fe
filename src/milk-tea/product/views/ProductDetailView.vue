@@ -1,10 +1,10 @@
 <!-- src/milk-tea/product/views/ProductDetailView.vue -->
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { productState, getProductById, loadProducts } from '@/milk-tea/product/store'
-import { addToCart } from '@/milk-tea/cart/store'
-import ProductCard from '@/milk-tea/product/components/ProductCard.vue'
+import { loadProducts, productState, getProductById } from '../store/productsBase.js'
+import { useProductDetail } from '../store/ProductDetailView.js'
+import ProductCard from '../components/ProductCard.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -14,48 +14,13 @@ const id = Number(route.params.id)
 const product = ref(null)
 
 onMounted(async () => {
-  if (!productState.list.length) {
-    await loadProducts()
-  }
+  if (!productState.list.length) await loadProducts()
   product.value = getProductById(id)
   if (!product.value) router.replace('/products')
 })
 
-// ----- State chọn option -----
-const qty   = ref(1)
-const size  = ref('S')                     // S gốc, M +6000, L +10000
-const sugar = ref('Bình thường')
-const tea   = ref('Bình thường')
-const ice   = ref('Bình thường')
-const extraIce = ref(false)                // đá riêng (không tính phí)
+const { qty, size, sugar, ice, extraIce, unitPrice, total, dec, inc, addToCartNow } = useProductDetail(id)
 
-// ----- Tính giá -----
-const sizeDelta = computed(() =>
-  size.value === 'M' ? 6000 : size.value === 'L' ? 10000 : 0
-)
-const unitPrice = computed(() => (product.value?.price || 0) + sizeDelta.value)
-const total     = computed(() => unitPrice.value * qty.value)
-
-const dec = () => (qty.value = Math.max(1, qty.value - 1))
-const inc = () => (qty.value += 1)
-
-function addToCartNow () {
-  if (!product.value) return
-  addToCart(product.value, {
-    qty: qty.value,
-    unitPrice: unitPrice.value,
-    options: {
-      size: size.value, sugar: sugar.value, tea: tea.value, ice: ice.value, extraIce: extraIce.value
-    }
-  })
-  router.back()
-}
-
-/* ====== SẢN PHẨM CÙNG LOẠI ======
-   - Cùng category với sản phẩm đang xem
-   - Loại trừ chính nó
-   - Lấy 4 món đầu (tuỳ bạn tăng/giảm)
-*/
 const relatedProducts = computed(() => {
   const p = product.value
   if (!p) return []
@@ -107,16 +72,6 @@ const relatedProducts = computed(() => {
               </div>
             </div>
 
-            <!-- Trà -->
-            <div class="mb-3">
-              <label class="fw-semibold mb-1">Trà</label>
-              <div class="btn-group w-100 btn-group-sm">
-                <button class="btn" :class="tea==='Ít' ? 'btn-warning':'btn-outline-warning'" @click="tea='Ít'">Ít</button>
-                <button class="btn" :class="tea==='Bình thường' ? 'btn-warning':'btn-outline-warning'" @click="tea='Bình thường'">Bình thường</button>
-                <button class="btn" :class="tea==='Nhiều' ? 'btn-warning':'btn-outline-warning'" @click="tea='Nhiều'">Nhiều</button>
-              </div>
-            </div>
-
             <!-- Đá -->
             <div class="mb-3">
               <label class="fw-semibold mb-1">Đá</label>
@@ -130,7 +85,7 @@ const relatedProducts = computed(() => {
             <!-- Đá riêng -->
             <div class="form-check mb-3 small">
               <input id="extraIce" class="form-check-input" type="checkbox" v-model="extraIce">
-              <label for="extraIce" class="form-check-label">Đá riêng (không tính phí)</label>
+              <label class="form-check-label" for="extraIce">Đá riêng (không tính phí)</label>
             </div>
 
             <!-- Số lượng -->
@@ -141,10 +96,7 @@ const relatedProducts = computed(() => {
             </div>
 
             <!-- Nút thêm vào giỏ -->
-            <button
-              class="btn btn-warning w-100 d-flex align-items-center justify-content-center gap-2 btn-sm py-2"
-              @click="addToCartNow"
-            >
+            <button class="btn btn-warning w-100 d-flex align-items-center justify-content-center gap-2 btn-sm py-2" @click="addToCartNow">
               <i class="bi bi-cart"></i>
               Thêm vào giỏ hàng : {{ total.toLocaleString() }} đ
             </button>
@@ -153,13 +105,11 @@ const relatedProducts = computed(() => {
       </div>
     </div>
 
-    <!-- ========== SẢN PHẨM CÙNG LOẠI ========== -->
+    <!-- Sản phẩm cùng loại -->
     <div class="mt-5">
       <div class="d-flex align-items-center mb-3">
         <h5 class="mb-0">Sản phẩm cùng loại</h5>
-        <span class="text-muted ms-2 small" v-if="relatedProducts.length">
-          ({{ product.category }})
-        </span>
+        <span class="text-muted ms-2 small" v-if="relatedProducts.length">({{ product.category }})</span>
       </div>
 
       <div v-if="relatedProducts.length" class="row g-3">
@@ -171,7 +121,6 @@ const relatedProducts = computed(() => {
     </div>
   </section>
 
-  <!-- fallback khi chưa có product -->
   <section v-else class="container py-5 text-center text-muted">
     Đang tải sản phẩm...
   </section>
