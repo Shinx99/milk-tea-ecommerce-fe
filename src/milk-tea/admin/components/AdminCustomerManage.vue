@@ -7,22 +7,38 @@
           <div class="mb-3">
             <div class="mb-3">
               <label class="form-label fw-bold">Full name:</label>
-              <input v-model="newCustomer.fullname" type="text" class="form-control" />
+              <input
+                v-model="newCustomer.fullname"
+                type="text"
+                class="form-control"
+              />
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">Email:</label>
-              <input v-model="newCustomer.email" type="email" class="form-control" />
+              <input
+                v-model="newCustomer.email"
+                type="email"
+                class="form-control"
+              />
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">Phone:</label>
-              <input v-model="newCustomer.phone" type="tel" class="form-control" />
+              <input
+                v-model="newCustomer.phone"
+                type="tel"
+                class="form-control"
+              />
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">Password:</label>
-              <input v-model="newCustomer.password" type="password" class="form-control" />
+              <input
+                v-model="newCustomer.password"
+                type="password"
+                class="form-control"
+              />
             </div>
 
             <div class="mb-3">
@@ -91,7 +107,6 @@
           </tbody>
         </table>
       </div>
-
     </div>
   </div>
 </template>
@@ -121,7 +136,13 @@ function createCustomer() {
   };
   if (!cus.fullname || !cus.email) return;
   customers.value = [cus, ...customers.value];
-  newCustomer.value = { fullname: "", email: "", phone: "", password: "", is_active: true };
+  newCustomer.value = {
+    fullname: "",
+    email: "",
+    phone: "",
+    password: "",
+    is_active: true,
+  };
 }
 
 function removeCustomer(id) {
@@ -132,5 +153,4 @@ function startEdit(cus) {
   // chỗ móc để mở modal/screen edit
   console.log("Edit", cus);
 }
-
 </script>
