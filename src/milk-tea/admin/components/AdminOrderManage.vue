@@ -23,13 +23,19 @@
         >
           Orders Detail
         </button>
-        
       </div>
     </nav>
 
     <div class="tab-content">
       <!-- Tab list hóa đơn -->
-      <div class="tab-pane" :class="{ 'show active': activeTab === 'list', fade: activeTab !== 'list' }" role="tabpanel">
+      <div
+        class="tab-pane"
+        :class="{
+          'show active': activeTab === 'list',
+          fade: activeTab !== 'list',
+        }"
+        role="tabpanel"
+      >
         <table class="table table-hover" border="1">
           <thead>
             <tr>
@@ -50,7 +56,8 @@
               v-for="(o, index) in orders"
               :key="o.id"
               style="cursor: pointer"
-              @click="showDetail(o)">
+              @click="showDetail(o)"
+            >
               <td>{{ index + 1 }}</td>
               <td>{{ o.customer_name }}</td>
               <td>{{ o.status }}</td>
@@ -70,55 +77,64 @@
       </div>
 
       <!-- Tab chi tiết hóa đơn -->
-      <div class="mt-2 tab-pane" :class="{ 'show active': activeTab === 'detail', fade: activeTab !== 'detail' }" role="tabpanel">
+      <div
+        class="mt-2 tab-pane"
+        :class="{
+          'show active': activeTab === 'detail',
+          fade: activeTab !== 'detail',
+        }"
+        role="tabpanel"
+      >
         <div v-if="selectedOrder">
           <div class="row">
             <div class="col-sm-5">
               <table class="table table-bordered mt-3 w-100">
-                <tr>
-                  <th>Mã hóa đơn:</th>
-                  <td>{{ selectedOrder.id }}</td>
-                </tr>
-                <tr>
-                  <th>Tên khách hàng:</th>
-                  <td>{{ selectedOrder.customer_name }}</td>
-                </tr>
-                <tr>
-                  <th>Thời gian đặt:</th>
-                  <td>{{ selectedOrder.placed_at }}</td>
-                </tr>
-                <tr>
-                  <th>Trạng thái:</th>
-                  <td>{{ selectedOrder.status }}</td>
-                </tr>
-                <tr>
-                  <th>Voucher:</th>
-                  <td>{{ selectedOrder.voucher }}</td>
-                </tr>
-                <tr>
-                  <th>Tổng sản phẩm:</th>
-                  <td>{{ selectedOrder.subtotal }}</td>
-                </tr>
-                <tr>
-                  <th>Giảm giá:</th>
-                  <td>{{ selectedOrder.discount_total }}</td>
-                </tr>
-                <tr>
-                  <th>Thuế:</th>
-                  <td>{{ selectedOrder.tax_total }}</td>
-                </tr>
-                <tr>
-                  <th>Phí ship:</th>
-                  <td>{{ selectedOrder.shipping_fee }}</td>
-                </tr>
-                <tr>
-                  <th>Tổng tiền:</th>
-                  <td>{{ selectedOrder.total }}</td>
-                </tr>
-                <tr>
-                  <th>Mô tả:</th>
-                  <td>{{ selectedOrder.description }}</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <th>Mã hóa đơn:</th>
+                    <td>{{ selectedOrder.id }}</td>
+                  </tr>
+                  <tr>
+                    <th>Tên khách hàng:</th>
+                    <td>{{ selectedOrder.customer_name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Thời gian đặt:</th>
+                    <td>{{ selectedOrder.placed_at }}</td>
+                  </tr>
+                  <tr>
+                    <th>Trạng thái:</th>
+                    <td>{{ selectedOrder.status }}</td>
+                  </tr>
+                  <tr>
+                    <th>Voucher:</th>
+                    <td>{{ selectedOrder.voucher }}</td>
+                  </tr>
+                  <tr>
+                    <th>Tổng sản phẩm:</th>
+                    <td>{{ selectedOrder.subtotal }}</td>
+                  </tr>
+                  <tr>
+                    <th>Giảm giá:</th>
+                    <td>{{ selectedOrder.discount_total }}</td>
+                  </tr>
+                  <tr>
+                    <th>Thuế:</th>
+                    <td>{{ selectedOrder.tax_total }}</td>
+                  </tr>
+                  <tr>
+                    <th>Phí ship:</th>
+                    <td>{{ selectedOrder.shipping_fee }}</td>
+                  </tr>
+                  <tr>
+                    <th>Tổng tiền:</th>
+                    <td>{{ selectedOrder.total }}</td>
+                  </tr>
+                  <tr>
+                    <th>Mô tả:</th>
+                    <td>{{ selectedOrder.description }}</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
             <div class="col-sm-7">
@@ -151,8 +167,6 @@
         </div>
         <div v-else class="mt-3">Chọn một hóa đơn để xem chi tiết</div>
       </div>
-
-      
     </div>
   </div>
 </template>
@@ -188,4 +202,3 @@ function switchTab(tab) {
   activeTab.value = tab;
 }
 </script>
-

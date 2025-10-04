@@ -41,10 +41,9 @@ export async function loadProducts() {
       return; // thoát luôn (không cần fetch JSON)
     }
 
-    // --- Nếu chưa có thì fetch từ public/product_data/products.json ---
-    const res = await fetch("/product_data/products.json"); // gọi API fetch file JSON
-    if (!res.ok) throw new Error(`Fetch products.json failed: ${res.status}`);
-    const data = await res.json(); // parse dữ liệu JSON thành object
+  const res = await fetch('../product_data/products.json') // gọi API fetch file JSON
+    if (!res.ok) throw new Error(`Fetch products.json failed: ${res.status}`)
+    const data = await res.json()                        // parse dữ liệu JSON thành object
 
     productState.list = Array.isArray(data) // gán list vào state
       ? data.map((p) => ({ ...p, image: resolveImage(p.image) }))
