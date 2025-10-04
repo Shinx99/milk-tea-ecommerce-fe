@@ -133,13 +133,4 @@ function startEdit(cus) {
   console.log("Edit", cus);
 }
 
-onMounted(async () => {
-  try {
-    const res = await fetch("/admin_data/customers.json");
-    if (!res.ok) throw new Error("Failed to fetch data");
-    customers.value = await res.json();
-  } catch (error) {
-    console.error(error);
-  }
-});
 </script>
