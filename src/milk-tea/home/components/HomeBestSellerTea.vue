@@ -8,7 +8,7 @@ import { homeState } from "../store.js";
     <div class="row g-4">
       <div
         class="col-md-3"
-        v-for="item in homeState.bestSellerTea"
+        v-for="item in homeState.bestSellerFruitTea"
         :key="item.id"
       >
         <div class="card h-100 shadow-sm text-center">
@@ -16,10 +16,13 @@ import { homeState } from "../store.js";
           <div class="card-body">
             <h6 class="fw-semibold">{{ item.name }}</h6>
             <p class="text-success">{{ item.price.toLocaleString() }} ₫</p>
-            <button class="btn btn-success btn-sm w-100">
-              <i class="bi bi-cart me-2"></i>
-              Đặt mua
-            </button>
+            <RouterLink
+  class="btn btn-success btn-sm w-100"
+  :to="`/products/${item.id}`"
+>
+  <i class="bi bi-cart me-2"></i>
+  Đặt mua
+</RouterLink>
           </div>
         </div>
       </div>

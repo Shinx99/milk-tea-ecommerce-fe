@@ -4,7 +4,6 @@ import accountRoutes from '@/milk-tea/account/router'
 import { authState } from '@/milk-tea/account/store'
 import productRoutes from '@/milk-tea/product/router'   // ⬅️ dùng default export
 import cartRoutes from '@/milk-tea/cart/router'   // <-- default import
-import HomeView from "../milk-tea/home/views/HomeView.vue";
 
 import AdminDashboardView from '@/milk-tea/admin/views/AdminDashboardView.vue'
 import adminRoutes from '@/milk-tea/admin/router'  // <-- default import
