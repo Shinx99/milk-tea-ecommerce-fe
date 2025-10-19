@@ -14,3 +14,5 @@ const setCat = (c) => (productState.category = c)
     </button>
   </div>
 </template>
+
+
