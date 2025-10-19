@@ -1,52 +1,92 @@
-import { ref, computed } from 'vue'                   // import API reactivity của Vue 3
-import { getProductById } from './ProductsBase.js'   // hàm lấy sản phẩm theo id từ store products
-import { addToCart } from '@/milk-tea/cart/store'    // hàm thêm vào giỏ hàng từ module cart
-import { useRouter } from 'vue-router'               // hook của Vue Router để điều hướng
+// product/store/ProductDetailView.js
+// NỘI DUNG HOÀN CHỈNH
+
+import { ref, computed } from 'vue' 
+import { fetchProductDetail } from '../api/productService' // Đã fix lỗi import đường dẫn tương đối
+import { productState, getProductById } from './ProductsBase.js' 
+import { addToCart } from '@/milk-tea/cart/store' 
+import { useRouter } from 'vue-router' 
 
 // Hàm composable dùng trong trang chi tiết sản phẩm
 export function useProductDetail(productId) {
-  const product = ref(getProductById(productId))     // reactive: lưu sản phẩm hiện tại (tìm theo id)
+  // Sản phẩm sẽ được tải nếu cần (Khắc phục lỗi ReferenceError)
+  const product = ref(getProductById(productId)) 
+  const detailLoading = ref(false)
+  const detailError = ref(null)
 
-  // ==== State cho tuỳ chọn người dùng ====
-  const qty = ref(1)                                // số lượng (mặc định 1)
-  const size = ref('S')                             // size cốc: S, M, L (mặc định S)
-  const sugar = ref('Bình thường')                  // mức đường
-  const ice = ref('Bình thường')                    // mức đá
-  const extraIce = ref(false)                       // có thêm đá không (true/false)
+  // Hàm tải chi tiết sản phẩm (Dùng để gọi API nếu sản phẩm chưa có trong cache)
+  async function loadDetail() {
+      if (product.value) return; 
+      
+      detailLoading.value = true
+      detailError.value = null
+
+      try {
+          const data = await fetchProductDetail(productId)
+          product.value = data 
+      } catch (err) {
+          detailError.value = err.message || 'Không thể tải chi tiết sản phẩm.'
+          console.error(err)
+      } finally {
+          detailLoading.value = false
+      }
+  }
+
+  // ==== State cho tuỳ chọn người dùng (Phải được khai báo) ====
+  const qty = ref(1) 
+  const size = ref('S')
+  const ice = ref('Bình thường')
+  const extraIce = ref(false)
 
   // ==== Computed (biến phụ thuộc) ====
-  const sizeDelta = computed(() =>                  // số tiền cộng thêm theo size
-    size.value === 'M' ? 6000 :                     // nếu size M → cộng 6000đ
-    size.value === 'L' ? 10000 : 0                  // nếu size L → cộng 10000đ
+  const sizeDelta = computed(() => 
+    size.value === 'M' ? 6000 : 
+    size.value === 'L' ? 10000 : 0 
   )
-  const unitPrice = computed(() =>                  // giá 1 cốc sau khi chọn size
-    (product.value?.price || 0) + sizeDelta.value   // giá gốc + phụ thu theo size
+  const unitPrice = computed(() => 
+    (product.value?.price || 0) + sizeDelta.value 
   )
-  const total = computed(() => unitPrice.value * qty.value) // tổng tiền = đơn giá × số lượng
+  const total = computed(() => unitPrice.value * qty.value) 
 
   // ==== Hàm tăng giảm số lượng ====
-  const dec = () => (qty.value = Math.max(1, qty.value - 1)) // giảm số lượng (không < 1)
-  const inc = () => (qty.value += 1)                         // tăng số lượng
+  const dec = () => (qty.value = Math.max(1, qty.value - 1)) 
+  const inc = () => (qty.value += 1) 
 
-  // ==== Xử lý thêm giỏ hàng ====
-  const router = useRouter()       // khởi tạo router để điều hướng
-                      
+  // ==== Xử lý thêm giỏ hàng (Đã fix lỗi useRouter ReferenceError) ====
+  const router = useRouter() 
   function addToCartNow() {
-    if (!product.value) return                        // nếu không có sản phẩm thì dừng
-    addToCart(product.value, {                        // gọi hàm thêm sản phẩm vào giỏ
-      qty: qty.value,                                 // số lượng
-      unitPrice: unitPrice.value,                     // giá sau khi tính size
-      options: {                                      // tuỳ chọn thêm
+    if (!product.value) return 
+    
+    // Gọi hàm thêm vào giỏ hàng
+    addToCart(product.value, { 
+      qty: qty.value, 
+      unitPrice: unitPrice.value, 
+      options: { 
         size: size.value,
         sugar: sugar.value,
         ice: ice.value,
         extraIce: extraIce.value
       }
     })
-    router.back()                                     // quay lại trang trước sau khi thêm
+    
+    // Điều hướng rõ ràng về trang danh sách sản phẩm
+    router.push({ path: '/products' }) 
   }
 
   // ==== Trả về để component Vue dùng ====
-  return { product, qty, size, sugar, ice, extraIce, 
-           unitPrice, total, dec, inc, addToCartNow }
+  return { 
+    product, 
+    qty, 
+    size, 
+    ice, 
+    extraIce, 
+    unitPrice, 
+    total, 
+    dec, 
+    inc, 
+    addToCartNow,
+    detailLoading,
+    detailError,
+    loadDetail // Trả về hàm loadDetail để View có thể gọi
+  }
 }
