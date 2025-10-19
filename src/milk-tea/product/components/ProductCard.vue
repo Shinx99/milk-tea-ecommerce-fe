@@ -9,11 +9,8 @@ defineProps({
 
 <template>
   <div class="card h-100 shadow-sm position-relative">
-    <span v-if="bestSale" class="badge text-dark bg-warning position-absolute top-0 start-0 m-2">
-      Best sale
-    </span>
 
-    <img :src="product.image" class="card-img-top" :alt="product.name" />
+    <img src="https://via.placeholder.com/300x200?text=Trà+Sữa" class="card-img-top" :alt="product.name" /> 
 
     <div class="card-body text-center">
       <h6 class="fw-semibold mb-2">{{ product.name }}</h6>
@@ -21,12 +18,16 @@ defineProps({
         {{ product.price.toLocaleString() }} đ
       </div>
 
-      <RouterLink
-        :to="`/products/${product.id}`"
-        class="btn btn-warning w-100 d-flex align-items-center justify-content-center gap-2">
-        <i class="bi bi-cart"></i> Đặt mua
-      </RouterLink>
-    </div>
+      <div class="card-body text-center">
+    <RouterLink
+      :to="`/products/${product.id}`" 
+      class="btn btn-warning w-100 d-flex align-items-center justify-content-center gap-2"
+    >
+      <i class="bi bi-cart"></i> Đặt mua
+    </RouterLink>
+    
+  </div>
+      </div>
   </div>
 </template>
 
