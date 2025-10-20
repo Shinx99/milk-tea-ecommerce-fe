@@ -4,11 +4,14 @@ import { homeState } from "../store.js";
 
 <template>
   <section class="container my-5">
-    <h3 class="text-center fw-bold mb-4">BEST SELLERS - TRÀ SỮA ĐẬM VỊ</h3>
+    <h3 class="text-center fw-bold mb-4 text-success">
+      BEST SELLERS - TRÀ SỮA ĐẬM VỊ
+    </h3>
+
     <div class="row g-4">
       <div
         class="col-md-3"
-        v-for="item in homeState.bestSellerMilkTea"
+        v-for="item in homeState.bestSellers"
         :key="item.id"
       >
         <div class="card h-100 shadow-sm text-center">
