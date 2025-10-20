@@ -1,12 +1,13 @@
 <script setup>
 import Banner from "@/shared/components/Banner.vue";
 import { homeState, loadHomeData } from "../store.js";
-import HomeBestSellerTea from "../components/HomeBestSellerTea.vue";
-import HomeBestSellerMilk from "../components/HomeBestSellerMilk.vue";
+import HomeBestSeller from "../components/HomeBestSeller.vue";
 // Nếu đã đổi sang Newest:
 import HomeNewest from "../components/HomeNewest.vue";
 import { onMounted } from "vue";
-onMounted(() => { loadHomeData(); });
+onMounted(() => {
+  loadHomeData();
+});
 </script>
 <template>
   <div>
@@ -14,8 +15,7 @@ onMounted(() => { loadHomeData(); });
     <Banner :banners="homeState.banners" />
 
     <!-- Các layout của Home -->
-    <HomeBestSellerTea />
-    <HomeBestSellerMilk />
-    <HomeNewest  />
+    <HomeBestSeller />
+    <HomeNewest />
   </div>
 </template>
