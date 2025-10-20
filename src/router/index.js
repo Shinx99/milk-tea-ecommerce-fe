@@ -1,18 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/milk-tea/home/views/HomeView.vue'
 import accountRoutes from '@/milk-tea/account/router'
-import { authState } from '@/milk-tea/account/store'
-import productRoutes from '@/milk-tea/product/router'   // ⬅️ dùng default export
-import cartRoutes from '@/milk-tea/cart/router'   // <-- default import
+import { useUserStore } from '@/milk-tea/account/store' // Sử dụng Pinia store
+import productRoutes from '@/milk-tea/product/router'
+import cartRoutes from '@/milk-tea/cart/router'
+import HomeView from "../milk-tea/home/views/HomeView.vue";
 
 import AdminDashboardView from '@/milk-tea/admin/views/AdminDashboardView.vue'
-import adminRoutes from '@/milk-tea/admin/router'  // <-- default import
+import adminRoutes from '@/milk-tea/admin/router'
 
 const routes = [
   { path: '/', redirect: '/home' },
   { path: '/home', component: Home },
-  { path: '/admin', component: AdminDashboardView, meta: { authOnly: true }, children: adminRoutes }, // Thêm dòng này cho Admin
-
+  { path: '/admin', componentADMIN: AdminDashboardView, meta: { authOnly: true }, children: adminRoutes },
   ...accountRoutes,
   ...productRoutes,
   ...cartRoutes,
@@ -23,11 +23,13 @@ const router = createRouter({
   routes,
 });
 
+// Sử dụng Pinia trong router guard
 router.beforeEach((to) => {
-  const isLoggedIn = !!authState.currentUser;
+  const userStore = useUserStore(); // Khởi tạo Store
+  const isLoggedIn = !!userStore.token && !!userStore.userInfo;
   if (to.meta?.guestOnly && isLoggedIn) return { path: "/home" };
   if (to.meta?.authOnly && !isLoggedIn)
     return { path: "/login", query: { redirect: to.fullPath } };
 });
 
-export default router
+export default router;
