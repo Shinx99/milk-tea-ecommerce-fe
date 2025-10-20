@@ -1,62 +1,55 @@
 // product/api/productService.js
-// NỘI DUNG HOÀN CHỈNH
 
-import apiClient from './apiClient'; 
+import apiClient from './apiClient'; // Dùng apiClient đã định nghĩa BASE_URL
 
-/**
- * Lấy danh sách tất cả sản phẩm hoặc lọc theo tên danh mục
- * API: GET /api/products hoặc GET /api/products/by-category-name?name={categoryName}
- * @param {string} categoryName - Tên danh mục để lọc ('All' để lấy tất cả)
- * @returns {Promise<Array<Object>>}
- */
-export const fetchProducts = async (categoryName = 'All') => {
-  let url = '/products';
-  
-  if (categoryName && categoryName !== 'All') { // Kiểm tra cả null/undefined và 'All'
-    // Sử dụng endpoint lọc theo tên
-    url = `/products/by-category-name?name=${encodeURIComponent(categoryName)}`;
-  }
-  
-  try {
-    const response = await apiClient.get(url);
-    return response.data;
-  } catch (error) {
-    console.error(`Lỗi khi tải danh sách sản phẩm (${categoryName}):`, error);
-    throw new Error('Không thể tải danh sách sản phẩm từ API.');
-  }
-};
+// Tải danh sách sản phẩm với tham số lọc và tìm kiếm
+export async function fetchProducts(params = {}) {
+    const { category, keyword } = params;
+    
+    const searchParams = new URLSearchParams();
+    let endpoint = '/products'; // URL mặc định
 
-/**
- * Lấy chi tiết sản phẩm theo ID (UUID)
- * API: GET /api/products/{id}
- * @param {string} id - ID (UUID) của sản phẩm
- * @returns {Promise<Object>}
- */
-export const fetchProductDetail = async (id) => {
-  try {
-    const response = await apiClient.get(`/products/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Lỗi khi tải chi tiết sản phẩm ${id}:`, error);
-    // Vẫn ném lỗi để logic ở View/Store xử lý 404
-    throw new Error('Không tìm thấy sản phẩm hoặc lỗi kết nối.');
-  }
-};
+    if (category && category !== 'All') {
+        searchParams.append('name', category); 
+        endpoint = '/products/by-category-name';
 
-/**
- * Lấy danh sách sản phẩm theo Category ID (UUID)
- * API: GET /api/products/by-category/{categoryId}
- * @param {string} categoryId - ID (UUID) của danh mục
- * @returns {Promise<Array<Object>>}
- */
-export const fetchProductsByCategory = async (categoryId) => {
-  try {
-    const response = await apiClient.get(`/products/by-category/${categoryId}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Lỗi khi tải sản phẩm theo danh mục ${categoryId}:`, error);
-    throw new Error('Không thể tải sản phẩm theo danh mục.');
-  }
-};
+    } else if (keyword) {
+        searchParams.append('name', keyword); 
+        endpoint = '/products/search';
+    } 
+    
+    const queryString = searchParams.toString();
+    
+    // SỬA URL: Bỏ tiền tố '/api' vì nó đã có trong apiClient.baseURL
+    const url = `${endpoint}${queryString ? '?' + queryString : ''}`;
 
-// Bạn có thể thêm các hàm POST, PUT, DELETE khác ở đây...
+    try {
+        // Dùng apiClient.get() để gọi API
+        const response = await apiClient.get(url);
+        return response.data;
+
+    } catch (error) {
+        // Axios thường trả về status trong error.response
+        const status = error.response?.status;
+        if (status === 404) {
+            throw new Error(`Endpoint không tồn tại hoặc lỗi: HTTP ${status}`);
+        }
+        throw new Error('Không thể tải danh sách sản phẩm.');
+    }
+}
+
+// Tải chi tiết sản phẩm theo ID
+export async function fetchProductDetail(id) {
+    // SỬA URL: Bỏ tiền tố '/api'
+    const url = `/products/${id}`;
+    
+    try {
+        // Dùng apiClient.get() để gọi API
+        const response = await apiClient.get(url);
+        return response.data;
+        
+    } catch (error) {
+        const status = error.response?.status;
+        throw new Error(`Lỗi tải chi tiết: HTTP ${status || 'Unknown'}`);
+    }
+}
