@@ -1,23 +1,21 @@
-// product/store/ProductDetailView.js
-
 import { ref, computed } from 'vue' 
-import { fetchProductDetail } from '../api/productService' 
-import { getProductById } from './ProductsBase.js' 
+import { fetchProductDetail } from '../api/ProductService'
+import { getProductById } from '../store/ProductsBase' // Lấy hàm kiểm tra cache
 
 // Hàm composable dùng trong trang chi tiết sản phẩm
 export function useProductDetail(productId) {
+    // Lấy sản phẩm từ cache trước (nếu có)
     const product = ref(getProductById(productId)) 
     const detailLoading = ref(false)
     const detailError = ref(null)
 
-    // ĐÃ SỬA: Hàm tải chi tiết sản phẩm, chấp nhận ID mới
     async function loadDetail(idToLoad) {
         const currentId = idToLoad || productId;
         
-        // Kiểm tra cache
+        // Logic kiểm tra cache: Nếu sản phẩm đã có và ID khớp, KHÔNG làm gì (return)
         if (product.value && String(product.value.id) === String(currentId)) return; 
         
-        product.value = null; // Reset product để hiển thị loading state
+        product.value = null; // Reset để hiển thị loading
         detailLoading.value = true;
         detailError.value = null;
 
@@ -31,18 +29,19 @@ export function useProductDetail(productId) {
         }
     }
 
-    // ==== State cho tuỳ chọn người dùng (Chỉ giữ Qty) ====
+    // ==== State cho số lượng (Qty) ====
     const qty = ref(1); 
 
-    // ==== Computed (Giá cơ bản) ====
+    // ==== Computed (Tính toán giá) ====
     const unitPrice = computed(() => product.value?.price || 0); 
+    // Tổng tiền = Giá * Số lượng
     const total = computed(() => unitPrice.value * qty.value); 
 
     // ==== Hàm tăng giảm số lượng ====
-    const dec = () => (qty.value = Math.max(1, qty.value - 1)); 
+    const dec = () => (qty.value = Math.max(1, qty.value - 1)); // Đảm bảo qty >= 1
     const inc = () => (qty.value += 1); 
 
-    // ==== Trả về ====
+    // ==== Trả về tất cả state và hàm cần thiết ====
     return { 
         product, qty, 
         unitPrice, total, 

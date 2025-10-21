@@ -20,7 +20,7 @@ import { homeState } from "../store.js";
             <h6 class="fw-semibold">{{ item.name }}</h6>
             <p class="text-success">{{ item.price.toLocaleString() }} ₫</p>
             <RouterLink
-              class="btn btn-success btn-sm w-100"
+              class="btn btn-warning btn-sm w-100"
               :to="`/products/${item.id}`"
             >
               <i class="bi bi-cart me-2"></i>

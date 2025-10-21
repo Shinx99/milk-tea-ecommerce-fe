@@ -70,7 +70,7 @@ const relatedProducts = computed(() => {
             <div class="card-body p-3 p-md-4">
                 <h4 class="fw-bold mb-1">{{ product.name }}</h4>
                 <h3 class="text-warning fw-bold mt-2 mb-3">{{ total.toLocaleString() }} đ</h3>
-
+                <h5 class="text-muted small mb-3">{{ product.description }}</h5>
                 <div class="mb-3">
                     <label class="fw-semibold mb-1">Size</label>
                     <div class="btn-group w-100 btn-group-sm">
