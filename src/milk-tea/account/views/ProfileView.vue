@@ -1,8 +1,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
-import { authState, updateProfile } from '@/milk-tea/account/store'
+import { useUserStore } from '@/milk-tea/account/store'
 
+const userStore = useUserStore()
 const editing = ref(false)
 
 const form = ref({
@@ -15,8 +16,9 @@ const form = ref({
   password: ''
 })
 
+// Sử dụng userStore.userInfo thay cho authState.currentUser
 function fillForm() {
-  const u = authState.currentUser || {}
+  const u = userStore.userInfo || {}
   form.value = {
     fullName: u.fullName || '',
     username: u.username || '',
@@ -27,7 +29,7 @@ function fillForm() {
     password: ''
   }
 }
-watch(() => authState.currentUser, fillForm, { immediate: true })
+watch(() => userStore.userInfo, fillForm, { immediate: true })
 
 function onEdit() {
   editing.value = true
@@ -49,10 +51,11 @@ function onFileChange(e) {
 
 async function onSave() {
   try {
-    await updateProfile({
+    // Gọi action updateProfile từ userStore cho chuẩn Pinia
+    await userStore.updateProfile({
       fullName: form.value.fullName,
-      address : form.value.address,
-      avatar  : form.value.avatar,
+      address: form.value.address,
+      avatar: form.value.avatar,
       password: form.value.password || undefined
     })
     editing.value = false
@@ -62,6 +65,8 @@ async function onSave() {
   }
 }
 </script>
+
+
 
 <template>
   <section class="container py-4">

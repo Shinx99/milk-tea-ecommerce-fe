@@ -1,51 +1,32 @@
-<!-- src/milk-tea/account/views/LoginView.vue -->
 <script setup>
 import { ref } from "vue";
-import { useRouter, useRoute, RouterLink } from "vue-router";
-import { login } from "@/milk-tea/account/store";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/milk-tea/account/store"
 
+const userStore = useUserStore();
 const router = useRouter();
-const route = useRoute();
-
 const emailOrUsername = ref("");
 const password = ref("");
 const showPass = ref(false);
 const remember = ref(false);
 const err = ref("");
 
-// const onSubmit = () => {
-//   err.value = "";
-//   try {
-//     login({ emailOrUsername: emailOrUsername.value, password: password.value });
-//     const redirect = route.query?.redirect || "/home";
-//     router.push(redirect);
-//   } catch (e) {
-//     err.value = e.message || "Đăng nhập thất bại";
-//   }
-// };
-
 const onSubmit = async () => {
   err.value = "";
   try {
-    const user = await login({
-      emailOrUsername: emailOrUsername.value,
-      password: password.value,
-    });
+    const user = await userStore.login({ emailOrUsername: emailOrUsername.value, password: password.value });
+    if (remember.value) localStorage.setItem('token', user.token);
+    else sessionStorage.setItem('token', user.token);
 
-    // Kiểm tra role và điều hướng
-    if (user.role === "ADMIN") {
-      router.push("/admin");
-    } else if (user.role === "USER") {
-      router.push("/home");
-    } else {
-      err.value = "Vai trò không hợp lệ";
-    }
-  } catch (e) {
+    if (user.roleName === "admin") router.push("/admin");
+    else if (user.roleName === "customer" || user.roleName === "staff") router.push("/home");
+    else err.value = "Vai trò không hợp lệ";
+  } catch(e) {
     err.value = e.message || "Đăng nhập thất bại";
   }
 };
-
 </script>
+
 
 <template>
   <section class="py-5" style="background-color: #f8f9fa">
@@ -105,7 +86,7 @@ const onSubmit = async () => {
                       >Ghi nhớ đăng nhập</label
                     >
                   </div>
-                  <RouterLink to="/forgot" class="small"
+                  <RouterLink to="/forgot-password" class="small"
                     >Quên mật khẩu?</RouterLink
                   >
                 </div>
@@ -130,3 +111,4 @@ const onSubmit = async () => {
     </div>
   </section>
 </template>
+

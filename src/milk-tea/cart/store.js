@@ -1,147 +1,137 @@
-// Giỏ hàng FE tĩnh (Vue 3) – tách theo người dùng                    // Front-end cart (Vue 3) per-user
-// - Hiện tại: lưu localStorage                                        // Currently stored in localStorage
-// - Sau này: thay 2 hàm load/save bằng gọi API backend                // Later: swap read/write with API calls
-//
-// Cấu trúc item trong giỏ:                                            // Cart item shape:
-// { key, id, name, image, price, qty, options }                       // key + product info + options
-
-import { reactive, watch, computed } from 'vue'                        // Vue reactivity APIs
-import { authState } from '@/milk-tea/account/store'                   // Auth store: currentUser, ...
+// Giỏ hàng FE tĩnh (Vue 3) – tách theo người dùng
+import { reactive, watch, computed } from "vue"
+import { useUserStore } from "@/milk-tea/account/store" // Dùng Pinia store cho user
 
 /* =========================================
-   1) Khóa giỏ theo người dùng                                         // Build storage key per-user
-   - Khách:   'mt_cart_guest'                                          // Guest key
-   - User id=7: 'mt_cart_7'                                            // User key
+   1) Khóa giỏ theo người dùng
    ========================================= */
+// Không gọi useUserStore ở ngoài cùng, khai báo trong function!
 function cartKey() {
-  const id = authState.currentUser?.id                                 // user id if logged in
-  return id ? `mt_cart_${id}` : 'mt_cart_guest'                        // choose per-user or guest key
+  // Khởi tạo store mỗi lần gọi hàm (safe cho Pinia)
+  const userStore = useUserStore()
+  const id = userStore.userInfo?.id
+  return id ? `mt_cart_${id}` : 'mt_cart_guest'
 }
 
 /* =========================================
-   2) LỚP LƯU/ĐỌC (HIỆN TẠI: localStorage)                             // Persistence layer (localStorage)
-   -> Điểm thay thế duy nhất khi nối API                               // Single swap point for backend
+   2) LỚP LƯU/ĐỌC (HIỆN TẠI: localStorage)
    ========================================= */
 function readCartFromStorage(key) {
-  try { return JSON.parse(localStorage.getItem(key) || '[]') }         // parse or return []
-  catch { return [] }                                                  // safe fallback on JSON error
+  try { return JSON.parse(localStorage.getItem(key) || '[]') }
+  catch { return [] }
 }
 function writeCartToStorage(key, items) {
-  localStorage.setItem(key, JSON.stringify(items))                     // serialize cart to LS
+  localStorage.setItem(key, JSON.stringify(items))
 }
 
-// (OPTION) Khi có backend, đổi 2 hàm bên dưới:                         // With backend, replace below:
-// async function fetchCartFromAPI(userId) { ... }                      // fetch from server
-// async function saveCartToAPI(userId, items) { ... }                  // save to server
-
 /* =========================================
-   3) STATE chính                                                       // Main reactive state
+   3) STATE chính
    ========================================= */
 export const cartState = reactive({
-  storageKey: cartKey(),                                               // which key we’re using now
-  items: readCartFromStorage(cartKey()),                               // current cart items for that key
+  storageKey: '',                // sẽ được set ở mounted
+  items: [],                     // sẽ được set ở mounted
 })
 
-/* Khi đăng nhập/đăng xuất:                                            // On login/logout:
-   - đổi storageKey                                                    //  update storageKey
-   - nạp giỏ tương ứng (guest hoặc user)                               //  load corresponding cart
-*/
-watch(
-  () => authState.currentUser?.id,                                     // watch user id changes
-  () => {
-    cartState.storageKey = cartKey()                                   // recompute storage key
-    cartState.items = readCartFromStorage(cartState.storageKey)        // load items for that key
-    // Sau này: await fetchCartFromAPI(authState.currentUser?.id)       // later: fetch from API
-  }
-)
+// Gọi thiết lập giỏ đúng lúc runtime khi đã có Pinia
+export function setupCart() {
+  cartState.storageKey = cartKey()
+  cartState.items = readCartFromStorage(cartState.storageKey)
+}
+
+// Phải gọi setupCart() ở component setup() hoặc App.vue mounted
+// VD ở App.vue:
+// import { setupCart } from '@/milk-tea/cart/store';
+// onMounted(() => { setupCart() })
+
+/* Khi đăng nhập/đăng xuất: đổi storageKey, nạp giỏ tương ứng */
+export function watchCartUser() {
+  // Phải gọi trong setup()/mounted của component
+  const userStore = useUserStore()
+  watch(
+    () => userStore.userInfo?.id,
+    () => {
+      cartState.storageKey = cartKey()
+      cartState.items = readCartFromStorage(cartState.storageKey)
+      // Sau này: await fetchCartFromAPI(userStore.userInfo?.id)
+    }
+  )
+}
 
 /* =========================================
-   4) Tạo key duy nhất cho item (để cộng dồn đúng biến thể)            // Unique item key (variant-aware)
-   - Cùng sản phẩm nhưng khác size/đường/đá là item khác                // same product, different options → new item
+   4) Tạo key duy nhất cho item
    ========================================= */
 function makeItemKey(product, options = {}) {
-  const { size = 'S', sugar = 'bt', tea = 'bt', ice = 'bt', extraIce = false } = options // normalize opts
-  return [product.id, size, sugar, tea, ice, extraIce ? 'extraIce' : ''].join('|')       // stable compound key
+  const { size = 'S', sugar = 'bt', tea = 'bt', ice = 'bt', extraIce = false } = options
+  return [product.id, size, sugar, tea, ice, extraIce ? 'extraIce' : ''].join('|')
 }
 
 /* =========================================
-   5) APIs giỏ – dùng trong UI                                          // Cart APIs for UI components
-   -> Sau này chỉ cần thay writeCartToStorage = saveCartToAPI           // Later: swap persistence calls
+   5) APIs giỏ – dùng trong UI
    ========================================= */
-
-// Thêm vào giỏ                                                         // Add to cart
 export function addToCart(product, { qty = 1, unitPrice = product.price, options = {} } = {}) {
-  const key = makeItemKey(product, options)                            // compute variant key
-  const found = cartState.items.find(it => it.key === key)             // find existing item
+  const key = makeItemKey(product, options)
+  const found = cartState.items.find(it => it.key === key)
 
   if (found) {
-    found.qty += qty                                                   // increase quantity if exists
+    found.qty += qty
   } else {
-    cartState.items.push({                                             // push a brand-new cart line
-      key,                                                             // unique key
-      id: product.id,                                                  // product id
-      name: product.name,                                              // product name
-      image: product.image,                                            // product image URL
-      price: unitPrice,                                                // unit price (already sized)
-      qty,                                                             // quantity
-      options                                                          // selected options
+    cartState.items.push({
+      key,
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      price: unitPrice,
+      qty,
+      options
     })
   }
-  writeCartToStorage(cartState.storageKey, cartState.items)            // persist to LS (or API later)
+  writeCartToStorage(cartState.storageKey, cartState.items)
 }
 
-// Cập nhật số lượng                                                    // Update quantity
 export function updateQty(key, qty) {
-  const it = cartState.items.find(i => i.key === key)                  // locate item by key
-  if (!it) return                                                      // nothing to update
-  it.qty = Number(qty) || 0                                            // coerce to number, fallback 0
-  if (it.qty <= 0) removeFromCart(key)                                 // remove if non-positive
-  else writeCartToStorage(cartState.storageKey, cartState.items)       // otherwise persist
+  const it = cartState.items.find(i => i.key === key)
+  if (!it) return
+  it.qty = Number(qty) || 0
+  if (it.qty <= 0) removeFromCart(key)
+  else writeCartToStorage(cartState.storageKey, cartState.items)
 }
 
-// Xóa 1 món                                                            // Remove a single item
 export function removeFromCart(key) {
-  cartState.items = cartState.items.filter(i => i.key !== key)         // filter out target item
-  writeCartToStorage(cartState.storageKey, cartState.items)            // persist change
+  cartState.items = cartState.items.filter(i => i.key !== key)
+  writeCartToStorage(cartState.storageKey, cartState.items)
 }
 
-// Xóa sạch giỏ                                                         // Clear entire cart
 export function clearCart() {
-  cartState.items = []                                                 // reset to empty
-  writeCartToStorage(cartState.storageKey, cartState.items)            // persist empty cart
+  cartState.items = []
+  writeCartToStorage(cartState.storageKey, cartState.items)
 }
 
-// Tổng số lượng (badge Header)                                         // Total item count (for header badge)
 export const cartCount = computed(() =>
-  cartState.items.reduce((sum, i) => sum + (Number(i.qty) || 0), 0)    // sum of quantities (safe number)
+  cartState.items.reduce((sum, i) => sum + (Number(i.qty) || 0), 0)
 )
 
-// Tổng tiền                                                            // Cart grand total
 export const cartTotal = computed(() =>
-  cartState.items.reduce((sum, i) => sum + i.price * i.qty, 0)         // Σ price × qty
+  cartState.items.reduce((sum, i) => sum + i.price * i.qty, 0)
 )
 
 /* =========================================
-   6) (Tuỳ chọn) Gộp giỏ guest vào giỏ user khi login                   // Optional: merge guest cart on login
-   - Gọi sau khi login nếu muốn giữ hàng đã chọn trước đó               // Call after successful login
+   6) (Tuỳ chọn) Gộp giỏ guest vào giỏ user khi login
    ========================================= */
 export function mergeGuestCartIntoUser() {
-  const guest = readCartFromStorage('mt_cart_guest')                   // read guest cart
-  const userKey = `mt_cart_${authState.currentUser?.id}`               // target user key
-  const userItems = readCartFromStorage(userKey)                       // existing user cart
+  const userStore = useUserStore()
+  const guest = readCartFromStorage('mt_cart_guest')
+  const userKey = `mt_cart_${userStore.userInfo?.id}`
+  const userItems = readCartFromStorage(userKey)
 
-  const map = new Map(userItems.map(i => [i.key, i]))                  // map by key for fast merge
-  for (const g of guest) {                                             // iterate guest items
-    if (map.has(g.key)) map.get(g.key).qty += g.qty                    // combine quantities if same variant
-    else map.set(g.key, g)                                             // otherwise add as new line
+  const map = new Map(userItems.map(i => [i.key, i]))
+  for (const g of guest) {
+    if (map.has(g.key)) map.get(g.key).qty += g.qty
+    else map.set(g.key, g)
   }
-  const merged = [...map.values()]                                     // merged array
-  writeCartToStorage(userKey, merged)                                  // persist merged user cart
-
-  // Chuyển state hiện tại sang giỏ user                                // Switch current state to user cart
+  const merged = [...map.values()]
+  writeCartToStorage(userKey, merged)
   cartState.storageKey = userKey
   cartState.items = merged
-
-  // (tuỳ chọn) dọn giỏ guest                                           // Optional: clear guest cart
+  // Optional: clear guest cart
   // localStorage.removeItem('mt_cart_guest')
 }

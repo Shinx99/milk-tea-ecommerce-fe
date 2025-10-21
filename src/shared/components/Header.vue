@@ -1,21 +1,25 @@
 <!-- src/shared/components/Header.vue -->
 <script setup>
 import { RouterLink, useRouter } from "vue-router";
-import { authState, logout } from "@/milk-tea/account/store";
 import { computed, ref, onMounted } from "vue";
 import { Dropdown } from "bootstrap";
 import { cartCount } from '@/milk-tea/cart/store'
-const router = useRouter();
-const isLoggedIn = computed(() => !!authState.currentUser);
-const displayName = computed(() => authState.currentUser?.fullName || "");
+import { useUserStore } from '@/milk-tea/account/store'
 
+const userStore = useUserStore();
+
+const router = useRouter();
+const isLoggedIn = computed(() => !!userStore.token && !!userStore.userInfo)
+const displayName = computed(() => userStore.userInfo?.fullName || "")
+
+//logic Logout, gọi từ feature accound
 const handleLogout = () => {
-  logout();
+  userStore.logout();
   router.push("/home");
 };
 
-// Is Admin
-const isAdmin = computed(() => authState.currentUser?.role === 'ADMIN')
+// Check vai trò admin (roleName backend trả về dạng roleName)
+const isAdmin = computed(() => userStore.userInfo?.roleName === 'admin');
 
 // Search keyword
 const keyword = ref("");

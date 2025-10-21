@@ -1,3 +1,5 @@
+
+
 <template>
   <section class="py-5" style="background-color:#f8f9fa;">
     <div class="container">
@@ -17,11 +19,6 @@
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label">Tên đăng nhập</label>
-                  <input v-model.trim="username" type="text" class="form-control" placeholder="username123" required />
-                </div>
-
-                <div class="mb-3">
                   <label class="form-label">Email</label>
                   <input v-model.trim="email" type="email" class="form-control" placeholder="you@example.com" required />
                 </div>
@@ -29,11 +26,6 @@
                 <div class="mb-3">
                   <label class="form-label">Số điện thoại</label>
                   <input v-model.trim="phone" type="tel" class="form-control" placeholder="0987654321" />
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label">Địa chỉ</label>
-                  <textarea v-model.trim="address" rows="2" class="form-control" placeholder="123 Đường ABC, Quận 1, TP.HCM"></textarea>
                 </div>
 
                 <div class="mb-3">
@@ -71,15 +63,15 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { register } from '@/milk-tea/account/store' // dùng store mini, không Pinia
+import { useUserStore } from '@/milk-tea/account/store' 
+
+const userStore = useUserStore() // Phải gọi hàm tạo store instance
 
 const router = useRouter()
 
 const fullName = ref('')
-const username = ref('')
 const email = ref('')
 const phone = ref('')
-const address = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const showPass = ref(false)
@@ -87,21 +79,18 @@ const showPass = ref(false)
 const err = ref('')
 const ok  = ref('')
 
-const onSubmit = () => {
+const onSubmit = async () => {
   err.value = ''; ok.value = ''
   if (password.value !== confirmPassword.value) {
     err.value = 'Mật khẩu xác nhận không khớp!'
     return
   }
   try {
-    register({
-      fullName: fullName.value,
-      username: username.value,
+    await userStore.register({  // <-- Gọi action trong store Pinia
       email: email.value,
-      phone: phone.value,
-      address: address.value,
       password: password.value,
-      avatar: ''
+      phone: phone.value,
+      fullname: fullName.value  
     })
     ok.value = 'Đăng ký thành công! Mời bạn đăng nhập.'
     setTimeout(() => router.push('/login'), 800)

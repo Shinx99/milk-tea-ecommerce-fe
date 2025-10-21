@@ -1,119 +1,120 @@
 // src/milk-tea/account/store.js
-// Store quản lý tài khoản đơn giản (chưa có backend, dùng localStorage)
+import { defineStore } from 'pinia'
+import axios from "axios";
 
-// Dùng reactive để dữ liệu tự động phản ứng trong Vue
-import { reactive } from 'vue'
-import { seedUsers } from './data/users'   // dữ liệu mẫu ban đầu
+const API_URL = "http://localhost:8080/api/auth";
 
-// Khóa để lưu trong localStorage
-const LS_CURRENT = 'mt_current_user' // user đang đăng nhập
-const LS_USERS   = 'mt_users'        // danh sách user
+export const useUserStore = defineStore('user', {
+  state: () => ({
+    token: '',
+    userInfo: null,
+  }),
 
-// -----------------------------
-// Hàm tiện ích
-// -----------------------------
+  actions: {
 
-// Bỏ password ra khỏi user trước khi hiển thị
-function publicUser(u) {
-  if (!u) return null
-  const { password, ...safe } = u
-  return safe
-}
+    // =========== Login ===============
 
-// Lấy danh sách user từ localStorage (hoặc dùng seed nếu chưa có)
-function loadUsers() {
-  const raw = localStorage.getItem(LS_USERS)
-  if (raw) return JSON.parse(raw)
-  localStorage.setItem(LS_USERS, JSON.stringify(seedUsers))
-  return [...seedUsers]
-}
+    async login({ emailOrUsername, password }) {
+      try {
+        const res = await axios.post(`${API_URL}/login`, {
+          email: emailOrUsername,
+          password
+        });
+        if (res.data && res.data.success) {
+          this.token = res.data.data.token;
+          this.userInfo = res.data.data;
+          localStorage.setItem('token', this.token);  //save token vào localStorage 
+          localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
+          return this.userInfo;
+        } else {
+          throw new Error(res.data?.message || "Đăng nhập thất bại");
+        }
+      } catch (err) {
+        throw new Error(
+          err.response?.data?.message ||
+          err.message ||
+          "Đăng nhập thất bại"
+        );
+      }
+    },
 
-// Lưu danh sách user vào localStorage
-function saveUsers(users) {
-  localStorage.setItem(LS_USERS, JSON.stringify(users))
-}
+    // =========== Logout ===============
 
-// Lưu user hiện tại (chỉ bản không có password)
-function saveCurrent(user) {
-  if (user) localStorage.setItem(LS_CURRENT, JSON.stringify(publicUser(user)))
-  else localStorage.removeItem(LS_CURRENT)
-}
+    logout() {
+      this.token = '';
+      this.userInfo = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('userInfo');
+    },
 
-// -----------------------------
-// State chung (dùng reactive)
-// -----------------------------
-export const authState = reactive({
-  currentUser: JSON.parse(localStorage.getItem(LS_CURRENT) || 'null'),
-  users: loadUsers()
-})
+    // =========== Restore =============== Được sử dụng trong main.js
 
-// -----------------------------
-// Các hàm API cơ bản
-// -----------------------------
+    restore() {
+      this.token = localStorage.getItem('token') || '';
+      const info = localStorage.getItem('userInfo');
+      this.userInfo = info ? JSON.parse(info) : null;
+    },
 
-// 1. Đăng nhập
-export function login({ emailOrUsername, password }) {
-  const found = authState.users.find(
-    u =>
-      (u.email === emailOrUsername || u.username === emailOrUsername) &&
-      u.password === password
-  )
-  if (!found) throw new Error('Sai email/tên đăng nhập hoặc mật khẩu!')
-  authState.currentUser = publicUser(found)
-  saveCurrent(found)
-  return authState.currentUser
-}
+    // =========== Register  ===============
 
-// 2. Đăng ký
-export function register({ fullName, username, email, phone, password }) {
-  // Kiểm tra trùng
-  if (authState.users.some(u => u.username === username)) throw new Error('Tên đăng nhập đã tồn tại!')
-  if (authState.users.some(u => u.email === email)) throw new Error('Email đã tồn tại!')
-  if (phone && authState.users.some(u => u.phone === phone)) throw new Error('Số điện thoại đã tồn tại!')
+    async register(data) {
+      const res = await axios.post(`${API_URL}/register`, data);
+      if (res.data && res.data.success) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data?.message || "Đăng ký thất bại");
+      }
+    },
 
-  const user = {
-    id: Date.now(),
-    fullName,
-    username,
-    email,
-    phone,
-    password,
-    role: 'USER',
-    avatar: '',
-    address: ''
+    // =========== Forgot PW ===============
+
+    async forgotPassword(email) {
+      const res = await axios.post(`${API_URL}/forgot-password`, { email });
+      if (res.data && res.data.success) {
+        return res.data;
+      } else {
+        throw new Error(res.data?.message || "Quên mật khẩu thất bại");
+      }
+    },
+
+    // =========== Update Profile ===============
+
+    async updateProfile(payload) {
+      const res = await axios.put(
+        `${API_URL}/profile`, payload,
+        { headers: { Authorization: `Bearer ${this.token}` } }
+      );
+      if (res.data && res.data.success) {
+        this.userInfo = res.data.data;
+        localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
+        return this.userInfo;
+      } else {
+        throw new Error(res.data?.message || "Cập nhật thất bại");
+      }
+    },
+
+
+    // =========== Reset Password ===============
+
+    async resetPassword({ token, newPassword, confirmPassword }) {
+      try {
+        const res = await axios.post(`${API_URL}/reset-password`, {
+          token,
+          newPassword,
+          confirmPassword
+        });
+        if (res.data && res.data.success) {
+          return res.data;
+        } else {
+          throw new Error(res.data?.message || "Đặt lại mật khẩu thất bại");
+        }
+      } catch (err) {
+        throw new Error(
+          err.response?.data?.message ||
+          err.message ||
+          "Đặt lại mật khẩu thất bại"
+        );
+      }
+    }
   }
-  authState.users.push(user)
-  saveUsers(authState.users)
-  return publicUser(user)
-}
-
-// 3. Đăng xuất
-export function logout() {
-  authState.currentUser = null
-  saveCurrent(null)
-}
-
-// 4. Cập nhật hồ sơ (chỉ sửa fullName, address, avatar, password)
-export function updateProfile({ fullName, address, avatar, password } = {}) {
-  if (!authState.currentUser) throw new Error('Chưa đăng nhập')
-
-  const idx = authState.users.findIndex(u => u.id === authState.currentUser.id)
-  if (idx < 0) throw new Error('Không tìm thấy user!')
-
-  const old = authState.users[idx]
-  const updated = { ...old }
-  if (fullName !== undefined) updated.fullName = fullName
-  if (address !== undefined)  updated.address = address
-  if (avatar !== undefined)   updated.avatar = avatar
-  if (password) updated.password = password
-
-  // Cập nhật
-  authState.users[idx] = updated
-  saveUsers(authState.users)
-
-  // Cập nhật user hiện tại
-  authState.currentUser = publicUser(updated)
-  saveCurrent(updated)
-
-  return authState.currentUser
-}
+});
