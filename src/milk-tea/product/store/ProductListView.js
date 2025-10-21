@@ -1,33 +1,32 @@
-// product/store/ProductListView.js
-
 import { computed, watch } from 'vue' 
-import { productState, loadProducts } from '../store/ProductsBase' 
+import { productState, loadProducts, categoryState, loadCategories } from '../store/ProductsBase' 
 
 export const listState = productState 
 
-// ==== Danh sách categories ====
-export const categories = [
-    'All', 'Fruit Tea', 'Cheese Foam', 'Brown Sugar Series', 'Classic Series'
-];
+// Lấy danh sách categories từ state và biến thành computed
+export const categories = computed(() => categoryState.list);
+// Gọi hàm load categories khi module được import
+loadCategories();
 
-// ==== WATCHER: Theo dõi thay đổi Category và Keyword ====
 
-// Watcher cho Category (Không Debounce)
+// Watcher cho Category (Không Debounce - Tải ngay)
 watch(() => productState.category, () => {
+    // Luôn clear timeout của keyword để đảm bảo category được ưu tiên
     clearTimeout(productState.searchTimeout); 
-    loadProducts(); // Gọi API ngay lập tức
-}, { immediate: true }); 
+    loadProducts(); 
+}, { immediate: true }); // immediate: true để tải danh sách lần đầu tiên
 
-// Watcher cho Keyword (Cần Debounce)
+
+// Watcher cho Keyword (Có Debounce - Tải sau 100ms dừng gõ)
 watch(() => productState.keyword, () => {
-    clearTimeout(productState.searchTimeout);
+    clearTimeout(productState.searchTimeout); // Clear timeout cũ
+    // Logic Debounce: thiết lập timeout mới
     productState.searchTimeout = setTimeout(() => {
-        loadProducts(); // Gọi API sau 300ms dừng gõ
+        loadProducts(); // Gọi API sau 100ms dừng gõ
     }, 100);
 });
 
-// ==== Danh sách sản phẩm sau khi lọc & sắp xếp (TỪ BE) ====
+// Danh sách sản phẩm hiển thị (ở đây chỉ trả về list gốc vì việc lọc do BE đảm nhiệm)
 export const filteredProducts = computed(() => { 
-    // Trả về danh sách thô vì lọc/tìm kiếm đã được xử lý ở Backend
     return [...listState.list] 
 })
