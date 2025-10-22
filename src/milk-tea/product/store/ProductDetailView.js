@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue' 
-import { fetchProductDetail } from '../api/ProductService'
+import { fetchProductDetail } from '../api/productService'
 import { getProductById } from '../store/ProductsBase' // Lấy hàm kiểm tra cache
 
 // Hàm composable dùng trong trang chi tiết sản phẩm

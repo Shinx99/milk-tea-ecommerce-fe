@@ -79,19 +79,19 @@ export const useUserStore = defineStore('user', {
 
     // =========== Update Profile ===============
 
-    async updateProfile(payload) {
-      const res = await axios.put(
-        `${API_URL}/profile`, payload,
-        { headers: { Authorization: `Bearer ${this.token}` } }
-      );
-      if (res.data && res.data.success) {
-        this.userInfo = res.data.data;
-        localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
-        return this.userInfo;
-      } else {
-        throw new Error(res.data?.message || "Cập nhật thất bại");
-      }
-    },
+    // async updateProfile(payload) {
+    //   const res = await axios.put(
+    //     `${API_URL}/profile`, payload,
+    //     { headers: { Authorization: `Bearer ${this.token}` } }
+    //   );
+    //   if (res.data && res.data.success) {
+    //     this.userInfo = res.data.data;
+    //     localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
+    //     return this.userInfo;
+    //   } else {
+    //     throw new Error(res.data?.message || "Cập nhật thất bại");
+    //   }
+    // },
 
 
     // =========== Reset Password ===============
@@ -114,6 +114,47 @@ export const useUserStore = defineStore('user', {
           err.message ||
           "Đặt lại mật khẩu thất bại"
         );
+      }
+    },
+
+    // =========== Change Password ===============
+
+    async changePassword(payload){
+
+      // 1. Check xem user đã login chưa
+
+      if(!this.userInfo || !this.token || !this.userInfo.userId){
+        throw new Error("Bạn chưa đăng nhập hoặc phiên bản đã hết hạn");
+      }
+      //const userId = this.userInfo.id
+
+      // 2. gọi API PUT với Authorization header
+      try{
+
+        const res = await axios.put(`${API_URL}/change-password`,
+          payload,{
+            headers:{
+              Authorization: `Bearer ${this.token}`
+            }
+          }
+        );
+
+      // 3. Xử lý kết quả
+        if(res.data && res.data.success){
+          return res.data;
+        }else{
+          throw new Error(res.data?.message || "Đổi mật khẩu thất bại");
+        }
+
+      }catch(err){
+
+      // 4. Bắt lỗi 
+        throw new Error(
+          err.response?.data?.message ||
+          err.message ||
+          "Đổi mật khẩu thất bại"
+        );
+
       }
     }
   }
