@@ -1,66 +1,101 @@
-<!-- src/milk-tea/cart/views/CartView.vue -->
 <script setup>
-import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
 import CartItem from '../components/CartItem.vue'
+import { useUserStore } from '@/milk-tea/account/store'
+import { fetchCart } from '@/milk-tea/cart/api/cartService'
 
-// LƯU Ý: đường dẫn dưới đây phải đúng nơi bạn export store giỏ hàng
-// Nếu store ở "src/milk-tea/cart/store.js" và file này nằm trong "views/",
-// thì import như sau:
-import { cartState, cartTotal, clearCart } from '../store'
+const userStore = useUserStore()
+const router = useRouter()
 
-// Helper format tiền
+const cartItems = ref([])
+const isLoading = ref(false)
+
+const customerId = userStore.userInfo?.id
+
+const cartTotal = computed(() =>
+  cartItems.value.reduce((sum, item) => sum + item.price * item.qty, 0)
+)
+
+const isEmpty = computed(() => cartItems.value.length === 0)
+
 const money = (n) => (Number(n) || 0).toLocaleString() + ' đ'
 
-// Giỏ trống?
-const isEmpty = computed(() => cartState.items.length === 0)
+async function loadCart() {
+  if (!customerId) return
+  isLoading.value = true
+  try {
+    cartItems.value = await fetchCart()
+  } catch (err) {
+    console.error('Lỗi khi tải giỏ hàng:', err)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+function confirmOrder() {
+  if (isEmpty.value) {
+    alert('Giỏ hàng đang trống!')
+    return
+  }
+  router.push('/checkout')
+}
+
+async function confirmClear() {
+  if (!customerId) return
+  if (confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')) {
+    try {
+      for (const item of cartItems.value) {
+        await axios.delete(`/api/cart/remove/${item.id}`)
+      }
+      await loadCart()
+    } catch (err) {
+      console.error('Lỗi khi xóa giỏ hàng:', err)
+    }
+  }
+}
+
+onMounted(() => {
+  loadCart()
+})
 </script>
 
 <template>
   <section class="container py-5">
-    <h3 class="mb-4">Giỏ hàng</h3>
+    <h2 class="mb-4">Giỏ hàng của bạn</h2>
 
-    <!-- Giỏ trống -->
-    <div v-if="isEmpty" class="alert alert-info">
-      Giỏ hàng trống. <RouterLink to="/products">Tiếp tục mua sắm</RouterLink>
-    </div>
+    <table class="table align-middle" v-if="!isEmpty">
+      <thead>
+        <tr>
+          <th>Ảnh</th>
+          <th>Sản phẩm</th>
+          <th>Đơn giá</th>
+          <th>Số lượng</th>
+          <th>Thành tiền</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <CartItem
+          v-for="item in cartItems"
+          :key="item.id"
+          :item="item"
+          @updated="loadCart"
+          @removed="loadCart"
+        />
+      </tbody>
+    </table>
 
-    <!-- Có hàng -->
-    <div v-else>
-      <table class="table align-middle">
-        <thead>
-          <tr>
-            <th style="width:72px;"></th>
-            <th>Sản phẩm</th>
-            <th style="width:140px;">Giá</th>
-            <th style="width:150px;">Số lượng</th>
-            <th style="width:160px;">Tạm tính</th>
-            <th style="width:80px;"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <CartItem
-            v-for="i in cartState.items"
-            :key="i.key"
-            :item="i"
-          />
-        </tbody>
-      </table>
+    <div v-else class="text-muted">Giỏ hàng đang trống.</div>
 
-      <div class="d-flex justify-content-between align-items-center mt-3">
-        <button class="btn btn-outline-danger" @click="clearCart()">
-          Xóa toàn bộ
-        </button>
-
-        <!-- cartTotal là computed -> KHÔNG dùng cartTotal() -->
-        <h4 class="mb-0">Tổng: {{ money(cartTotal) }}</h4>
-      </div>
-
-      <div class="text-end mt-3">
-        <RouterLink to="/checkout" class="btn btn-warning btn-lg">
-          Thanh toán
-        </RouterLink>
-      </div>
+    <div class="text-end mt-4" v-if="!isEmpty">
+      <h4>Tổng cộng: {{ cartTotal.toLocaleString() }} đ</h4>
+      <button class="btn btn-success mt-2" @click="confirmOrder">
+        Xác nhận đặt hàng
+      </button>
+      <button class="btn btn-outline-danger ms-2" @click="confirmClear">
+        Xóa toàn bộ giỏ hàng
+      </button>
     </div>
   </section>
 </template>

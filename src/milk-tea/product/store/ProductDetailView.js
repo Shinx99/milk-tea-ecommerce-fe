@@ -1,9 +1,13 @@
 import { ref, computed } from 'vue' 
+import { useRouter } from 'vue-router'
 import { fetchProductDetail } from '../api/productService'
 import { getProductById } from '../store/ProductsBase' // Lấy hàm kiểm tra cache
+import { addToCart } from '@/milk-tea/cart/store'
 
 // Hàm composable dùng trong trang chi tiết sản phẩm
 export function useProductDetail(productId) {
+    const router = useRouter()
+
     // Lấy sản phẩm từ cache trước (nếu có)
     const product = ref(getProductById(productId)) 
     const detailLoading = ref(false)
@@ -31,6 +35,11 @@ export function useProductDetail(productId) {
 
     // ==== State cho số lượng (Qty) ====
     const qty = ref(1); 
+    const size = ref('M')
+    const sugar = ref('Bình thường')
+    const ice = ref('Bình thường')
+    const extraIce = ref(false)
+
 
     // ==== Computed (Tính toán giá) ====
     const unitPrice = computed(() => product.value?.price || 0); 
@@ -41,11 +50,21 @@ export function useProductDetail(productId) {
     const dec = () => (qty.value = Math.max(1, qty.value - 1)); // Đảm bảo qty >= 1
     const inc = () => (qty.value += 1); 
 
+    // ==== Thêm vào giỏ hàng và chuyển hướng ====
+    function addToCartNow() {
+        if (!product.value) return
+
+        addToCart(product.value, qty.value)
+
+        router.push('/cart') // ✅ Chuyển sang giỏ hàng sau khi thêm
+    }
+
     // ==== Trả về tất cả state và hàm cần thiết ====
     return { 
-        product, qty, 
+        product, qty, size, sugar, ice, extraIce,
         unitPrice, total, 
         dec, inc, 
+        addToCartNow,
         detailLoading,
         detailError,
         loadDetail

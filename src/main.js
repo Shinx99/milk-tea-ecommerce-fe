@@ -15,6 +15,7 @@ const pinia = createPinia();
 
 // 2. Sử dụng Pinia (để app biết về Pinia)
 app.use(pinia); 
+app.use(router);
 
 // 3. Gọi restore() để tải token từ localStorage
 try {
@@ -25,5 +26,4 @@ try {
   console.error("Không thể khôi phục phiên đăng nhập:", e);
 }
 
-app.use(router);
 app.mount("#app");

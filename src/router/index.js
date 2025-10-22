@@ -4,6 +4,7 @@ import accountRoutes from '@/milk-tea/account/router'
 import { useUserStore } from '@/milk-tea/account/store' // Sử dụng Pinia store
 import productRoutes from '@/milk-tea/product/router'
 import cartRoutes from '@/milk-tea/cart/router'
+import orderRoutes from '@/milk-tea/order/router'
 import HomeView from "../milk-tea/home/views/HomeView.vue";
 
 import AdminDashboardView from '@/milk-tea/admin/views/AdminDashboardView.vue'
@@ -16,6 +17,7 @@ const routes = [
   ...accountRoutes,
   ...productRoutes,
   ...cartRoutes,
+  ...orderRoutes,
 ]
 
 const router = createRouter({
