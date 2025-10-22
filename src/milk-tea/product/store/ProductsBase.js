@@ -1,5 +1,5 @@
 import { reactive } from "vue"; 
-import { fetchProducts, fetchCategories } from '../api/ProductService'; 
+import { fetchProducts, fetchCategories } from '@milk-tea/product/api/productService'; 
 
 // ==== State gốc dùng chung cho toàn bộ sản phẩm (Product List) ====
 export const productState = reactive({
