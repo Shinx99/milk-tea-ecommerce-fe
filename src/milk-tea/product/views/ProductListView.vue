@@ -20,7 +20,7 @@ onMounted(() => {
 
             <input v-model="productState.keyword" type="search" class="form-control" style="max-width:260px" placeholder="Tìm theo tên..." />
       
-      <select v-model="productState.category" class="form-select" style="max-width:160px">
+      <select v-model="productState.category" class="form-select" style="max-width:160px" required>
         <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
       </select>
     </div>
