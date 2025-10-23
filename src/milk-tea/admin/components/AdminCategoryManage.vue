@@ -8,7 +8,6 @@ const categories = ref([]);
 
 // State cho Form nhập liệu (Tạo/Sửa)
 const formState = ref({
-    // Đã bỏ slug, sửa lại name thành categoryName
     categoryName: '', 
     sortOrder: 0,
     isActive: true,
