@@ -3,14 +3,14 @@
 import { RouterLink, useRouter } from "vue-router";
 import { computed, ref, onMounted } from "vue";
 import { Dropdown } from "bootstrap";
-import { cartCount } from '@/milk-tea/cart/store'
-import { useUserStore } from '@/milk-tea/account/store'
+import { cartCount } from "@/milk-tea/cart/store";
+import { useUserStore } from "@/milk-tea/account/store";
 
 const userStore = useUserStore();
 
 const router = useRouter();
-const isLoggedIn = computed(() => !!userStore.token && !!userStore.userInfo)
-const displayName = computed(() => userStore.userInfo?.fullName || "")
+const isLoggedIn = computed(() => !!userStore.token && !!userStore.userInfo);
+const displayName = computed(() => userStore.userInfo?.fullName || "");
 
 //logic Logout, gọi từ feature accound
 const handleLogout = () => {
@@ -19,7 +19,10 @@ const handleLogout = () => {
 };
 
 // Check vai trò admin (roleName backend trả về dạng roleName)
-const isAdmin = computed(() => userStore.userInfo?.roleName === 'admin');
+const isAdmin = computed(() => userStore.userInfo?.roleName === "admin");
+
+//Vuong them vao
+const isCustomer = computed(() => userStore.userInfo?.roleName === "customer");
 
 // Search keyword
 const keyword = ref("");
@@ -82,11 +85,14 @@ onMounted(() => {
       <div class="d-flex align-items-center gap-3 ms-4">
         <!-- Cart -->
         <RouterLink to="/cart" class="btn position-relative">
-  <i class="bi bi-cart3"></i>
-  <span v-if="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-    {{ cartCount }}
-  </span>
-</RouterLink>
+          <i class="bi bi-cart3"></i>
+          <span
+            v-if="cartCount"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          >
+            {{ cartCount }}
+          </span>
+        </RouterLink>
 
         <!-- User -->
         <template v-if="!isLoggedIn">
@@ -117,7 +123,8 @@ onMounted(() => {
             aria-labelledby="userMenu"
             style="z-index: 2000"
           >
-            <li>
+            <!--Vuong them vao - khong co loi-->
+            <li v-if="isCustomer">
               <RouterLink
                 class="dropdown-item d-flex align-items-center gap-2"
                 to="/account/profile"
@@ -125,6 +132,15 @@ onMounted(() => {
                 <i class="bi bi-person"></i><span>Hồ sơ</span>
               </RouterLink>
             </li>
+            <li v-if="isCustomer">
+              <RouterLink
+                class="dropdown-item d-flex align-items-center gap-2"
+                to="/account/change-password"
+              >
+                <i class="bi bi-person"></i><span>Doi mat khau</span>
+              </RouterLink>
+            </li>
+
             <li><hr class="dropdown-divider" /></li>
             <li>
               <button
@@ -181,22 +197,34 @@ onMounted(() => {
               </button>
               <ul class="dropdown-menu">
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/category">CATEGORIES</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/category"
+                    >CATEGORIES</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/order">ORDER</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/order"
+                    >ORDER</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/product">PRODUCT</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/product"
+                    >PRODUCT</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/voucher">VOUCHER</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/voucher"
+                    >VOUCHER</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/statistics">STATISTICS</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/statistics"
+                    >STATISTICS</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/customer">CUSTOMER</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/customer"
+                    >CUSTOMER</RouterLink
+                  >
                 </li>
               </ul>
             </div>
