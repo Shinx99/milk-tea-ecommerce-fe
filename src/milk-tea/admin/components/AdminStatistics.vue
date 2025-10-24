@@ -1,152 +1,130 @@
-<!-- src/milk-tea/admin/components/AdminStatistics.vue -->
 <template>
   <div class="container py-4">
-    <h2 class="mb-4">📈 Thống kê Kết Quả Kinh Doanh</h2>
+    <h2 class="mb-4">📈 Thống kê Kinh Doanh</h2>
 
-    <!-- Doanh thu theo loại hàng -->
-    <section class="mb-5">
-      <h4>Doanh thu theo loại hàng</h4>
-      <table class="table table-bordered table-hover">
-        <thead class="table-light">
-          <tr>
-            <th>Loại hàng</th>
-            <th>Tổng doanh thu</th>
-            <th>Tổng số lượng</th>
-            <th>Giá cao nhất</th>
-            <th>Giá thấp nhất</th>
-            <th>Giá trung bình</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in revenueStats" :key="item.category">
-            <td>{{ item.category }}</td>
-            <td>{{ formatCurrency(item.totalRevenue) }}</td>
-            <td>{{ item.totalQuantity }}</td>
-            <td>{{ formatCurrency(item.maxPrice) }}</td>
-            <td>{{ formatCurrency(item.minPrice) }}</td>
-            <td>{{ formatCurrency(item.avgPrice) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Top 10 khách hàng VIP -->
-    <section>
-      <h4>Top 10 khách hàng VIP</h4>
-      <table class="table table-bordered table-hover">
-        <thead class="table-light">
-          <tr>
-            <th>Tên khách hàng</th>
-            <th>Tổng tiền đã mua</th>
-            <th>Ngày mua đầu tiên</th>
-            <th>Ngày mua sau cùng</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="customer in vipCustomers" :key="customer.name">
-            <td>{{ customer.name }}</td>
-            <td>{{ formatCurrency(customer.totalSpent) }}</td>
-            <td>{{ formatDate(customer.firstPurchase) }}</td>
-            <td>{{ formatDate(customer.lastPurchase) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <!-- Tabs chọn loại thời gian -->
+    <div class="d-flex flex-wrap" style="gap:32px; align-items: flex-start;">
+      <!-- Bên trái: bảng hoặc loader hoặc empty -->
+      <div style="flex:1; min-width:360px;">
+        <div v-if="loading" class="d-flex justify-content-center align-items-center" style="min-height:260px;">
+          <div class="spinner-border text-primary" style="width:2.3rem; height:2.3rem;"></div>
+        </div>
+        <table v-else-if="stats.length" class="table table-bordered table-hover shadow-sm" style="border-radius:14px;overflow:hidden;">
+          <thead class="table-light">
+            <tr>
+              <th>Khoảng thời gian</th>
+              <th>Loại hàng</th>
+              <th>Tổng doanh thu</th>
+              <th>Tổng số lượng</th>
+              <th>Giá cao nhất</th>
+              <th>Giá thấp nhất</th>
+              <th>Giá trung bình</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in stats" :key="item.period + item.categoryName">
+              <td>{{ item.period }}</td>
+              <td>{{ item.categoryName }}</td>
+              <td>{{ formatCurrency(item.totalRevenue) }}</td>
+              <td>{{ item.totalQuantity }}</td>
+              <td>{{ formatCurrency(item.maxPrice) }}</td>
+              <td>{{ formatCurrency(item.minPrice) }}</td>
+              <td>{{ formatCurrency(item.avgPrice) }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-else class="text-secondary mx-2 my-4 text-center" style="font-size:1.12em;min-height:200px;display:flex;justify-content:center;align-items:center;">
+          Không có dữ liệu thống kê.
+        </div>
+      </div>
+      <!-- Bên phải: form nhập/nhấn -->
+      <div style="min-width:320px; max-width:420px; width:100%;">
+        <div class="card shadow-sm p-3 mb-4 border-0" style="border-radius:16px;">
+          <div class="mb-3 fw-bold">Chọn khoảng thời gian</div>
+          <select class="form-select mb-3" v-model="period" @change="resetInputs">
+            <option value="daily">Ngày</option>
+            <option value="weekly">Tuần</option>
+            <option value="monthly">Tháng</option>
+            <option value="yearly">Năm</option>
+          </select>
+          <template v-if="period === 'daily'">
+            <input type="date" class="form-control mb-2" v-model="params.startDate" />
+            <input type="date" class="form-control" v-model="params.endDate" />
+          </template>
+          <template v-else-if="period === 'weekly'">
+            <input type="text" class="form-control mb-2" placeholder="YYYY-Wxx" v-model="params.startWeek" />
+            <input type="text" class="form-control" placeholder="YYYY-Wxx" v-model="params.endWeek" />
+          </template>
+          <template v-else-if="period === 'monthly'">
+            <input type="month" class="form-control mb-2" v-model="params.startMonth" />
+            <input type="month" class="form-control" v-model="params.endMonth" />
+          </template>
+          <template v-else-if="period === 'yearly'">
+            <input type="number" min="2000" class="form-control mb-2" placeholder="Năm bắt đầu" v-model="params.startYear" />
+            <input type="number" min="2000" class="form-control" placeholder="Năm kết thúc" v-model="params.endYear" />
+          </template>
+          <div class="mt-3 d-flex gap-2">
+            <button class="btn btn-primary w-50" @click="refreshAndFetchStats" :disabled="loading">
+              Làm mới dữ liệu
+            </button>
+            <button class="btn btn-success w-50" @click="exportExcel" :disabled="loading">
+              Xuất file Excel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+    import { ref } from 'vue'
+    import * as XLSX from 'xlsx'
+    import { saveAs } from 'file-saver'
+    import AdminStatisticsStore from '../store/AdminStatistics.js'
 
-// Dữ liệu thống kê
-const revenueStats = ref([])
-const vipCustomers = ref([])
+    const period = ref('monthly')
+    const params = ref({ startMonth: '', endMonth: '' })
+    const stats = ref([])
+    const loading = ref(false)
 
-onMounted(async () => {
-  const [products, categories, orders, users] = await Promise.all([
-    fetch('/product_data/products.json').then(res => res.json()),
-    fetch('/admin_data/category.json').then(res => res.json()),
-    fetch('/admin_data/orders.manage.json').then(res => res.json()),
-    fetch('/account_data/users.json').then(res => res.json())
-  ])
-
-  // Thống kê doanh thu theo loại hàng
-  const categoryMap = Object.fromEntries(categories.map(c => [c.id, c.name]))
-  const grouped = {}
-
-  for (const order of orders) {
-    for (const item of order.items) {
-      const product = products.find(p => p.id === item.productId)
-      if (!product) continue
-
-      const catId = product.categoryId
-      if (!grouped[catId]) {
-        grouped[catId] = {
-          category: categoryMap[catId] || 'Không rõ',
-          totalRevenue: 0,
-          totalQuantity: 0,
-          prices: []
-        }
-      }
-
-      grouped[catId].totalRevenue += item.price * item.quantity
-      grouped[catId].totalQuantity += item.quantity
-      grouped[catId].prices.push(item.price)
+    function resetInputs() {
+      params.value = {}
     }
-  }
 
-  revenueStats.value = Object.values(grouped).map(stat => ({
-    ...stat,
-    maxPrice: Math.max(...stat.prices),
-    minPrice: Math.min(...stat.prices),
-    avgPrice: Math.round(stat.prices.reduce((a, b) => a + b, 0) / stat.prices.length)
-  }))
-
-  // Thống kê khách hàng VIP
-  const customerMap = {}
-  for (const order of orders) {
-    const userId = order.userId
-    if (!customerMap[userId]) {
-      customerMap[userId] = {
-        totalSpent: 0,
-        firstPurchase: order.date,
-        lastPurchase: order.date
+    async function refreshAndFetchStats() {
+      try {
+        loading.value = true
+        await AdminStatisticsStore.refreshViews()
+        stats.value = await AdminStatisticsStore.fetchStats(period.value, params.value)
+      } catch (err) {
+        // Có thể thêm toast/thông báo lỗi ở đây nếu muốn
+        stats.value = []
+      } finally {
+        loading.value = false
       }
     }
 
-    const total = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-    customerMap[userId].totalSpent += total
-    customerMap[userId].firstPurchase = new Date(customerMap[userId].firstPurchase) > new Date(order.date)
-      ? order.date
-      : customerMap[userId].firstPurchase
-    customerMap[userId].lastPurchase = new Date(customerMap[userId].lastPurchase) < new Date(order.date)
-      ? order.date
-      : customerMap[userId].lastPurchase
-  }
 
-  vipCustomers.value = Object.entries(customerMap)
-    .map(([userId, data]) => {
-      const user = users.find(u => u.id === userId)
-      return {
-        name: user?.fullName || 'Không rõ',
-        ...data
-      }
-    })
-    .sort((a, b) => b.totalSpent - a.totalSpent)
-    .slice(0, 10)
-})
+    function exportExcel() {
+      if (!stats.value.length) return
+      const data = stats.value.map(item => ({
+        'Khoảng thời gian': item.period,
+        'Loại hàng': item.categoryName,
+        'Tổng doanh thu': item.totalRevenue,
+        'Tổng số lượng': item.totalQuantity,
+        'Giá cao nhất': item.maxPrice,
+        'Giá thấp nhất': item.minPrice,
+        'Giá trung bình': item.avgPrice,
+      }))
+      const worksheet = XLSX.utils.json_to_sheet(data)
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Thống kê')
+      const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+      saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'thong_ke_kinh_doanh.xlsx')
+    }
 
-// Format tiền tệ
-function formatCurrency(value) {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND'
-  }).format(value)
-}
-
-// Format ngày
-function formatDate(dateStr) {
-  const date = new Date(dateStr)
-  return date.toLocaleDateString('vi-VN')
-}
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)
+    }
 </script>
