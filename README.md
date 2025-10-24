@@ -33,6 +33,10 @@ Once the devcontainer environment is ready:
 - Install dependencies if not installed automatically:
 ```bash
 npm install
+npm install pinia axios bootstrap vue-router@4 xlsx@latest
+
+
+
 ```
 
 - Run the project with Vite:

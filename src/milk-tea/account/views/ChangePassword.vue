@@ -11,7 +11,7 @@
         <form @submit.prevent="onSubmit">
           <div class="mb-3">
             <label class="form-label">Mật khẩu cũ</label>
-            <input v-model="oldPassword" type="password" class="form-control" required />
+            <input v-model="currentPassword" type="password" class="form-control" required />
           </div>
           
           <div class="mb-3">
@@ -38,7 +38,7 @@ import { useUserStore } from "@/milk-tea/account/store"; // Đường dẫn tớ
 const userStore = useUserStore();
 
 // Form states
-const oldPassword = ref("");
+const currentPassword = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
 
@@ -48,7 +48,7 @@ const err = ref("");
 
 // Xóa trắng form
 const clearForm = () => {
-  oldPassword.value = "";
+  currentPassword.value = "";
   newPassword.value = "";
   confirmPassword.value = "";
 };
@@ -59,7 +59,7 @@ const onSubmit = async () => {
   err.value = "";
 
   // 1. Kiểm tra validation phía client
-  if (!oldPassword.value || !newPassword.value || !confirmPassword.value) {
+  if (!currentPassword.value || !newPassword.value || !confirmPassword.value) {
     err.value = "Vui lòng nhập đầy đủ thông tin.";
     return;
   }
@@ -71,7 +71,7 @@ const onSubmit = async () => {
     err.value = "Mật khẩu mới phải có ít nhất 6 ký tự.";
     return;
   }
-  if (oldPassword.value === newPassword.value) {
+  if (currentPassword.value === newPassword.value) {
     err.value = "Mật khẩu mới phải khác mật khẩu cũ.";
     return;
   }
@@ -79,7 +79,7 @@ const onSubmit = async () => {
   try {
     // 2. Gọi action từ Pinia store
     await userStore.changePassword({
-      oldPassword: oldPassword.value,
+      currentPassword: currentPassword.value,
       newPassword: newPassword.value,
       confirmPassword: confirmPassword.value,
       // (Backend DTO của bạn có thể không cần confirmPassword, 
