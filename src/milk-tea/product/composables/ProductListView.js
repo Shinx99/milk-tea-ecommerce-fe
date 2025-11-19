@@ -1,5 +1,5 @@
 import { computed, watch } from 'vue' 
-import { productState, loadProducts, categoryState, loadCategories } from '../store/ProductsBase' 
+import { productState, loadProducts, categoryState, loadCategories } from '../composables/ProductsBase' 
 
 export const listState = productState 
 

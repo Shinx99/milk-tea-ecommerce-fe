@@ -1,8 +1,8 @@
 <script setup>
 import { computed, watch } from 'vue' 
 import { useRoute, useRouter } from 'vue-router'
-import { productState } from '../store/ProductsBase.js'
-import { useProductDetail } from '../store/ProductDetailView.js'
+import { productState } from '../composables/ProductsBase.js'
+import { useProductDetail } from '../composables/ProductDetailView.js'
 import ProductCard from '../components/ProductCard.vue'
 
 const route = useRoute()

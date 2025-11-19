@@ -1,5 +1,5 @@
 import { reactive } from "vue"; 
-import { fetchProducts, fetchCategories } from '@milk-tea/product/api/productService'; 
+import { fetchProducts, fetchCategories } from '@milk-tea/product/service/productService'; 
 
 // ==== State gốc dùng chung cho toàn bộ sản phẩm (Product List) ====
 export const productState = reactive({
@@ -10,6 +10,11 @@ export const productState = reactive({
     keyword: "", 
     category: "All", 
     searchTimeout: null, // Dùng cho Debounce
+
+    page: 0,
+    size: 10,
+    totalPages: 0,
+    totalElements: 0,
 });
 
 // === STATE MỚI CHO CATEGORIES ===
@@ -31,12 +36,18 @@ export async function loadProducts() {
     try {
         const params = {
             category: productState.category,
-            keyword: productState.keyword
+            keyword: productState.keyword,
+            page: productState.page,
+            size: productState.size,
         };
 
-        const data = await fetchProducts(params); 
-        // Đảm bảo data là mảng trước khi gán
-        productState.list = Array.isArray(data) ? data : [];
+        const result = await fetchProducts(params); 
+
+        productState.list = Array.isArray(result.items) ? result.items : [];
+        productState.page = result.page;
+        productState.size = result.size;
+        productState.totalPages = result.totalPages;
+        productState.totalElements = result.totalElements;
         
     } catch (err) {
         productState.error = err.message || "Không thể tải dữ liệu sản phẩm.";

@@ -2,8 +2,8 @@
 
 <script setup>
 import { onMounted } from 'vue'; // <--- BỔ SUNG: Import onMounted
-import { loadProducts, productState } from '../store/ProductsBase.js' 
-import { categories } from '../store/ProductListView.js'
+import { loadProducts, productState } from '../composables/ProductsBase.js' 
+import { categories } from '../composables/ProductListView.js'
 import ProductList from '../components/ProductList.vue' // Component hiển thị các card sản phẩm
 
 // BƯỚC QUAN TRỌNG: GỌI loadProducts MỖI KHI COMPONENT ĐƯỢC MOUNT/RE-MOUNT
