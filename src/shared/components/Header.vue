@@ -234,3 +234,25 @@ onMounted(() => {
     </nav>
   </header>
 </template>
+<style scoped>
+.menu-link {
+  color: #333333; /* màu chữ bình thường */
+  transition: color 0.2s;
+}
+
+.menu-link:hover,
+.menu-link.active {
+  color: #ffca2c; /* màu chữ khi hover hoặc active */
+  text-decoration: none;
+}
+
+/* Dropdown items */
+.dropdown-item {
+  color: #333333;
+}
+
+.dropdown-item:hover {
+  color: #ffca2c;
+  background-color: #f8f8f8; /* hoặc background bạn muốn */
+}
+</style>
