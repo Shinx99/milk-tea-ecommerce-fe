@@ -1,5 +1,5 @@
 <script setup>
-import { filteredProducts } from '../store/ProductListView.js'
+import { filteredProducts } from '../composables/ProductListView.js'
 import ProductCard from './ProductCard.vue'
 </script>
 

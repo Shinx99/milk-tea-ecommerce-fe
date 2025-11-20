@@ -33,7 +33,7 @@ defineProps({
         <RouterLink
             :to="`/products/${product.id}`" 
             class="btn btn-warning mx-4">
-            <i class="bi bi-cart"></i> Đặt mua
+            <i class="bi bi-cart"></i> Yeu cau
         </RouterLink>
 
     </div>

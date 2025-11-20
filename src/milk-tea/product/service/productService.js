@@ -1,11 +1,16 @@
-import apiClient from '../api/apiClient';
+import apiClient from './apiClient';
 
 // Tải danh sách sản phẩm với tham số lọc và tìm kiếm
 export async function fetchProducts(params = {}) {
-    const { category, keyword } = params;
+    const { category, 
+        keyword,
+        page = 0,
+        size= 10,
+        sortBy = 'createdAt',
+        direction = 'DESC' } = params;
     
     const searchParams = new URLSearchParams();
-    let endpoint = '/products'; 
+    let endpoint = '/products/active'; 
 
     // Logic: Quyết định endpoint dựa trên tham số
     if (category && category !== 'All') {
@@ -18,17 +23,34 @@ export async function fetchProducts(params = {}) {
         searchParams.append('name', keyword); 
         endpoint = '/products/search';
     } 
-    
-    // Tạo chuỗi query string (ví dụ: ?name=...)
-    const queryString = searchParams.toString();
-    
-    // Xây dựng URL cuối cùng
-    const url = `${endpoint}${queryString ? '?' + queryString : ''}`;
+
+    searchParams.set('page', page);
+    searchParams.set('size', size);
+    searchParams.set('sortBy', sortBy);
+    searchParams.set('direction', direction);
+
+    const url = `${endpoint}?${searchParams.toString()}`;
 
     try {
-        // Dùng apiClient (đã có baseURL) để gọi API
+        const token = localStorage.getItem('token');
+
         const response = await apiClient.get(url);
-        return response.data;
+        const json = response.data;
+
+        if(!json.success || !json.data || !Array.isArray(json.data.content)){
+            throw new Error('Response format khong match voi BE');
+        }
+
+        return {
+            items: json.data.content,             // mảng ProductResponse
+            page: json.data.pageNumber,
+            size: json.data.pageSize,
+            totalElements: json.data.totalElements,
+            totalPages: json.data.totalPages,
+            first: json.data.first,
+            last: json.data.last,
+            message: json.message,
+    };
 
     } catch (error) {
         const status = error.response?.status;
@@ -42,9 +64,10 @@ export async function fetchProducts(params = {}) {
 
 // Tải chi tiết sản phẩm theo ID
 export async function fetchProductDetail(id) {
-    const url = `/products/${id}`; // Ví dụ: /products/123
+    const url = `/products/detail/${id}`; 
     
     try {
+        const token = localStorage.getItem('token');
         const response = await apiClient.get(url);
         return response.data;
         
@@ -58,8 +81,8 @@ export async function fetchProductDetail(id) {
 export async function fetchCategories() {
     try {
         const response = await apiClient.get('/categories'); 
-        
-        const rawData = response.data; 
+
+        const rawData = response.data.data; 
 
         if (!Array.isArray(rawData)) {
             throw new Error("Dữ liệu categories nhận được không phải là mảng.");

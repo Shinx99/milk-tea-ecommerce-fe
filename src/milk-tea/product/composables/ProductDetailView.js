@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue' 
-import { fetchProductDetail } from '../api/productService'
-import { getProductById } from '../store/ProductsBase' // Lấy hàm kiểm tra cache
+import { fetchProductDetail } from '../service/productService'
+import { getProductById } from '../composables/ProductsBase' // Lấy hàm kiểm tra cache
 
 // Hàm composable dùng trong trang chi tiết sản phẩm
 export function useProductDetail(productId) {
