@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { productState } from '../composables/ProductsBase.js'
 import { useProductDetail } from '../composables/ProductDetailView.js'
@@ -11,10 +11,62 @@ const router = useRouter()
 const id = route.params.id
 
 const {
-    product, qty, size, sugar, ice, extraIce,
-    unitPrice, total, dec, inc, addToCartNow,
+    product, qty, unitPrice, total, dec, inc, addToCartNow,
     detailLoading, detailError, loadDetail
 } = useProductDetail(id)
+
+
+// 1. Biến lưu trạng thái chọn (Reactive Object)
+// Ví dụ: { "Size": "L", "Đá": "Ít" }
+const selectedOptions = reactive({})
+
+// 2. Hàm kiểm tra trạng thái Active (Dùng để tô màu nút bấm)
+const isSelected = (groupName, optionName) => {
+    return selectedOptions[groupName] === optionName
+}
+
+// 3. Hàm cập nhật khi bấm nút (Setter)
+const selectOption = (groupName, optionName) => {
+    selectedOptions[groupName] = optionName
+}
+
+// 4. Tự động chọn mặc định khi load xong sản phẩm
+// (Để tránh trường hợp khách quên chọn Size)
+watch(() => product.value, (newVal) => {
+    // Reset lại lựa chọn cũ khi đổi sản phẩm
+    Object.keys(selectedOptions).forEach(key => delete selectedOptions[key])
+
+    if (newVal && newVal.category && newVal.category.children) {
+        newVal.category.children.forEach(group => {
+            // Nếu nhóm này có các lựa chọn con (S, M, L...)
+            if (group.children && group.children.length > 0) {
+                // Mặc định chọn thằng đầu tiên trong danh sách
+                selectedOptions[group.categoryName] = group.children[0].categoryName
+            }
+        })
+    }
+})
+
+// 5. Hàm Add To Cart (Sửa lại để gom options)
+// Bạn cần import hàm addToCart gốc từ store hoặc viết đè ở đây
+// const handleAddToCart = () => {
+//     // Gom các lựa chọn thành chuỗi text
+//     // Ví dụ: "Size: L, Đá: Ít"
+//     const noteString = Object.entries(selectedOptions)
+//         .map(([key, value]) => `${key}: ${value}`)
+//         .join(', ')
+
+//     console.log("Đang thêm vào giỏ:", {
+//         productId: product.value.id,
+//         qty: qty.value,
+//         totalPrice: total.value,
+//         note: noteString // <--- ĐÂY LÀ CÁI BẠN CẦN LƯU XUỐNG DB
+//     })
+
+//     // Gọi hàm logic gốc (nếu cần)
+//     // addToCartNow(product.value, qty.value, noteString)
+// }
+
 
 watch(
     () => route.params.id,
@@ -71,37 +123,34 @@ const mainImageUrl = computed(() => {
                 <div class="card shadow-sm border-warning-subtle">
                     <div class="card-body p-3 p-md-4">
                         <h4 class="fw-bold mb-1">{{ product.name }}</h4>
-                        <h3 class="text-warning fw-bold mt-2 mb-3">{{ total.toLocaleString() }} đ</h3>
-                        <h5 class="text-muted small mb-3">{{ product.description }}</h5>
-                        <div class="mb-3">
-                            <label class="fw-semibold mb-1">Size</label>
-                            <div class="btn-group w-100 btn-group-sm">
-                                <button class="btn" :class="size === 'S' ? 'btn-warning' : 'btn-outline-warning'"
-                                    @click="size = 'S'">S</button>
-                                <button class="btn" :class="size === 'M' ? 'btn-warning' : 'btn-outline-warning'"
-                                    @click="size = 'M'">M</button>
-                                <button class="btn" :class="size === 'L' ? 'btn-warning' : 'btn-outline-warning'"
-                                    @click="size = 'L'">L</button>
+                        <h3 class="text-warning fw-bold mt-2 mb-3">{{ total.toLocaleString() }} VND</h3>
+                        <!-- <h5 class="text-muted small mb-3">{{ product.description }}</h5> -->
+
+                        <!-- Chỉ hiện nếu sản phẩm có options con (Size, Đá...) -->
+                        <div v-if="product.category && product.category.children && product.category.children.length > 0">
+                            <h5 class="text-muted small mb-2 mt-4">Tùy chọn:</h5>
+
+                            <!-- VÒNG LẶP 1: Duyệt qua từng nhóm (Size, Đá, Đường...) -->
+                            <div v-for="group in product.category.children" :key="group.id" class="mb-3">
+        
+                                <!-- Tên nhóm: Size, Mức đá -->
+                                <label class="fw-semibold mb-1">{{ group.categoryName }}</label>
+
+                                <!-- VÒNG LẶP 2: Duyệt qua các giá trị con (S, M, L...) -->
+                                <div class="btn-group w-100 btn-group-sm flex-wrap">
+                                    <button 
+                                    v-for="option in group.children" 
+                                    :key="option.id"
+                                    class="btn"
+                                    :class="isSelected(group.categoryName, option.categoryName) ? 'btn-warning' : 'btn-outline-warning'"
+                                    @click="selectOption(group.categoryName, option.categoryName)"
+                                >
+                                        {{ option.categoryName }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="fw-semibold mb-1">Đá</label>
-                            <div class="btn-group w-100 btn-group-sm">
-                                <button class="btn" :class="ice === 'Ít' ? 'btn-warning' : 'btn-outline-warning'"
-                                    @click="ice = 'Ít'">Ít</button>
-                                <button class="btn"
-                                    :class="ice === 'Bình thường' ? 'btn-warning' : 'btn-outline-warning'"
-                                    @click="ice = 'Bình thường'">Bình thường</button>
-                                <button class="btn" :class="ice === 'Nhiều' ? 'btn-warning' : 'btn-outline-warning'"
-                                    @click="ice = 'Nhiều'">Nhiều</button>
-                            </div>
-                        </div>
-
-                        <div class="form-check mb-3 small">
-                            <input id="extraIce" class="form-check-input" type="checkbox" v-model="extraIce">
-                            <label class="form-check-label" for="extraIce">Đá riêng (không tính phí)</label>
-                        </div>
 
                         <div class="d-flex align-items-center gap-2 mb-3">
                             <button class="btn btn-outline-warning btn-sm" @click="dec">-</button>
@@ -111,7 +160,7 @@ const mainImageUrl = computed(() => {
 
                         <button
                             class="btn btn-warning w-100 d-flex align-items-center justify-content-center gap-2 btn-sm py-2"
-                            @click="addToCartNow">
+                            @click="handleAddToCart">
                             <i class="bi bi-cart"></i>
                             Thêm vào giỏ hàng : {{ total.toLocaleString() }} đ
                         </button>
