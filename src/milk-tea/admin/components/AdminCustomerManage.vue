@@ -1,4 +1,5 @@
 <template>
+  <h3 class="mb-4 fw-bold">Quản lý Khách hàng</h3>
   <div class="container">
     <div class="row">
       <!-- Form -->
@@ -7,48 +8,27 @@
           <div class="mb-3">
             <div class="mb-3">
               <label class="form-label fw-bold">Full name:</label>
-              <input
-                v-model="newCustomer.fullname"
-                type="text"
-                class="form-control"
-              />
+              <input v-model="newCustomer.fullname" type="text" class="form-control" />
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">Email:</label>
-              <input
-                v-model="newCustomer.email"
-                type="email"
-                class="form-control"
-              />
+              <input v-model="newCustomer.email" type="email" class="form-control" />
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">Phone:</label>
-              <input
-                v-model="newCustomer.phone"
-                type="tel"
-                class="form-control"
-              />
+              <input v-model="newCustomer.phone" type="tel" class="form-control" />
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">Password:</label>
-              <input
-                v-model="newCustomer.password"
-                type="password"
-                class="form-control"
-              />
+              <input v-model="newCustomer.password" type="password" class="form-control" />
             </div>
 
             <div class="mb-3">
               <div class="form-check form-switch">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="checkActive"
-                  v-model="newCustomer.is_active"
-                />
+                <input class="form-check-input" type="checkbox" id="checkActive" v-model="newCustomer.is_active" />
                 <label class="form-check-label fw-bold" for="checkActive">
                   Active
                 </label>
@@ -56,11 +36,8 @@
             </div>
 
             <div class="d-flex justify-content-center">
-              <button
-                type="button"
-                class="btn btn-light btn-lg rounded-pill w-20 border border-5"
-                @click="createCustomer"
-              >
+              <button type="button" class="btn btn-light btn-lg rounded-pill w-20 border border-5"
+                @click="createCustomer">
                 Create
               </button>
             </div>

@@ -1,26 +1,15 @@
 <template>
+  <h3 class="mb-4 fw-bold">Quản lý Đơn hàng</h3>
   <div class="container">
     <nav>
       <div class="nav nav-tabs" role="tablist">
         <!-- Tabs giữ nguyên -->
-        <button
-          class="nav-link"
-          :class="{ active: activeTab === 'list' }"
-          type="button"
-          role="tab"
-          :aria-selected="activeTab === 'list'"
-          @click="switchTab('list')"
-        >
+        <button class="nav-link" :class="{ active: activeTab === 'list' }" type="button" role="tab"
+          :aria-selected="activeTab === 'list'" @click="switchTab('list')">
           Orders List
         </button>
-        <button
-          class="nav-link"
-          :class="{ active: activeTab === 'detail' }"
-          type="button"
-          role="tab"
-          :aria-selected="activeTab === 'detail'"
-          @click="switchTab('detail')"
-        >
+        <button class="nav-link" :class="{ active: activeTab === 'detail' }" type="button" role="tab"
+          :aria-selected="activeTab === 'detail'" @click="switchTab('detail')">
           Orders Detail
         </button>
       </div>
@@ -28,14 +17,10 @@
 
     <div class="tab-content">
       <!-- Tab list hóa đơn -->
-      <div
-        class="tab-pane"
-        :class="{
-          'show active': activeTab === 'list',
-          fade: activeTab !== 'list',
-        }"
-        role="tabpanel"
-      >
+      <div class="tab-pane" :class="{
+        'show active': activeTab === 'list',
+        fade: activeTab !== 'list',
+      }" role="tabpanel">
         <table class="table table-hover" border="1">
           <thead>
             <tr>
@@ -52,12 +37,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(o, index) in orders"
-              :key="o.id"
-              style="cursor: pointer"
-              @click="showDetail(o)"
-            >
+            <tr v-for="(o, index) in orders" :key="o.id" style="cursor: pointer" @click="showDetail(o)">
               <td>{{ index + 1 }}</td>
               <td>{{ o.customer_name }}</td>
               <td>{{ o.status }}</td>
@@ -77,14 +57,10 @@
       </div>
 
       <!-- Tab chi tiết hóa đơn -->
-      <div
-        class="mt-2 tab-pane"
-        :class="{
-          'show active': activeTab === 'detail',
-          fade: activeTab !== 'detail',
-        }"
-        role="tabpanel"
-      >
+      <div class="mt-2 tab-pane" :class="{
+        'show active': activeTab === 'detail',
+        fade: activeTab !== 'detail',
+      }" role="tabpanel">
         <div v-if="selectedOrder">
           <div class="row">
             <div class="col-sm-5">
