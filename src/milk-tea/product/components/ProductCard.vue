@@ -15,12 +15,8 @@ defineProps({
   <div class="product-card h-100">
     <!-- Ảnh sản phẩm -->
     <div class="image-wrapper">
-      <img
-        v-if="product.imageUrl && product.imageUrl.length > 0"
-        :src="product.imageUrl[0]"
-        class="product-img"
-        :alt="product.name"
-      />
+      <img v-if="product.imageUrl && product.imageUrl.length > 0" :src="product.imageUrl[0]" class="product-img"
+        :alt="product.name" />
       <div v-else class="no-image">[Ảnh bị thiếu]</div>
     </div>
 
@@ -90,7 +86,8 @@ defineProps({
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 6px;
-  min-height: 40px; /* tránh nhảy layout khi tên dài */
+  min-height: 40px;
+  /* tránh nhảy layout khi tên dài */
 }
 
 .price {
