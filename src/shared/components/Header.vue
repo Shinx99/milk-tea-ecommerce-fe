@@ -45,18 +45,37 @@ onMounted(() => {
 <template>
   <header class="site-header border-bottom shadow-sm">
     <!-- Tầng 1 -->
-    <div class="container py-3 d-flex align-items-center justify-content-between">
+    <div
+      class="container py-3 d-flex align-items-center justify-content-between"
+    >
       <!-- Logo -->
-      <RouterLink to="/home" class="navbar-brand me-4" aria-label="Milk Tea Home">
-        <img src="@/assets/images/logo.png" alt="Milk Tea E-commerce Logo" height="64" />
+      <RouterLink
+        to="/home"
+        class="navbar-brand me-4"
+        aria-label="Milk Tea Home"
+      >
+        <img
+          src="@/assets/images/logo.png"
+          alt="Milk Tea E-commerce Logo"
+          height="64"
+        />
       </RouterLink>
 
       <!-- Search -->
       <form class="search-bar flex-grow-0 w-50" @submit.prevent="onSearch">
         <div class="input-group">
-          <input v-model="keyword" type="text" class="form-control search-input" placeholder="Tìm kiếm sản phẩm..."
-            aria-label="Search input" />
-          <button class="btn search-btn" type="submit" aria-label="Search button">
+          <input
+            v-model="keyword"
+            type="text"
+            class="form-control search-input"
+            placeholder="Tìm kiếm sản phẩm..."
+            aria-label="Search input"
+          />
+          <button
+            class="btn search-btn"
+            type="submit"
+            aria-label="Search button"
+          >
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -67,35 +86,57 @@ onMounted(() => {
         <!-- Cart -->
         <RouterLink to="/cart" class="btn position-relative">
           <i class="bi bi-cart3"></i>
-          <span v-if="cartCount"
-            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          <span
+            v-if="cartCount"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          >
             {{ cartCount }}
           </span>
         </RouterLink>
 
         <!-- User -->
         <template v-if="!isLoggedIn">
-          <RouterLink to="/login" aria-label="Login" class="btn btn-outline-dark d-flex align-items-center gap-2">
+          <RouterLink
+            to="/login"
+            aria-label="Login"
+            class="btn btn-outline-dark d-flex align-items-center gap-2"
+          >
             <i class="bi bi-box-arrow-in-right"></i><span>Đăng nhập</span>
           </RouterLink>
         </template>
         <div v-else class="dropdown">
-          <button class="btn btn-dark dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenu"
-            data-bs-toggle="dropdown" aria-expanded="false" ref="userMenuBtn">
+          <button
+            class="btn btn-dark dropdown-toggle d-flex align-items-center gap-2"
+            type="button"
+            id="userMenu"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            ref="userMenuBtn"
+          >
             <i class="bi bi-person-circle"></i>
             <span class="text-truncate" style="max-width: 160px">{{
               displayName
             }}</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu" style="z-index: 2000">
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="userMenu"
+            style="z-index: 2000"
+          >
             <!--Vuong them vao - khong co loi-->
             <li v-if="isCustomer">
-              <RouterLink class="dropdown-item d-flex align-items-center gap-2" to="/account/profile">
+              <RouterLink
+                class="dropdown-item d-flex align-items-center gap-2"
+                to="/account/profile"
+              >
                 <i class="bi bi-person"></i><span>Hồ sơ</span>
               </RouterLink>
             </li>
             <li v-if="isCustomer">
-              <RouterLink class="dropdown-item d-flex align-items-center gap-2" to="/account/change-password">
+              <RouterLink
+                class="dropdown-item d-flex align-items-center gap-2"
+                to="/account/change-password"
+              >
                 <i class="bi bi-person"></i><span>Doi mat khau</span>
               </RouterLink>
             </li>
@@ -104,7 +145,10 @@ onMounted(() => {
               <hr class="dropdown-divider" />
             </li>
             <li>
-              <button class="dropdown-item d-flex align-items-center gap-2" @click="handleLogout">
+              <button
+                class="dropdown-item d-flex align-items-center gap-2"
+                @click="handleLogout"
+              >
                 <i class="bi bi-box-arrow-right"></i><span>Đăng xuất</span>
               </button>
             </li>
@@ -118,51 +162,81 @@ onMounted(() => {
       <div class="container d-flex justify-content-center">
         <ul class="nav nav-pills py-2 gap-4 fw-semibold text-uppercase">
           <li class="nav-item">
-            <RouterLink class="nav-link menu-link" to="/home">Trang chủ</RouterLink>
+            <RouterLink class="nav-link menu-link" to="/home"
+              >Trang chủ</RouterLink
+            >
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link menu-link" to="/products">Sản phẩm</RouterLink>
+            <RouterLink class="nav-link menu-link" to="/products"
+              >Sản phẩm</RouterLink
+            >
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link menu-link" to="/news">Khuyến mãi</RouterLink>
+            <RouterLink class="nav-link menu-link" to="/news"
+              >Khuyến mãi</RouterLink
+            >
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link menu-link" to="/store">Store</RouterLink>
+            <RouterLink class="nav-link menu-link" to="/store"
+              >Store</RouterLink
+            >
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <RouterLink class="nav-link menu-link" to="/contact">Contact</RouterLink>
-          </li>
+          </li> -->
 
           <li class="nav-item" v-if="isAdmin">
             <div class="dropdown d-flex align-items-center">
-
-              <RouterLink class="nav-link menu-link admin-dropdown-btn" to="/admin/categories"
-                style="padding-right: 2px;">
+              <RouterLink
+                class="nav-link menu-link admin-dropdown-btn"
+                to="/admin/categories"
+                style="padding-right: 2px"
+              >
                 ADMIN
               </RouterLink>
 
-              <button class="btn btn-sm dropdown-toggle admin-dropdown-btn-icon" type="button" id="adminMenu"
-                data-bs-toggle="dropdown" aria-expanded="false">
-              </button>
+              <button
+                class="btn btn-sm dropdown-toggle admin-dropdown-btn-icon"
+                type="button"
+                id="adminMenu"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              ></button>
 
-              <ul class="dropdown-menu" aria-labelledby="adminMenu" style="z-index: 3000;">
+              <ul
+                class="dropdown-menu"
+                aria-labelledby="adminMenu"
+                style="z-index: 3000"
+              >
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/categories">CATEGORIES</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/categories"
+                    >CATEGORIES</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/orders">ORDER</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/orders"
+                    >ORDER</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/products">PRODUCT</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/products"
+                    >PRODUCT</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/vouchers">VOUCHER</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/vouchers"
+                    >VOUCHER</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/statistics">STATISTICS</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/statistics"
+                    >STATISTICS</RouterLink
+                  >
                 </li>
                 <li>
-                  <RouterLink class="dropdown-item" to="/admin/customers">CUSTOMER</RouterLink>
+                  <RouterLink class="dropdown-item" to="/admin/customers"
+                    >CUSTOMER</RouterLink
+                  >
                 </li>
               </ul>
             </div>

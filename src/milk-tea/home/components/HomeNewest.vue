@@ -9,30 +9,24 @@ import { RouterLink } from "vue-router";
 
     <div class="row g-4">
       <div class="col-md-3" v-for="item in homeState.newest" :key="item.id">
-        <div class="card product-card text-center h-100">
-          <!-- Ảnh sản phẩm hoặc fallback -->
-          <img
-            v-if="item.image"
-            :src="item.image"
-            :alt="item.name"
-            class="product-img"
-          />
-          <div
-            v-else
-            class="product-img d-flex align-items-center justify-content-center text-muted"
-          >
-            [Ảnh bị thiếu]
+        <div class="home-card h-100">
+          <!-- IMAGE WRAPPER -->
+          <div class="image-wrapper">
+            <img
+              v-if="item.image"
+              :src="item.image"
+              :alt="item.name"
+              class="product-img"
+              loading="lazy"
+            />
+            <div v-else class="no-image">[Ảnh bị thiếu]</div>
           </div>
 
-          <div class="card-body">
-            <h6 class="fw-semibold">{{ item.name }}</h6>
-            <p class="text-success fw-bold">
-              {{ item.price.toLocaleString() }} ₫
-            </p>
-            <RouterLink
-              class="btn btn-warning w-100 btn-buy"
-              :to="`/products/${item.id}`"
-            >
+          <!-- INFO -->
+          <div class="info">
+            <h6 class="name">{{ item.name }}</h6>
+            <p class="price">{{ item.price.toLocaleString() }} ₫</p>
+            <RouterLink class="btn-buy" :to="`/products/${item.id}`">
               <i class="bi bi-cart me-2"></i> Đặt mua
             </RouterLink>
           </div>
@@ -43,43 +37,82 @@ import { RouterLink } from "vue-router";
 </template>
 
 <style scoped>
-/* dùng chung CSS như BestSeller */
-.product-card {
-  border: none;
+/* === CARD CHUNG === */
+.home-card {
   border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  padding: 0.5rem;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #f1f1f1;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  text-align: center;
 }
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+.home-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+
+/* === IMAGE WRAPPER === */
+.image-wrapper {
+  width: 100%;
+  height: 220px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .product-img {
   width: 100%;
-  height: 200px; /* giống card sản phẩm */
-  object-fit: contain; /* KHÔNG méo */
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #eee;
-}
-@media (min-width: 768px) {
-  .product-img {
-    height: 220px;
-  }
-}
-@media (min-width: 1200px) {
-  .product-img {
-    height: 260px;
-  }
+  height: 100%;
+  object-fit: contain;
 }
 
-.btn-buy {
-  border-radius: 8px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+.no-image {
+  color: #bbb;
+  font-size: 14px;
 }
-.btn-buy:hover {
+
+/* === INFO === */
+.info {
+  margin-top: 12px;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  min-height: 40px;
+}
+
+.price {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ff7b00;
+  margin-bottom: 12px;
+}
+
+/* === BUTTON === */
+.btn-buy {
+  display: block;
+  width: 100%;
+  padding: 8px 0;
+  border-radius: 8px;
   background-color: #ffca2c;
+  border: none;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.btn-buy:hover {
+  background-color: #ffb000;
   transform: scale(1.03);
+  text-decoration: none;
 }
 </style>
