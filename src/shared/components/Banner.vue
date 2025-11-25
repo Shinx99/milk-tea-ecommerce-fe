@@ -69,4 +69,10 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#mainCarousel img {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+}
+</style>
