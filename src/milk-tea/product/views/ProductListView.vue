@@ -2,7 +2,7 @@
 
 <script setup>
 import { onMounted } from "vue"; // <--- BỔ SUNG: Import onMounted
-import { loadProducts, productState } from "../composables/ProductsBase.js";
+import { loadCategories, loadProducts, productState } from "../composables/ProductsBase.js";
 import { categories } from "../composables/ProductListView.js";
 import ProductList from "../components/ProductList.vue"; // Component hiển thị các card sản phẩm
 
@@ -10,6 +10,7 @@ import ProductList from "../components/ProductList.vue"; // Component hiển th�
 onMounted(() => {
   // Kích hoạt việc tải dữ liệu mới nhất từ Backend
   loadProducts();
+  loadCategories();
 });
 </script>
 
@@ -23,22 +24,13 @@ onMounted(() => {
         <h5 class="fw-semibold mb-3">Danh mục</h5>
 
         <!-- SEARCH -->
-        <input
-          v-model="productState.keyword"
-          type="search"
-          class="form-control mb-3"
-          placeholder="Tìm sản phẩm..."
-          @keyup.enter="searchProducts"
-        />
+        <input v-model="productState.keyword" type="search" class="form-control mb-3" placeholder="Tìm sản phẩm..."
+          @keyup.enter="searchProducts" />
 
         <!-- CATEGORY LIST -->
         <ul class="list-unstyled category-list mb-0">
-          <li
-            v-for="c in categories"
-            :key="c"
-            :class="['category-item', { active: productState.category === c }]"
-            @click="productState.category = c"
-          >
+          <li v-for="c in categories" :key="c" :class="['category-item', { active: productState.category === c }]"
+            @click="productState.category = c">
             {{ c }}
           </li>
         </ul>
@@ -51,10 +43,7 @@ onMounted(() => {
           <p class="mt-2">Đang tải danh sách sản phẩm...</p>
         </div>
 
-        <div
-          v-else-if="productState.error"
-          class="alert alert-danger text-center"
-        >
+        <div v-else-if="productState.error" class="alert alert-danger text-center">
           Lỗi: {{ productState.error }}
           <button class="btn btn-sm btn-danger ms-3" @click="loadProducts">
             Thử lại

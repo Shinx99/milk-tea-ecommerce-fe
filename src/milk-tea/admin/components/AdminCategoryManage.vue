@@ -30,18 +30,30 @@ const fetchCategories = async () => {
     try {
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error(`Lỗi HTTP: ${res.status}`);
-        // categories.value = await res.json();
-        // LƯU Ý: Nếu BE trả về List<CategoryResponse> -> Cần map lại
-        const data = await res.json();
-        categories.value = data;
+
+        // --- START SỬA ĐỔI QUAN TRỌNG NHẤT ---
+        const responseData = await res.json();
+
+        // Kiểm tra xem dữ liệu có nằm trong trường 'data' và 'success' là true không
+        if (responseData.success && Array.isArray(responseData.data)) {
+            // GÁN DỮ LIỆU TỪ TRƯỜNG 'data' CỦA PHẢN HỒI API
+            categories.value = responseData.data;
+        } else {
+            // Xử lý nếu API trả về lỗi logic (ví dụ: success: false)
+            console.error("API Error:", responseData.message);
+            categories.value = []; // Xóa dữ liệu cũ
+        }
+        // --- END SỬA ĐỔI QUAN TRỌNG NHẤT ---
 
     } catch (error) {
         console.error("Error fetching data:", error);
+        alert(`Lỗi khi tải danh mục: ${error.message}`);
     }
 };
 
 // 2. CREATE / UPDATE
 const saveCategory = async () => {
+    // Xác định phương thức và URL dựa trên trạng thái chỉnh sửa (editingId)
     const method = editingId.value ? 'PUT' : 'POST';
     const url = editingId.value ? `${API_URL}/${editingId.value}` : API_URL;
 
@@ -52,16 +64,24 @@ const saveCategory = async () => {
             body: JSON.stringify(formState.value)
         });
 
-        if (!res.ok) throw new Error("Failed to save category");
+        // Nếu HTTP status code không phải 2xx (ví dụ: 400, 500)
+        if (!res.ok) {
+            // Đọc chi tiết lỗi từ body nếu có thể
+            const errorData = await res.json().catch(() => ({ message: res.statusText }));
+            throw new Error(errorData.message || "Failed to save category");
+        }
 
         alert(editingId.value ? 'Cập nhật thành công!' : 'Tạo mới thành công!');
-        fetchCategories();
+
+        // Cập nhật giao diện:
+        fetchCategories(); // GỌI LẠI ĐỂ LẤY DỮ LIỆU MỚI NHẤT
         resetForm();
+
     } catch (error) {
         console.error("Error saving data:", error);
         alert(`Lỗi khi lưu danh mục: ${error.message}`);
     }
-    await loadCategories();
+    // Dòng 'await loadCategories();' ĐÃ BỊ XÓA vì nó dư thừa và không cần thiết.
 };
 
 // 3. EDIT (Tải dữ liệu vào Form)
@@ -76,7 +96,7 @@ const editCategory = (category) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// 4. DELETE
+// --- 2. HÀM DELETE CATEGORY ---
 const deleteCategory = async (id) => {
     if (!confirm('Bạn có chắc chắn muốn xóa danh mục này?')) return;
 
@@ -85,16 +105,25 @@ const deleteCategory = async (id) => {
             method: 'DELETE'
         });
 
-        if (res.status !== 204) throw new Error("Failed to delete category");
+        if (!res.ok) {
+            // Nếu không thành công 
+            const errorData = await res.json().catch(() => ({ message: res.statusText }));
+            throw new Error(errorData.message || "Failed to delete category");
+        }
+        // Giả định res.ok là đủ, hoặc kiểm tra res.status === 204 nếu Backend bắt buộc.
 
         alert('Xóa thành công!');
-        fetchCategories();
+
+        // Cập nhật giao diện:
+        fetchCategories(); // GỌI LẠI ĐỂ LẤY DỮ LIỆU MỚI NHẤT
+
     } catch (error) {
         console.error("Error deleting data:", error);
         alert(`Lỗi khi xóa danh mục: ${error.message}`);
     }
-    await loadCategories();
 };
+
+const loadCategories = fetchCategories;
 
 // Tải dữ liệu lần đầu
 onMounted(() => {
@@ -102,80 +131,109 @@ onMounted(() => {
 });
 </script>
 <template>
-    <h3 class="mb-4 fw-bold">Quản lý Danh mục</h3>
-    <div class="container">
-        <div class="row">
+    <div class="container-fluid py-2">
+        <h3 class="mb-4 fw-bolder text-primary">
+            <i class="fa-solid fa-layer-group me-2"></i> Quản Lý Danh Mục
+        </h3>
 
-            <div class="col-sm-3">
-                <div>
-                    <div class="mb-3">
+        <div class="row g-2">
+            <div class="col-lg-4 col-md-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold text-dark mb-4">
+                            {{ editingId ? 'Cập Nhật Danh Mục' : 'Tạo Danh Mục Mới' }}
+                        </h5>
+
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Name:</label>
-                            <input type="text" class="form-control" v-model="formState.categoryName" />
+                            <label class="form-label fw-semibold">Tên Danh Mục:</label>
+                            <input type="text" class="form-control" v-model="formState.categoryName"
+                                placeholder="Ví dụ: Điện Tử, Thời Trang..." />
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Sort Order:</label>
-                            <input type="number" class="form-control" v-model.number="formState.sortOrder" />
+                            <label class="form-label fw-semibold">Thứ Tự Sắp Xếp (Sort Order):</label>
+                            <input type="number" class="form-control" v-model.number="formState.sortOrder"
+                                placeholder="0" />
                         </div>
-                        <div class="mb-3">
+
+                        <div class="mb-4">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="checkNativeSwitch"
                                     v-model="formState.isActive" />
-                                <label class="form-check-label fw-bold" for="checkNativeSwitch">
-                                    Active
+                                <label class="form-check-label fw-semibold" for="checkNativeSwitch">
+                                    <span
+                                        :class="{ 'text-success': formState.isActive, 'text-muted': !formState.isActive }">
+                                        Trạng Thái: {{ formState.isActive ? "Hoạt Động" : "Không Hoạt Động" }}
+                                    </span>
                                 </label>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn btn-warning btn-lg rounded-pill border border-5"
-                                @click="saveCategory">
-                                {{ editingId ? 'Update' : 'Create' }}
+
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-warning  fw-bold" @click="saveCategory">
+                                <i :class="editingId ? 'fa-solid fa-pen-to-square' : 'fa-solid fa-plus'"></i>
+                                {{ editingId ? 'CẬP NHẬT' : 'TẠO MỚI' }}
                             </button>
-                            <button type="button" v-if="editingId"
-                                class="btn btn-light btn-lg rounded-pill border border-5" @click="resetForm">
-                                Cancel
+
+                            <button type="button" v-if="editingId" class="btn btn-outline-secondary fw-bold"
+                                @click="resetForm">
+                                Hủy Bỏ (Cancel)
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-9">
-                <table class="table table-light table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Sort Order</th>
-                            <th scope="col">Active</th>
-                            <th scope="col">Create at</th>
-                            <th scope="col">Update at</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(cat, index) in categories" :key="cat.id">
-                            <td class="fw-bold">{{ index + 1 }}</td>
-                            <td>{{ cat.categoryName }}</td>
-                            <td>{{ cat.sortOrder }}</td>
-                            <td>{{ cat.isActive ? "Yes" : "No" }}</td>
-                            <td>{{ cat.createdAt }}</td>
-                            <td>{{ cat.updatedAt }}</td>
-                            <td>
-                                <button class="btn me-3" @click="editCategory(cat)">
-                                    <i class="fa-solid fa-pencil"></i>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn me-3" @click="deleteCategory(cat.id)">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="col-lg-8 col-md-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0">
+                                <thead class="table-primary text-white">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Tên</th>
+                                        <th scope="col">Sắp Xếp</th>
+                                        <th scope="col">Trạng Thái</th>
+                                        <th scope="col">Ngày Tạo</th>
+                                        <th scope="col">Ngày Cập Nhật</th>
+                                        <th scope="col" class="text-center">Thao Tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(cat, index) in categories" :key="cat.id">
+                                        <td class="fw-bold">{{ index + 1 }}</td>
+                                        <td class="text-dark">{{ cat.categoryName }}</td>
+                                        <td>{{ cat.sortOrder }}</td>
+                                        <td>
+                                            <span
+                                                :class="{ 'badge bg-success': cat.isActive, 'badge bg-danger': !cat.isActive }">
+                                                {{ cat.isActive ? "Hoạt Động" : "Ẩn" }}
+                                            </span>
+                                        </td>
+                                        <td>{{ cat.createdAt }}</td>
+                                        <td>{{ cat.updatedAt }}</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-outline-info me-2" @click="editCategory(cat)">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+
+                                            <button class="btn btn-sm btn-outline-danger"
+                                                @click="deleteCategory(cat.id)">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
+
+<script>
+
+</script>
