@@ -5,7 +5,7 @@ export async function fetchProducts(params = {}) {
     const { category, 
         keyword,
         page = 0,
-        size= 10,
+        size= 8,
         sortBy = 'createdAt',
         direction = 'DESC' } = params;
     
@@ -15,13 +15,13 @@ export async function fetchProducts(params = {}) {
     // Logic: Quyết định endpoint dựa trên tham số
     if (category && category !== 'All') {
         // Lọc theo Category
-        searchParams.append('name', category); 
-        endpoint = '/products/by-category-name';
+        searchParams.append('category', category); 
 
-    } else if (keyword) {
+    } 
+    
+    if (keyword && keyword.trim() !== "") {
         // Tìm kiếm theo Keyword
-        searchParams.append('name', keyword); 
-        endpoint = '/products/search';
+        searchParams.append('keyword', keyword); 
     } 
 
     searchParams.set('page', page);
@@ -69,7 +69,7 @@ export async function fetchProductDetail(id) {
     try {
         const token = localStorage.getItem('token');
         const response = await apiClient.get(url);
-        return response.data;
+        return response.data.data;
         
     } catch (error) {
         const status = error.response?.status;
@@ -98,5 +98,24 @@ export async function fetchCategories() {
     } catch (error) {
         console.error("Lỗi khi tải categories bằng Axios:", error.message || error);
         throw new Error("Không thể kết nối hoặc API bị lỗi."); 
+    }
+}
+
+export async function fetchRelateProducts(id) {
+    const url = `/products/relate/${id}`;
+
+    try {
+        const response = await apiClient.get(url);
+        const json = response.data;
+
+          if (!json.success || !json.data || !Array.isArray(json.data.content)) {
+            throw new Error('Response format không đúng cho related products')
+            }
+
+        return json.data.content
+
+    } catch (error) {
+        const status = error.response?.status;
+        throw new Error(`Lỗi tải chi tiết: HTTP ${status || 'Unknown'}`);
     }
 }

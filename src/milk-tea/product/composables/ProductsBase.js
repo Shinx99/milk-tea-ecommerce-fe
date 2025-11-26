@@ -12,7 +12,7 @@ export const productState = reactive({
     searchTimeout: null, // Dùng cho Debounce
 
     page: 0,
-    size: 10,
+    size: 8,
     totalPages: 0,
     totalElements: 0,
 });
@@ -87,3 +87,5 @@ export function getProductById(id) {
     // Tìm trong danh sách hiện tại (cache)
     return productState.list.find((p) => String(p.id) === String(id)) || null;
 }
+
+
