@@ -6,12 +6,15 @@ import { loadCategories, loadProducts, productState } from "../composables/Produ
 import { categories } from "../composables/ProductListView.js";
 import ProductList from "../components/ProductList.vue"; // Component hiển thị các card sản phẩm
 
-// BƯỚC QUAN TRỌNG: GỌI loadProducts MỖI KHI COMPONENT ĐƯỢC MOUNT/RE-MOUNT
-onMounted(() => {
-  // Kích hoạt việc tải dữ liệu mới nhất từ Backend
-  loadProducts();
-  loadCategories();
-});
+
+onMounted(async() => {
+    productState.category = 'All'
+    productState.keyword = ''
+    productState.page = 0
+
+    await loadProducts()
+    loadCategories();
+})
 </script>
 
 <template>
