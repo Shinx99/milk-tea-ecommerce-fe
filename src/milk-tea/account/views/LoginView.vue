@@ -104,7 +104,7 @@ const onSubmit = async () => {
           </div>
 
           <div class="text-center mt-4">
-            <img src="@/assets/images/logo.jpg" alt="logo" height="48" />
+            <img src="@/assets/images/logo.png" alt="logo" height="100" />
           </div>
         </div>
       </div>

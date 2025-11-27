@@ -2,7 +2,6 @@
 import { useUserStore } from '@/milk-tea/account/store';
 
 // Đặt BASE_URL cho API quản lý người dùng/profile
-// Thay đổi nếu endpoint của bạn khác
 const BASE_URL = 'http://localhost:8080/api/customers';
 
 /**
@@ -65,23 +64,17 @@ async function request(path, options = {}) {
 
 /**
  * Lấy thông tin profile của người dùng theo ID.
- * Tương ứng với: GET /api/users/{id}
- * @param {string} id - ID của người dùng.
- * @returns {Promise<object>} - Thông tin profile của người dùng.
+ * Tương ứng với: GET /api/customers/user
  */
-export function getProfile(id) {
-  if (!id) throw new Error("ID là bắt buộc để lấy thông tin profile.");
-  return request(`/${id}`, { method: 'GET' });
+export function getProfile() {
+  return request(`/user`, { method: 'GET' });
 }
 
+
 /**
- * Cập nhật thông tin profile của người dùng theo ID.
- * Tương ứng với: PUT /api/users/{id}
- * @param {string} id - ID của người dùng.
- * @param {object} payload - Dữ liệu mới để cập nhật.
- * @returns {Promise<object>} - Thông tin profile đã được cập nhật.
+ * Lấy thông tin profile của người dùng theo ID.
+ * Tương ứng với: PUT /api/customers
  */
-export function updateProfile(id, payload) {
-  if (!id) throw new Error("ID là bắt buộc để cập nhật profile.");
-  return request(`/${id}`, { method: 'PUT', body: payload });
+export function updateProfile(payload) {
+  return request('', { method: 'PUT', body: payload });
 }

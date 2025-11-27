@@ -15,10 +15,7 @@ const form = ref({});
 
 // 3. Tải dữ liệu khi component được tạo
 onMounted(() => {
-  const userId = userStore.userInfo?.userId;
-  if (userId) {
-    loadProfile(userId);
-  }
+  loadProfile();
 });
 
 // 4. Đồng bộ form với dữ liệu từ composable
@@ -46,20 +43,16 @@ function onCancel() {
 // 5. Hàm onSave gọi đến composable mới
 async function onSave() {
   try {
-    const userId = userStore.userInfo?.userId;
-    if (!userId) {
-      alert("Không tìm thấy người dùng để cập nhật.");
-      return;
-    }
-
     const payload = {
       fullname: form.value.fullName,
+      phone: form.value.phone
     };
 
-    await updateProfile(userId, payload); // Gọi hàm từ composable
+    await updateProfile(payload); // Gọi hàm từ composable
 
     editing.value = false;
     alert("Cập nhật hồ sơ thành công!");
+    loadProfile();
   } catch (e) {
     alert(e?.message || "Lỗi cập nhật hồ sơ");
   }
@@ -67,8 +60,16 @@ async function onSave() {
 </script>
 
 <template>
-  <section class="container py-4">
-    <h3 class="mb-4">Hồ sơ cá nhân</h3>
+  <section class="container row align-items-center py-5">
+
+    <div class="col-md-4 text-center">
+        <img src="@/assets/images/logo.png" alt="logo" class="img-fluid" style="max-height: 250px;" />
+    </div>
+
+    <div class="col-md-8">
+    <h3 class="text-center fw-bold mb-4 text-success">
+      HO SO CA NHAN
+    </h3>
 
     <!-- 1. Hiển thị spinner KHI ĐANG loading -->
     <div v-if="loading" class="alert alert-info">Đang tải...</div>
@@ -133,10 +134,12 @@ async function onSave() {
     </div>
 
     <div
-      v-else-if="!userStore.userInfo && !loading"
+      v-else-if="!profile && !loading"
       class="alert alert-warning"
     >
       Bạn chưa đăng nhập. <RouterLink to="/login">Đăng nhập ngay</RouterLink>
     </div>
+    </div>
+  
   </section>
 </template>
