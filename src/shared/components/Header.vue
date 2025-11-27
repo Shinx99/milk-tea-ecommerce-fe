@@ -57,7 +57,7 @@ onMounted(() => {
         <img
           src="@/assets/images/logo.png"
           alt="Milk Tea E-commerce Logo"
-          height="64"
+          height="100"
         />
       </RouterLink>
 

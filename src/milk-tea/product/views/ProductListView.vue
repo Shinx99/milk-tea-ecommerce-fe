@@ -19,7 +19,9 @@ onMounted(async() => {
 
 <template>
   <div class="container py-4">
-    <h1 class="fw-bold mb-4 text-center">MENU</h1>
+    <h3 class="text-center fw-bold mb-4 text-success">
+      MENU
+    </h3>
     <hr class="mb-4" />
     <div class="d-flex gap-4">
       <!-- SIDEBAR -->
