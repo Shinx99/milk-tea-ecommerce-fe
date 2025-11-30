@@ -1,9 +1,18 @@
 <script setup>
-import { computed, reactive, watch, ref, onMounted } from 'vue' // Bỏ onMounted thừa
+import { computed, reactive, watch, ref, onMounted } from 'vue' 
 import { useRoute, useRouter } from 'vue-router'
 import { useProductDetail } from '../composables/ProductDetailView.js'
 import ProductCard from '../components/ProductCard.vue'
 import { loadProducts, productState } from '../composables/ProductsBase.js'
+
+import { addToCartServer } from '@/milk-tea/cart/store'
+import { useUserStore } from '@/milk-tea/account/store'
+const userStore = useUserStore()
+
+// Check Login
+const isLoggedIn = computed(() => {
+    return !!userStore.userInfo?.userId && !!localStorage.getItem('token')
+})
 
 const route = useRoute()
 const router = useRouter()
@@ -39,55 +48,127 @@ watch(
     { immediate: true } // Chạy ngay lập tức khi vào trang
 );
 
-// 4. Logic Options (Size, Đá...)
+// 4. Logic options: lưu THEO ID
+// key: parentCategoryId, value: childCategoryId được chọn
 const selectedOptions = reactive({})
 
-const isSelected = (groupName, optionName) => {
-    return selectedOptions[groupName] === optionName
+const isSelected = (group, option) =>
+  selectedOptions[group.id] === option.id
+
+const selectOption = (group, option) => {
+  selectedOptions[group.id] = option.id
 }
 
-const selectOption = (groupName, optionName) => {
-    selectedOptions[groupName] = optionName
-}
-
+// reset & auto chọn option đầu tiên
 watch(() => product.value, (newVal) => {
-    Object.keys(selectedOptions).forEach(key => delete selectedOptions[key])
-    if (newVal && newVal.category && newVal.category.children) {
-        newVal.category.children.forEach(group => {
-            if (group.children && group.children.length > 0) {
-                selectedOptions[group.categoryName] = group.children[0].categoryName
-            }
-        })
-    }
+  Object.keys(selectedOptions).forEach(k => delete selectedOptions[k])
+
+  if (newVal?.category?.children) {
+    newVal.category.children.forEach(group => {
+      if (group.children?.length) {
+        selectedOptions[group.id] = group.children[0].id
+      }
+    })
+  }
 })
 
-// 5. Hàm Add To Cart (Đã mở comment)
-const handleAddToCart = () => {
-    if (!product.value) return;
-    
-    const noteString = Object.entries(selectedOptions)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(', ')
+// 5. Map selectedOptions -> DTO field
+function buildOptionIds() {
+  const optIds = {
+    sizeCategoryId: null,
+    sugarCategoryId: null,
+    iceCategoryId: null,
+    temperatureCategoryId: null,
+  }
 
-    const cartItem = {
-        id: product.value.id,
-        name: product.value.name,
-        price: product.value.price,
-        qty: qty.value,
-        total: total.value,
-        note: noteString
+  if (!product.value?.category?.children) return optIds
+
+  product.value.category.children.forEach(group => {
+    const childId = selectedOptions[group.id]
+    if (!childId) return
+
+    const name = group.categoryName?.toLowerCase() || ''
+
+    switch (name) {
+      case 'size':
+        optIds.sizeCategoryId = childId
+        break
+      case 'đường':
+      case 'sugar':
+        optIds.sugarCategoryId = childId
+        break
+      case 'đá':
+      case 'ice':
+        optIds.iceCategoryId = childId
+        break
+      case 'nhiệt độ':
+      case 'temperature':
+        optIds.temperatureCategoryId = childId
+        break
     }
+  })
 
-    // alert("Thêm vào giỏ: " + JSON.stringify(cartItem));
-    // Gọi store của bạn ở đây
-    console.log("Add to cart:", cartItem);
+  return optIds
 }
 
-const mainImageUrl = computed(() => {
-    return (product.value && product.value.imageUrl && product.value.imageUrl.length > 0)
-        ? product.value.imageUrl[0]
-        : null;
-});
+// 6. Add to cart
+const handleAddToCart = async () => {
+  if (!product.value) return
+
+  const optIds = buildOptionIds()
+
+  if (isLoggedIn.value) {
+    // ĐÃ LOGIN: gửi lên server
+    const payload = {
+      productId: product.value.id,
+      quantity: qty.value,
+      ...optIds,
+    }
+
+    try {
+      await addToCartServer(payload)
+      console.log('Add to cart (server):', payload)
+    } catch (e) {
+      console.error('Add to cart server error', e)
+    }
+  } else {
+    // GUEST: lưu localStorage
+    // build note text từ category + tên option
+    const noteParts = []
+    if (product.value?.category?.children) {
+      product.value.category.children.forEach(group => {
+        const childId = selectedOptions[group.id]
+        const child = group.children?.find(c => c.id === childId)
+        if (child) {
+          noteParts.push(`${group.categoryName}: ${child.categoryName}`)
+        }
+      })
+    }
+    const noteString = noteParts.join(', ')
+
+    const cartItem = {
+      id: product.value.id,
+      name: product.value.name,
+      image: mainImageUrl.value || null,
+      price: product.value.price,
+      qty: qty.value,
+      note: noteString,
+      options: {
+        ...selectedOptions, // parentId -> childId (dùng để sync server sau này)
+      },
+    }
+
+    const existingCart = JSON.parse(localStorage.getItem('mt_cart_guest') || '[]')
+    existingCart.push(cartItem)
+    localStorage.setItem('mt_cart_guest', JSON.stringify(existingCart))
+
+    console.log('Add to cart (guest):', cartItem)
+  }
+}
+
+const mainImageUrl = computed(() =>
+  product.value?.imageUrl?.length ? product.value.imageUrl[0] : null
+)
 </script>
 
 <template>
@@ -123,15 +204,16 @@ const mainImageUrl = computed(() => {
                             <div v-for="group in product.category.children" :key="group.id" class="mb-3">
                                 <label class="fw-semibold mb-1">{{ group.categoryName }}</label>
                                 <div class="btn-group w-100 btn-group-sm flex-wrap">
-                                    <button 
-                                    v-for="option in group.children" 
-                                    :key="option.id"
-                                    class="btn"
-                                    :class="isSelected(group.categoryName, option.categoryName) ? 'btn-warning' : 'btn-outline-warning'"
-                                    @click="selectOption(group.categoryName, option.categoryName)"
-                                >
+                                    <button
+                                        v-for="option in group.children"
+                                        :key="option.id"
+                                        class="btn"
+                                        :class="isSelected(group, option) ? 'btn-warning' : 'btn-outline-warning'"
+                                        @click="selectOption(group, option)"
+                                    >
                                         {{ option.categoryName }}
                                     </button>
+
                                 </div>
                             </div>
                         </div>

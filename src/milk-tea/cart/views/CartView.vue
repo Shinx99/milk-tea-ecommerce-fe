@@ -1,31 +1,59 @@
 <!-- src/milk-tea/cart/views/CartView.vue -->
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import CartItem from '../components/CartItem.vue'
+import {
+  cartState,
+  cartTotal,
+  fetchCartFromServer,
+  //setupCart,
+} from '../store'
+import { useUserStore } from '@/milk-tea/account/store'
 
-// LƯU Ý: đường dẫn dưới đây phải đúng nơi bạn export store giỏ hàng
-// Nếu store ở "src/milk-tea/cart/store.js" và file này nằm trong "views/",
-// thì import như sau:
-import { cartState, cartTotal, clearCart } from '../store'
-
-// Helper format tiền
 const money = (n) => (Number(n) || 0).toLocaleString() + ' đ'
 
-// Giỏ trống?
-const isEmpty = computed(() => cartState.items.length === 0)
+const userStore = useUserStore()
+
+const isLoggedIn = computed(
+  () => !!userStore.userInfo?.userId && !!localStorage.getItem('token')
+)
+// items hiển thị: nếu đã login -> activeItems từ server, nếu guest -> guestItems local
+const items = computed(() =>
+  isLoggedIn.value ? cartState.activeItems : cartState.guestItems
+)
+
+const isEmpty = computed(() => !items.value || items.value.length === 0)
+
+onMounted(async () => {
+  console.log('isLoggedIn', isLoggedIn.value, userStore.userInfo, localStorage.getItem('token'))
+  if (isLoggedIn.value) {
+    await fetchCartFromServer()
+  }
+})
+
+function handleClear() {
+  if (isLoggedIn.value) {
+    // clear trên server
+    import('../store').then(({ clearCartServer }) => clearCartServer())
+  } else {
+    import('../store').then(({ clearCartGuest }) => clearCartGuest())
+  }
+}
 </script>
 
 <template>
   <section class="container py-5">
     <h3 class="mb-4">Giỏ hàng</h3>
 
-    <!-- Giỏ trống -->
-    <div v-if="isEmpty" class="alert alert-info">
+    <div v-if="cartState.loading" class="alert alert-info">
+      Đang tải giỏ hàng...
+    </div>
+
+    <div v-else-if="isEmpty" class="alert alert-info">
       Giỏ hàng trống. <RouterLink to="/products">Tiếp tục mua sắm</RouterLink>
     </div>
 
-    <!-- Có hàng -->
     <div v-else>
       <table class="table align-middle">
         <thead>
@@ -40,19 +68,19 @@ const isEmpty = computed(() => cartState.items.length === 0)
         </thead>
         <tbody>
           <CartItem
-            v-for="i in cartState.items"
-            :key="i.key"
+            v-for="i in items"
+            :key="i.id || i.key"
             :item="i"
+            :logged-in="isLoggedIn"
           />
         </tbody>
       </table>
 
       <div class="d-flex justify-content-between align-items-center mt-3">
-        <button class="btn btn-outline-danger" @click="clearCart()">
+        <button class="btn btn-outline-danger" @click="handleClear">
           Xóa toàn bộ
         </button>
 
-        <!-- cartTotal là computed -> KHÔNG dùng cartTotal() -->
         <h4 class="mb-0">Tổng: {{ money(cartTotal) }}</h4>
       </div>
 
