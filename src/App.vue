@@ -1,6 +1,14 @@
 <script setup>
 import Header from './shared/components/Header.vue'
 import Footer from './shared/components/Footer.vue'
+import { onMounted } from 'vue';
+import { setupCart, watchCartUser } from './milk-tea/cart/store';
+
+onMounted(() => {
+  setupCart();
+  watchCartUser();
+});
+
 </script>
 
 <template>
