@@ -1,4 +1,3 @@
-// product/views/ProductListView.vue (SỬA ĐỔI)
 
 <script setup>
 import { onMounted } from "vue"; // <--- BỔ SUNG: Import onMounted

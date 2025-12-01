@@ -14,6 +14,8 @@ import Voucher from './components/AdminVoucherManage.vue'
 // Import Trang Dashboard mặc định
 import AdminDashboardView from './views/AdminDashboardView.vue'
 
+import Register from '@milk-tea/account/views/RegisterView.vue'
+
 export default [
     {
         path: '/admin',
@@ -69,6 +71,6 @@ export default [
                 name: 'admin-vouchers', 
                 component: Voucher 
             }
-        ]
+        ],
     }
 ]

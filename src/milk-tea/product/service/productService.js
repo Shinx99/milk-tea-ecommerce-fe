@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import apiClient from '@/shared/service/apiClient.js';
 
 // Tải danh sách sản phẩm với tham số lọc và tìm kiếm
 export async function fetchProducts(params = {}) {
