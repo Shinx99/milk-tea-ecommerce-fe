@@ -38,13 +38,14 @@ import { productState } from '../composables/ProductsBase'
     </div>
 
 
+    <!-- Pagination -->
     <nav v-if="!productState.isLoading && productState.totalPages > 0" aria-label="Page navigation" class="mt-4">
       <ul class="pagination justify-content-center align-items-center">
         
-
+        <!-- Nut Prev -->
         <li class="page-item" :class="{ disabled: productState.page === 0 }">
           <button 
-            class="page-link" 
+            class="page-link bg-primary text-white rounded-pill px-3 py-1 border-0" 
             @click.prevent="prevPage" 
             :disabled="productState.page === 0"
             aria-label="Previous"
@@ -63,7 +64,7 @@ import { productState } from '../composables/ProductsBase'
         <!-- Disable nếu đang ở trang cuối cùng -->
         <li class="page-item" :class="{ disabled: productState.page >= productState.totalPages - 1 }">
           <button 
-            class="page-link" 
+            class="page-link bg-primary text-white rounded-pill px-3 py-1 border-0" 
             @click.prevent="nextPage"
             :disabled="productState.page >= productState.totalPages - 1" 
             aria-label="Next"
@@ -74,6 +75,7 @@ import { productState } from '../composables/ProductsBase'
 
       </ul>
     </nav>
+
   </div>
 </template>
 

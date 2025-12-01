@@ -1,4 +1,4 @@
-import apiClient from '@milk-tea/product/service/apiClient.js';
+import apiClient from '@/shared/service/apiClient.js';
 
 export async function fetchHomeSection(path , {page = 0, size = 8, sortBy = 'createdAt', direction = 'DESC'} = {}){
     const token = localStorage.getItem('token');
