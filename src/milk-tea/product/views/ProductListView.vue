@@ -28,8 +28,8 @@ onMounted(async() => {
         <h5 class="fw-semibold mb-3">Danh mục</h5>
 
         <!-- SEARCH -->
-        <input v-model="productState.keyword" type="search" class="form-control mb-3" placeholder="Tìm sản phẩm..."
-          @keyup.enter="searchProducts" />
+        <!-- <input v-model="productState.keyword" type="search" class="form-control mb-3" placeholder="Tìm sản phẩm..."
+          @keyup.enter="searchProducts" /> -->
 
         <!-- CATEGORY LIST -->
         <ul class="list-unstyled category-list mb-0">

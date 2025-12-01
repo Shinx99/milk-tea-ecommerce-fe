@@ -29,7 +29,7 @@ const keyword = ref("");
 function onSearch() {
   if (keyword.value.trim()) {
     console.log("Searching:", keyword.value);
-    // router.push({ path: "/products", query: { q: keyword.value } })
+    router.push({ path: "/products", query: { q: keyword.value } })
   }
 }
 
