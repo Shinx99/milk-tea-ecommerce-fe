@@ -241,7 +241,7 @@ import {
   customerState,
   loadCustomer,
   updateCustomer,
-  changePage, nextPage, prevPage
+  changePage, nextPage, prevPage, deleteCustomer
 } from "../composables/UseCustomer.js";
 
 //customer <<--- customerState.list
