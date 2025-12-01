@@ -1,4 +1,6 @@
 <script setup>
+import { onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import ProductCard from './ProductCard.vue'
 
 // 1. Import State và các hàm điều khiển trang từ file logic của bạn
@@ -9,6 +11,26 @@ import {
 } from '../composables/ProductListView.js'
 
 import { productState } from '../composables/ProductsBase' 
+
+// Lấy route để đọc query param
+const route = useRoute();
+
+// Khi component mount, đọc query param q và gán vào keyword
+onMounted(() => {
+  if (route.query.q) {
+    productState.keyword = route.query.q;
+  }
+});
+
+// Nếu người dùng thay đổi query param (ví dụ search mới), cập nhật lại keyword
+watch(
+  () => route.query.q,
+  (newQ) => {
+    if (newQ !== undefined) {
+      productState.keyword = newQ;
+    }
+  }
+);
 
 </script>
 
