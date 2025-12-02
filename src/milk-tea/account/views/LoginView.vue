@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useUserStore } from "@/milk-tea/account/store"
+import { useUserStore } from "@/milk-tea/account/store";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -14,19 +14,22 @@ const err = ref("");
 const onSubmit = async () => {
   err.value = "";
   try {
-    const user = await userStore.login({ emailOrUsername: emailOrUsername.value, password: password.value });
-    if (remember.value) localStorage.setItem('token', user.token);
-    else sessionStorage.setItem('token', user.token);
+    const user = await userStore.login({
+      emailOrUsername: emailOrUsername.value,
+      password: password.value,
+    });
+    if (remember.value) localStorage.setItem("token", user.token);
+    else sessionStorage.setItem("token", user.token);
 
     if (user.roleName === "admin") router.push("/home");
-    else if (user.roleName === "customer" || user.roleName === "staff") router.push("/home");
+    else if (user.roleName === "customer" || user.roleName === "staff")
+      router.push("/home");
     else err.value = "Vai trò không hợp lệ";
-  } catch(e) {
+  } catch (e) {
     err.value = e.message || "Đăng nhập thất bại";
   }
 };
 </script>
-
 
 <template>
   <section class="py-5" style="background-color: #f8f9fa">
@@ -111,4 +114,3 @@ const onSubmit = async () => {
     </div>
   </section>
 </template>
-

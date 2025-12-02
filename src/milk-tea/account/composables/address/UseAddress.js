@@ -1,21 +1,25 @@
+// src/milk-tea/account/composables/useAddress.js
+
 import { ref } from "vue";
 import {
-  getProfile as getProfileApi,
-  updateProfile as updateProfileApi,
-} from "@/milk-tea/account/service/Profile";
+  getMyAddresses,
+  createAddress,
+  updateAddress,
+  deleteAddress,
+} from "@/milk-tea/account/service/Address";
 
-export function useProfile() {
-  const profile = ref(null);
+export function useAddress() {
+  const addresses = ref([]);
   const loading = ref(false);
   const error = ref(null);
 
-  // Load profile theo userId
-  const loadProfile = async (userId) => {
-    if (!userId) return;
+  // Load all addresses of current user
+  const loadAddresses = async () => {
     loading.value = true;
     error.value = null;
     try {
-      profile.value = await getProfileApi(userId);
+      const res = await getMyAddresses();
+      addresses.value = res.data || [];
     } catch (e) {
       error.value = e.message;
     } finally {
@@ -23,27 +27,35 @@ export function useProfile() {
     }
   };
 
-  // Cập nhật profile theo userId & payload (payload chứa fullname, phone, addresses)
-  const updateProfile = async (userId, payload) => {
-    if (!userId) throw new Error("ID người dùng là bắt buộc.");
-    loading.value = true;
-    error.value = null;
-    try {
-      const updatedProfile = await updateProfileApi(userId, payload);
-      profile.value = updatedProfile;
-    } catch (e) {
-      error.value = e.message;
-      throw e;
-    } finally {
-      loading.value = false;
-    }
+  const create = async (payload) => {
+    const res = await createAddress(payload);
+    addresses.value.push(res.data);
+    await loadAddresses();
+    return res.data;
+  };
+
+  const update = async (id, payload) => {
+    const res = await updateAddress(id, payload);
+    const idx = addresses.value.findIndex((a) => a.id === id);
+    if (idx !== -1) addresses.value[idx] = res.data;
+    await loadAddresses();
+    return res.data;
+  };
+
+  const remove = async (id) => {
+    await deleteAddress(id);
+    const idx = addresses.value.findIndex((a) => a.id === id);
+    if (idx !== -1) addresses.value[idx].active = false;
+    await loadAddresses();
   };
 
   return {
-    profile,
+    addresses,
     loading,
     error,
-    loadProfile,
-    updateProfile,
+    loadAddresses,
+    create,
+    update,
+    remove,
   };
 }

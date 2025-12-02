@@ -1,13 +1,13 @@
 <script setup>
 import { homeState } from "../store.js";
 import { RouterLink } from "vue-router";
-import ProductCard from '../../product/components/ProductCard.vue'
+import ProductCard from "../../product/components/ProductCard.vue";
 </script>
 
 <template>
   <section class="container my-5">
     <h3 class="text-center fw-bold mb-4 text-success">
-      BEST SELLERS - TRÀ SỮA ĐẬM VỊ
+      BEST SELLERS - GÓC MÈO LƯỜI
     </h3>
 
     <div class="row g-4">
@@ -16,12 +16,8 @@ import ProductCard from '../../product/components/ProductCard.vue'
         v-for="item in homeState.bestSellers"
         :key="item.id"
       >
-
-      <ProductCard :product="item" /> 
-
+        <ProductCard :product="item" />
       </div>
     </div>
   </section>
 </template>
-
-
