@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useAddress } from "@/milk-tea/account/composables/address/useAddress";
+import { useAddress } from "@/milk-tea/account/composables/address/UseAddress";
 import { useUserStore } from "@/milk-tea/account/store";
 
 const userStore = useUserStore();
