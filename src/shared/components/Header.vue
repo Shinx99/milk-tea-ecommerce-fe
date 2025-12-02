@@ -5,6 +5,7 @@ import { computed, ref, onMounted } from "vue";
 import { Dropdown } from "bootstrap";
 import { cartCount } from "@/milk-tea/cart/store";
 import { useUserStore } from "@/milk-tea/account/store";
+import { loadProducts } from "../../milk-tea/product/composables/ProductsBase";
 
 const userStore = useUserStore();
 
@@ -28,8 +29,10 @@ const isCustomer = computed(() => userStore.userInfo?.roleName === "customer");
 const keyword = ref("");
 function onSearch() {
   if (keyword.value.trim()) {
-    console.log("Searching:", keyword.value);
     router.push({ path: "/products", query: { q: keyword.value } })
+  } else {
+    router.push({ path: "/products", query: {} }); // xoá query
+    loadProducts()
   }
 }
 

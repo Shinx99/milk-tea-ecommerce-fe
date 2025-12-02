@@ -17,8 +17,9 @@ const route = useRoute();
 
 // Khi component mount, đọc query param q và gán vào keyword
 onMounted(() => {
-  if (route.query.q) {
-    productState.keyword = route.query.q;
+  if (route.path.startsWith("/products")) {
+    productState.keyword = route.query.q || "";
+    productState.page = 0;
   }
 });
 
