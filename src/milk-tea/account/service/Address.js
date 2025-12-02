@@ -1,26 +1,23 @@
-// src/milk-tea/account/service/Profile.js
+// src/milk-tea/account/service/Address.js
 
-import { useUserStore } from '@/milk-tea/account/store';
+import { useUserStore } from "@/milk-tea/account/store";
 
-const BASE_URL = 'http://localhost:8080/api/customers';
+const BASE_URL = "http://localhost:8080/api/addresses";
 
 async function request(path, options = {}) {
   const userStore = useUserStore();
   const headers = {
-    'Accept': 'application/json',
+    Accept: "application/json",
     ...options.headers,
   };
 
-  // Thêm token tự động nếu có
   if (userStore.token) {
-    headers['Authorization'] = `Bearer ${userStore.token}`;
+    headers["Authorization"] = `Bearer ${userStore.token}`;
   }
 
-  // Xử lý body dưới dạng JSON nếu không phải FormData và method không phải GET
+  // JSON body
   if (options.body && !(options.body instanceof FormData)) {
-    if (!headers['Content-Type']) {
-      headers['Content-Type'] = 'application/json';
-    }
+    headers["Content-Type"] = "application/json";
     options.body = JSON.stringify(options.body);
   }
 
@@ -30,31 +27,56 @@ async function request(path, options = {}) {
   });
 
   if (!res.ok) {
-    let errorPayload;
-    try {
-      errorPayload = await res.json();
-    } catch {
-      errorPayload = { message: `Yêu cầu thất bại với mã trạng thái ${res.status}` };
-    }
-    const error = new Error(errorPayload.message || 'Có lỗi không xác định xảy ra');
-    error.status = res.status;
-    error.payload = errorPayload;
-    throw error;
+    const payload = await res.json().catch(() => ({}));
+    const message = payload.message || "Có lỗi xảy ra";
+    const err = new Error(message);
+    throw err;
   }
 
-  if (res.status === 204) {
-    return null;
-  }
-
-  return res.json();
+  return res.status === 204 ? null : res.json();
 }
 
-export function getProfile(id) {
-  if (!id) throw new Error('ID là bắt buộc để lấy thông tin profile.');
-  return request(`/${id}`, { method: 'GET' });
+// ================= API =================
+
+// Lấy tất cả địa chỉ theo user hiện tại
+export function getMyAddresses() {
+  return request(`/user`, { method: "GET" });
 }
 
-export function updateProfile(id, payload) {
-  if (!id) throw new Error('ID là bắt buộc để cập nhật profile.');
-  return request(`/${id}`, { method: 'PUT', body: payload });
+// Tạo địa chỉ mới
+export function createAddress(payload) {
+  return request("", {
+    method: "POST",
+    body: payload,
+  });
+}
+
+// Cập nhật địa chỉ
+export function updateAddress(id, payload) {
+  return request(`/${id}`, {
+    method: "PUT",
+    body: payload,
+  });
+}
+
+// Xoá mềm địa chỉ
+export function deleteAddress(id) {
+  return request(`/${id}`, {
+    method: "DELETE",
+  });
+}
+
+// =====================
+// ADMIN ADDRESS API
+// =====================
+export function adminListByCustomer(customerId, params = {}) {
+  return request.get(`/api/addresses/customer/${customerId}`, { params });
+}
+
+export function adminCreateAddress(customerId, data) {
+  return request.post(`/api/addresses/customer/${customerId}`, data);
+}
+
+export function adminSetDefault(addressId) {
+  return request.patch(`/api/addresses/${addressId}/set-default`);
 }

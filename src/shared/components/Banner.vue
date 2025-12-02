@@ -72,7 +72,7 @@
 <style scoped>
 #mainCarousel img {
   width: 100%;
-  height: 550px;
+  height: 520px;
   object-fit: cover;
 }
 </style>

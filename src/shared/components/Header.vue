@@ -132,7 +132,7 @@ onMounted(() => {
                 class="dropdown-item d-flex align-items-center gap-2"
                 to="/account/profile"
               >
-                <i class="bi bi-person"></i><span>Hồ sơ</span>
+                <i class="bi bi-person-circle"></i><span>Hồ sơ</span>
               </RouterLink>
             </li>
             <li v-if="isCustomer">
@@ -140,7 +140,15 @@ onMounted(() => {
                 class="dropdown-item d-flex align-items-center gap-2"
                 to="/account/change-password"
               >
-                <i class="bi bi-person"></i><span>Doi mat khau</span>
+                <i class="bi bi-pass"></i><span>Đổi mật khẩu</span>
+              </RouterLink>
+            </li>
+            <li v-if="isCustomer">
+              <RouterLink
+                class="dropdown-item d-flex align-items-center gap-2"
+                to="/account/addresses"
+              >
+                <i class="bi bi-geo-alt-fill"></i><span>Địa chỉ</span>
               </RouterLink>
             </li>
 
@@ -239,6 +247,11 @@ onMounted(() => {
                 <li>
                   <RouterLink class="dropdown-item" to="/admin/customers"
                     >CUSTOMER</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink class="dropdown-item" to="/admin/addresses"
+                    >ADDRESS</RouterLink
                   >
                 </li>
               </ul>
