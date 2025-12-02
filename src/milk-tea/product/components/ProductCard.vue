@@ -13,24 +13,26 @@ defineProps({
 
 <template>
   <div class="product-card h-100">
-    <!-- Ảnh sản phẩm -->
-    <div class="image-wrapper">
-      <img v-if="product.imageUrl && product.imageUrl.length > 0" :src="product.imageUrl[0]" class="product-img"
-        :alt="product.name" />
-      <div v-else class="no-image">[Ảnh bị thiếu]</div>
-    </div>
+    <RouterLink :to="`/products/${product.id}`" style="text-decoration: none;">
+      <!-- Ảnh sản phẩm -->
+      <div class="image-wrapper">
+        <img v-if="product.imageUrl && product.imageUrl.length > 0" :src="product.imageUrl[0]" class="product-img"
+          :alt="product.name" />
+        <div v-else class="no-image">[Ảnh bị thiếu]</div>
+      </div>
 
-    <!-- Thông tin -->
-    <div class="info">
-      <h6 class="name">{{ product.name }}</h6>
+      <!-- Thông tin -->
+      <div class="info">
+        <h6 class="name">{{ product.name }}</h6>
 
-      <p class="price">{{ product.price.toLocaleString() }} đ</p>
+        <p class="price">{{ product.price.toLocaleString() }} đ</p>
 
-      <RouterLink :to="`/products/${product.id}`" class="btn-buy">
-        <i class="bi bi-cart me-2"></i>
-        Đặt mua
-      </RouterLink>
-    </div>
+        <RouterLink :to="`/products/${product.id}`" class="btn-buy">
+          <i class="bi bi-cart me-2"></i>
+          Đặt mua
+        </RouterLink>
+      </div>
+    </RouterLink>
   </div>
 </template>
 
