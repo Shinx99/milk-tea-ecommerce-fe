@@ -180,11 +180,6 @@ function goToRegister() {
   router.push('/register'); // dùng path tuyệt đối
 }
 
-// Trang changePassword
-function goToChangePassword() {
-  router.push('/account/change-password'); // dùng path tuyệt đối
-}
-
 // import tu composables
 import {
   customerState,
@@ -196,7 +191,7 @@ import {
 //customer <<--- customerState.list
 const customers = computed(() => customerState.list);
 
-// Form tao moi
+// Bien new Customer
 const newCustomer = ref({
   fullname: "",
   email: "",
@@ -224,7 +219,7 @@ watch(
       clearTimeout(customerState.searchTimeout);
     }
 
-    // đợi 400ms sau khi ngừng gõ rồi mới gọi API
+    // đợi 100ms sau khi ngừng gõ rồi mới gọi API
     customerState.searchTimeout = setTimeout(() => {
       customerState.page = 0;   // luôn quay về trang đầu khi search mới
       loadCustomer();
