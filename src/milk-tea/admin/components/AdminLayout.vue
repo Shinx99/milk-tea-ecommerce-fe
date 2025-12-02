@@ -4,10 +4,10 @@ import AdminSidebar from "./Admin.vue";
 </script>
 
 <template>
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
         <div class="row g-4 admin-wrapper">
             <div class="col-lg-3 col-md-4">
-                <h2 class="fw-bold mb-4 text-center text-primary">ADMIN PANEL</h2>
+                <h2 class="fw-bold mb-4 text-center text-primary">ADMIN</h2>
                 <AdminSidebar />
             </div>
 
