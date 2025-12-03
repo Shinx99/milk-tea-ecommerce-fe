@@ -79,7 +79,7 @@ function removeLocal() {
         <button
           type="button"
           class="btn btn-outline-secondary"
-          @click="changeQty((item.quantity ?? item.qty) - 1)"
+          @click.stop.prevent="changeQty((item.quantity ?? item.qty) - 1)"
         >
           -
         </button>
@@ -92,7 +92,7 @@ function removeLocal() {
         <button
           type="button"
           class="btn btn-outline-secondary"
-          @click="changeQty((item.quantity ?? item.qty) + 1)"
+          @click.stop.prevent="changeQty((item.quantity ?? item.qty) + 1)"
         >
           +
         </button>
