@@ -86,7 +86,7 @@ function handleClear() {
 
       <div class="text-end mt-3">
         <RouterLink to="/checkout" class="btn btn-warning btn-lg">
-          Thanh toán
+          Mua hàng
         </RouterLink>
       </div>
     </div>
