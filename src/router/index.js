@@ -5,7 +5,7 @@ import { useUserStore } from "@/milk-tea/account/store"; // Sử dụng Pinia st
 import productRoutes from "@/milk-tea/product/router";
 import cartRoutes from "@/milk-tea/cart/router";
 import orderRoutes from '@/milk-tea/order/router';
-import HomeView from "../milk-tea/home/views/HomeView.vue";
+import paymentRoutes from "@/milk-tea/payment/router"; 
 import StoreView from "../milk-tea/store/StoreView.vue";
 
 import AdminDashboardView from "@/milk-tea/admin/views/AdminDashboardView.vue";
@@ -24,6 +24,7 @@ const routes = [
   ...productRoutes,
   ...cartRoutes,
   ...orderRoutes,
+   ...paymentRoutes,  
   { path: "/store", component: StoreView },
 ];
 
