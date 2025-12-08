@@ -37,6 +37,27 @@
             />
           </div>
 
+          <div class="mt-3">
+            <label class="form-label d-block">Phương thức thanh toán *</label>
+            <div class="form-check">
+              <input class="form-check-input"
+                    type="radio"
+                    id="pm-cod"
+                    value="COD"
+                    v-model="form.paymentMethod" />
+              <label class="form-check-label" for="pm-cod">Thanh toán khi nhận hàng (COD)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input"
+                    type="radio"
+                    id="pm-vnpay"
+                    value="VNPAY"
+                    v-model="form.paymentMethod" />
+              <label class="form-check-label" for="pm-vnpay">Thanh toán online qua VNPay</label>
+            </div>
+          </div>
+
+
           <div class="mb-3">
             <label class="form-label">Ghi chú đơn hàng (tùy chọn)</label>
             <textarea
@@ -45,6 +66,7 @@
               class="form-control"
             ></textarea>
           </div>
+          
         </form>
       </div>
 
@@ -104,12 +126,14 @@ import { useRouter } from 'vue-router';
 
 import { useOrderStore } from '@/milk-tea/order/store';  // store order
 import { cartState } from '@/milk-tea/cart/store';       // state cart
+import { usePaymentStore } from '@/milk-tea/payment/store'; // store payment
 
 export default {
   name: 'CheckoutOrderView',
   setup() {
     const orderStore = useOrderStore();
     const router = useRouter();
+    const paymentStore = usePaymentStore();
     const loading = ref(false);
 
     const cartItems = computed(() => cartState.activeItems || []);
@@ -123,11 +147,12 @@ export default {
       cartState.summary?.total ?? 0
     );
 
-    const form = ref({
+    const form = ref({   //form State
       customerName: '',
       phone: '',
       address: '',
-      note: ''
+      note: '',
+      paymentMethod: 'COD'
     });
 
     const money = v =>
@@ -138,11 +163,28 @@ export default {
       loading.value = true;
       try {
         const payload = { ...form.value };
-        const order = await orderStore.checkout(payload);
+        const order = await orderStore.checkout(payload); // backend trả về order.id hoặc orderCode
+
+        if(form.value.paymentMethod === 'VNPAY') {
+          // Chuyển hướng sang trang thanh toán VNPay
+          const payment = await paymentStore.createVnpayPayment(order.id);
+          window.location.href = payment.paymentUrl;
+
+          // if(payment?.paymentUrl) {
+          //   window.location.href = payment.paymentUrl;
+          // } else {
+          //   alert('Không thể tạo link thanh toán VNPay');
+          //   return;
+          // }
+
+        }else{
+          // Thanh toán COD
         router.push({ name: 'OrderDetail', params: { id: order.id } });
+        }
+        
       } catch (e) {
         console.error(e);
-        alert('Đặt hàng thất bại, thử lại sau');
+        alert('Đặt hàng thất bại, thử lại sau nhé!');
       } finally {
         loading.value = false;
       }
