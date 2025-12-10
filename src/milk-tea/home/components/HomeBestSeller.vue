@@ -11,12 +11,10 @@ import ProductCard from "../../product/components/ProductCard.vue";
     </h3>
 
     <div class="row g-4">
-      <div
-        class="col-md-3"
-        v-for="item in homeState.bestSellers"
-        :key="item.id"
-      >
+      <div class="col-md-3" v-for="item in homeState.bestSellers" :key="item.id">
+
         <ProductCard :product="item" />
+
       </div>
     </div>
   </section>
