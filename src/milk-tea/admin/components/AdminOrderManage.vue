@@ -1,180 +1,287 @@
 <template>
-  <h3 class="mb-4 fw-bold">Quản lý Đơn hàng</h3>
+  <h3 class="mb-4 fw-bolder text-primary">
+    <i class="fa-solid fa-receipt me-2"></i>
+    Quản lý Đơn hàng
+  </h3>
+
   <div class="container">
-    <nav>
-      <div class="nav nav-tabs" role="tablist">
-        <!-- Tabs giữ nguyên -->
-        <button class="nav-link" :class="{ active: activeTab === 'list' }" type="button" role="tab"
-          :aria-selected="activeTab === 'list'" @click="switchTab('list')">
-          Orders List
-        </button>
-        <button class="nav-link" :class="{ active: activeTab === 'detail' }" type="button" role="tab"
-          :aria-selected="activeTab === 'detail'" @click="switchTab('detail')">
-          Orders Detail
-        </button>
-      </div>
-    </nav>
+    <div class="card shadow-sm border-0">
+      <!-- Header: Search + badge -->
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <div style="max-width: 350px; width: 100%;">
+          <input
+            v-model="orderState.keyword"
+            type="search"
+            class="form-control"
+            placeholder="Tìm đơn hàng (tên KH / email / mã đơn / trạng thái)..."
+          />
+        </div>
 
-    <div class="tab-content">
-      <!-- Tab list hóa đơn -->
-      <div class="tab-pane" :class="{
-        'show active': activeTab === 'list',
-        fade: activeTab !== 'list',
-      }" role="tabpanel">
-        <table class="table table-hover" border="1">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Tên khách hàng</th>
-              <th>Status</th>
-              <th>Placed At</th>
-              <th>Voucher</th>
-              <th>Subtotal</th>
-              <th>Discount Total</th>
-              <th>Tax Total</th>
-              <th>Shipping Fee</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(o, index) in orders" :key="o.id" style="cursor: pointer" @click="showDetail(o)">
-              <td>{{ index + 1 }}</td>
-              <td>{{ o.customer_name }}</td>
-              <td>{{ o.status }}</td>
-              <td>{{ o.placed_at }}</td>
-              <td>{{ o.voucher || "-" }}</td>
-              <td>{{ o.subtotal }}</td>
-              <td>{{ o.discount_total }}</td>
-              <td>{{ o.tax_total }}</td>
-              <td>{{ o.shipping_fee }}</td>
-              <td>{{ o.total }}</td>
-            </tr>
-            <tr v-if="orders.length === 0">
-              <td colspan="10" class="text-center">Không có đơn hàng</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="d-flex align-items-center gap-2 ms-3">
+          <span class="badge bg-primary-subtle text-primary-emphasis">
+            {{ orderState.totalElements }} đơn hàng
+          </span>
+        </div>
       </div>
 
-      <!-- Tab chi tiết hóa đơn -->
-      <div class="mt-2 tab-pane" :class="{
-        'show active': activeTab === 'detail',
-        fade: activeTab !== 'detail',
-      }" role="tabpanel">
-        <div v-if="selectedOrder">
-          <div class="row">
-            <div class="col-sm-5">
-              <table class="table table-bordered mt-3 w-100">
-                <tbody>
-                  <tr>
-                    <th>Mã hóa đơn:</th>
-                    <td>{{ selectedOrder.id }}</td>
-                  </tr>
-                  <tr>
-                    <th>Tên khách hàng:</th>
-                    <td>{{ selectedOrder.customer_name }}</td>
-                  </tr>
-                  <tr>
-                    <th>Thời gian đặt:</th>
-                    <td>{{ selectedOrder.placed_at }}</td>
-                  </tr>
-                  <tr>
-                    <th>Trạng thái:</th>
-                    <td>{{ selectedOrder.status }}</td>
-                  </tr>
-                  <tr>
-                    <th>Voucher:</th>
-                    <td>{{ selectedOrder.voucher }}</td>
-                  </tr>
-                  <tr>
-                    <th>Tổng sản phẩm:</th>
-                    <td>{{ selectedOrder.subtotal }}</td>
-                  </tr>
-                  <tr>
-                    <th>Giảm giá:</th>
-                    <td>{{ selectedOrder.discount_total }}</td>
-                  </tr>
-                  <tr>
-                    <th>Thuế:</th>
-                    <td>{{ selectedOrder.tax_total }}</td>
-                  </tr>
-                  <tr>
-                    <th>Phí ship:</th>
-                    <td>{{ selectedOrder.shipping_fee }}</td>
-                  </tr>
-                  <tr>
-                    <th>Tổng tiền:</th>
-                    <td>{{ selectedOrder.total }}</td>
-                  </tr>
-                  <tr>
-                    <th>Mô tả:</th>
-                    <td>{{ selectedOrder.description }}</td>
-                  </tr>
-                </tbody>
-              </table>
+      <!-- Body: bảng + phân trang -->
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover table-striped align-middle mb-0">
+            <thead class="table-primary text-white">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tên khách hàng</th>
+                <th scope="col">Email</th>
+                <th scope="col">Status</th>
+                <th scope="col">Placed At</th>
+                <th scope="col">Subtotal</th>
+                <th scope="col">Discount</th>
+                <th scope="col">Tax</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="orders.length === 0">
+                <td colspan="10" class="text-center text-muted py-4">
+                  Không có đơn hàng
+                </td>
+              </tr>
+
+              <tr
+                v-for="(o, index) in orders"
+                :key="o.id"
+                class="cursor-pointer"
+                @dblclick="showDetail(o)"
+              >
+                <td class="fw-bold">{{ index + 1 }}</td>
+                <td>{{ o.fullname }}</td>
+                <td>{{ o.email }}</td>
+                <td>{{ o.status }}</td>
+                <td>{{ o.placedAt }}</td>
+                <td>{{ o.subtotal }}</td>
+                <td>{{ o.discountTotal }}</td>
+                <td>{{ o.taxTotal }}</td>
+                <td>{{ o.total }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav
+          v-if="!orderState.isLoading && orderState.totalPages > 0"
+          aria-label="Page navigation"
+          class="mt-4"
+        >
+          <ul class="pagination justify-content-center align-items-center">
+            <li class="page-item" :class="{ disabled: orderState.page === 0 }">
+              <button
+                class="page-link bg-primary text-white rounded-pill px-3 py-1 border-0"
+                @click.prevent="prevPage"
+                :disabled="orderState.page === 0"
+                aria-label="Previous"
+              >
+                <span aria-hidden="true">&laquo; Trước</span>
+              </button>
+            </li>
+
+            <li class="page-item disabled">
+              <span class="page-link text-dark fw-bold border-0 bg-transparent">
+                Trang {{ orderState.page + 1 }} / {{ orderState.totalPages }}
+              </span>
+            </li>
+
+            <li
+              class="page-item"
+              :class="{ disabled: orderState.page >= orderState.totalPages - 1 }"
+            >
+              <button
+                class="page-link bg-primary text-white rounded-pill px-3 py-1 border-0"
+                @click.prevent="nextPage"
+                :disabled="orderState.page >= orderState.totalPages - 1"
+                aria-label="Next"
+              >
+                <span aria-hidden="true">Sau &raquo;</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Modal chi tiết đơn -->
+      <div
+        v-if="isDetailModalOpen"
+        class="modal fade show"
+        style="display: block; background: rgba(0,0,0,0.5);"
+        tabindex="-1"
+        role="dialog"
+      >
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">
+                Chi tiết đơn: {{ selectedOrder.orderCode }}
+              </h5>
+              <button type="button" class="btn-close" @click="closeDetailModal"></button>
             </div>
-            <div class="col-sm-7">
-              <h6>Chi tiết sản phẩm trong hóa đơn</h6>
-              <table class="table table-bordered table-sm">
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Sản phẩm</th>
-                    <th>Số lượng</th>
-                    <th>Đơn giá</th>
-                    <th>Thành tiền</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, idx) in orderItems" :key="item.id">
-                    <td>{{ idx + 1 }}</td>
-                    <td>{{ item.product_name }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.price.toLocaleString() }}</td>
-                    <td>{{ item.line_total.toLocaleString() }}</td>
-                  </tr>
-                  <tr v-if="orderItems.length === 0">
-                    <td colspan="5" class="text-center">Không có sản phẩm</td>
-                  </tr>
-                </tbody>
-              </table>
+
+            <div class="modal-body">
+              <div class="row">
+                <!-- Thông tin đơn -->
+                <div class="col-sm-5">
+                  <table class="table table-bordered w-100 mb-0">
+                    <tbody>
+                      <tr>
+                        <th>Mã hóa đơn:</th>
+                        <td>{{ selectedOrder.orderCode }}</td>
+                      </tr>
+                      <tr>
+                        <th>Email:</th>
+                        <td>{{ selectedOrder.email }}</td>
+                      </tr>
+                      <tr>
+                        <th>Tên khách hàng:</th>
+                        <td>{{ selectedOrder.fullname }}</td>
+                      </tr>
+                      <tr>
+                        <th>So dien thoai:</th>
+                        <td>{{ selectedOrder.phone }}</td>
+                      </tr>
+                      <tr>
+                        <th>Thời gian đặt:</th>
+                        <td>{{ formatDate(selectedOrder.placedAt) }}</td>
+                      </tr>
+                      <tr>
+                        <th>Trạng thái:</th>
+                        <td>{{ selectedOrder.status }}</td>
+                      </tr>
+                      <tr>
+                        <th>Tổng sản phẩm:</th>
+                        <td>{{ selectedOrder.subtotal }}</td>
+                      </tr>
+                      <tr>
+                        <th>Giảm giá:</th>
+                        <td>{{ selectedOrder.discountTotal }}</td>
+                      </tr>
+                      <tr>
+                        <th>Thuế:</th>
+                        <td>{{ selectedOrder.taxTotal }}</td>
+                      </tr>
+                      <tr>
+                        <th>Tổng tiền:</th>
+                        <td>{{ selectedOrder.total }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Chi tiết sản phẩm -->
+                <div class="col-sm-7">
+                  <h6 class="fw-bold mb-2">Chi tiết sản phẩm trong hóa đơn</h6>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-sm mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th>STT</th>
+                          <th>Sản phẩm</th>
+                          <th>Số lượng</th>
+                          <th>Đơn giá</th>
+                          <th>Thành tiền</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-if="!selectedOrder.items || selectedOrder.items.length === 0">
+                          <td colspan="5" class="text-center text-muted py-3">
+                            Không có sản phẩm
+                          </td>
+                        </tr>
+                        <tr v-for="(item, idx) in selectedOrder.items || []" :key="item.id">
+                          <td>{{ idx + 1 }}</td>
+                          <td>{{ item.productName }}</td>
+                          <td>{{ item.quantity }}</td>
+                          <td>{{ item.price.toLocaleString() }}</td>
+                          <td>{{ item.lineTotal.toLocaleString() }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" @click="closeDetailModal">
+                Đóng
+              </button>
             </div>
           </div>
         </div>
-        <div v-else class="mt-3">Chọn một hóa đơn để xem chi tiết</div>
       </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
-import { useOrderStore } from "@/milk-tea/admin/store/AdminOrderManage.js";
+import { ref, onMounted, computed, watch } from "vue";
+import {
+  orderState,
+  loadOrder,
+  changePage, nextPage, prevPage
+} from "../composables/UseOrder.js";
 
-const orderStore = useOrderStore();
-
-const activeTab = ref("list");
-const orders = ref([]);
-const selectedOrder = ref(null);
-// Dùng orderItems trong store thay cho local ref
-const orderItems = orderStore.orderItems;
-
-// Load danh sách orders khi mount
-orderStore.loadOrders();
-
-// Đồng bộ orders
-watchEffect(() => {
-  orders.value = orderStore.orders.value;
+onMounted(async () => {
+  await loadOrder();
 });
 
-// Khi chọn hóa đơn, set selected và gọi hàm load chi tiết từ store luôn
+const orders = computed(() => orderState.list);
+
+const isDetailModalOpen = ref(false);
+
+orderState.searchTimeout = null;
+
+watch(
+  () => orderState.keyword,
+  () => {
+    if (orderState.searchTimeout) {
+      clearTimeout(orderState.searchTimeout);
+    }
+    orderState.searchTimeout = setTimeout(() => {
+      orderState.page = 0;
+      loadOrder();
+    }, 100);
+  }
+);
+
+const selectedOrder = ref({
+  orderCode: "",
+  email: "",
+  fullname: "",
+  phone: "",
+  productName: "",
+  subtotal: 0,
+  discountTotal: 0,
+  total: 0,
+  status: "",
+  placedAt: "",
+  taxTotal: 0,
+  items: []
+});
+
 async function showDetail(order) {
   selectedOrder.value = order;
-  activeTab.value = "detail";
-  await orderStore.loadOrderItems(order.id); // load chi tiết trong store
+  isDetailModalOpen.value = true;
 }
 
-function switchTab(tab) {
-  activeTab.value = tab;
+function closeDetailModal() {
+  isDetailModalOpen.value = false;
+}
+
+//Format createdAt va updatedAt theo dd/MM//yyyy
+function formatDate(dateString) {
+  if (!dateString) return "";
+  return new Date(dateString).toLocaleDateString("en-GB");
 }
 </script>

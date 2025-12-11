@@ -66,7 +66,7 @@
                 <td class="text-center">
 
 
-                  <button class="btn btn-sm btn-outline-info" @click="startEdit(cus)">
+                  <button class="btn btn-sm btn-outline-info" @click="startEdit(cus); openModal()">
                     <i class="fa-solid fa-pen"></i>
                   </button>
 
@@ -180,7 +180,7 @@ function goToRegister() {
   router.push('/register'); // dùng path tuyệt đối
 }
 
-// import tu composables
+// import tu composables (UseCustomer.js)
 import {
   customerState,
   loadCustomer,
