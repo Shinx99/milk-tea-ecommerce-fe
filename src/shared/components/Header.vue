@@ -29,10 +29,10 @@ const isCustomer = computed(() => userStore.userInfo?.roleName === "customer");
 const keyword = ref("");
 function onSearch() {
   if (keyword.value.trim()) {
-    router.push({ path: "/products", query: { q: keyword.value } })
+    router.push({ path: "/products", query: { q: keyword.value } });
   } else {
     router.push({ path: "/products", query: {} }); // xoá query
-    loadProducts()
+    loadProducts();
   }
 }
 
@@ -182,11 +182,11 @@ onMounted(() => {
               >Sản phẩm</RouterLink
             >
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <RouterLink class="nav-link menu-link" to="/news"
               >Khuyến mãi</RouterLink
             >
-          </li>
+          </li> -->
           <li class="nav-item">
             <RouterLink class="nav-link menu-link" to="/store"
               >Store</RouterLink
