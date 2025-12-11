@@ -1,5 +1,3 @@
-// src/milk-tea/account/service/Address.js
-
 import { useUserStore } from "@/milk-tea/account/store";
 
 const BASE_URL = "http://localhost:8080/api/addresses";
@@ -36,7 +34,7 @@ async function request(path, options = {}) {
   return res.status === 204 ? null : res.json();
 }
 
-// ================= API =================
+// ================= API CHO KHÁCH HÀNG THÔNG THƯỜNG =================
 
 // Lấy tất cả địa chỉ theo user hiện tại
 export function getMyAddresses() {
@@ -67,16 +65,45 @@ export function deleteAddress(id) {
 }
 
 // =====================
-// ADMIN ADDRESS API
+// ADMIN ADDRESS API (ĐÃ CHỈNH SỬA)
 // =====================
-export function adminListByCustomer(customerId, params = {}) {
-  return request.get(`/api/addresses/customer/${customerId}`, { params });
+
+/**
+ * Lấy danh sách địa chỉ của khách hàng cụ thể (Admin)
+ * @param {string} customerId ID của khách hàng
+ */
+export function adminListByCustomer(customerId) {
+  // Đường dẫn đầy đủ: /api/addresses/customer/{customerId}
+  return request(`/customer/${customerId}`, { method: "GET" });
 }
 
+/**
+ * Tạo địa chỉ mới cho khách hàng cụ thể (Admin)
+ * @param {string} customerId ID của khách hàng
+ * @param {object} data Payload (UpdateAdminAddressRequest)
+ */
 export function adminCreateAddress(customerId, data) {
-  return request.post(`/api/addresses/customer/${customerId}`, data);
+  // Đường dẫn đầy đủ: /api/addresses/customer/{customerId}
+  return request(`/customer/${customerId}`, {
+    method: "POST",
+    body: data,
+  });
 }
 
+/**
+ * Đặt địa chỉ làm mặc định (Admin)
+ * @param {string} addressId ID của địa chỉ
+ */
 export function adminSetDefault(addressId) {
-  return request.patch(`/api/addresses/${addressId}/set-default`);
+  // Đường dẫn đầy đủ: /api/addresses/{addressId}/set-default
+  return request(`/${addressId}/set-default`, {
+    method: "PATCH",
+  });
 }
+// Giả định hàm lấy danh sách Customer API (để AdminAddress.vue hoạt động)
+// Vì BASE_URL là /api/addresses, ta phải dùng đường dẫn tuyệt đối cho customer service
+// export function adminListCustomers() {
+//   return request("http://localhost:8080/api/customers?page=0&size=100", {
+//     method: "GET",
+//   });
+// }

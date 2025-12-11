@@ -19,7 +19,6 @@ export default [
     path: "/register",
     name: "register",
     component: Register,
-    meta: { guestOnly: true },
   },
   {
     path: "/forgot-password",
