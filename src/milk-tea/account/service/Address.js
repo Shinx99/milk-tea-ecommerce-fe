@@ -100,10 +100,23 @@ export function adminSetDefault(addressId) {
     method: "PATCH",
   });
 }
-// Giả định hàm lấy danh sách Customer API (để AdminAddress.vue hoạt động)
-// Vì BASE_URL là /api/addresses, ta phải dùng đường dẫn tuyệt đối cho customer service
-// export function adminListCustomers() {
-//   return request("http://localhost:8080/api/customers?page=0&size=100", {
-//     method: "GET",
-//   });
-// }
+/**
+ * Cập nhật địa chỉ (Admin)
+ */
+export function adminUpdateAddress(addressId, data) {
+  // Gọi PUT /api/addresses/{addressId}
+  return request(`/${addressId}`, {
+    method: "PUT",
+    body: data,
+  });
+}
+
+/**
+ * Vô hiệu hóa/Xóa mềm địa chỉ (Admin)
+ */
+export function adminDeactivateAddress(addressId) {
+  // Gọi PATCH /api/addresses/{addressId}/deactivate
+  return request(`/${addressId}/deactivate`, {
+    method: "PATCH",
+  });
+}

@@ -2,26 +2,31 @@
 import { useRoute } from "vue-router";
 const route = useRoute();
 
-// Định nghĩa các mục menu và tên Route tương ứng
-// Tên routeName PHẢI KHỚP chính xác với tên đã khai báo trong router.js
 const adminMenuItems = [
-  { name: "CATEGORIES", routeName: "admin-categories" },
-  { name: "CUSTOMER", routeName: "admin-customers" },
-  { name: "ORDER", routeName: "admin-orders" },
-  { name: "PRODUCT", routeName: "admin-products" },
-  { name: "ADDRESS", routeName: "admin-addresses" }, //Hải thêm vào đây
-  { name: "VOUCHER", routeName: "admin-vouchers" },
-  { name: "STATISTICS", routeName: "admin-statistics" },
+  { name: "CATEGORIES", routeName: "admin-categories", icon: "fa-layer-group" },
+  { name: "PRODUCT", routeName: "admin-products", icon: "fa-boxes-stacked" },
+  { name: "ORDER", routeName: "admin-orders", icon: "fa-receipt" },
+  { name: "CUSTOMER", routeName: "admin-customers", icon: "fa-users" },
+  {
+    name: "ADDRESS",
+    routeName: "admin-addresses",
+    icon: "fa-map-location-dot",
+  },
+  { name: "VOUCHER", routeName: "admin-vouchers", icon: "fa-tags" },
+  { name: "STATISTICS", routeName: "admin-statistics", icon: "fa-chart-bar" },
 ];
 
-// Hàm kiểm tra mục nào đang active dựa trên tên route hiện tại
 const isLinkActive = (routeName) => {
   return route.name === routeName;
 };
 </script>
 
 <template>
-  <div class="sidebar shadow-sm p-3 rounded flex-shrink-0">
+  <div class="fixed-sidebar shadow-sm p-3 flex-shrink-0">
+    <div class="sidebar-logo text-center mb-4">
+      <h3 class="fw-bold text-primary">ADMIN PANEL</h3>
+      <hr class="mt-0" />
+    </div>
     <ul class="list-unstyled admin-menu mb-0">
       <router-link
         v-for="item in adminMenuItems"
@@ -34,6 +39,7 @@ const isLinkActive = (routeName) => {
           :class="['menu-item', { active: isLinkActive(item.routeName) }]"
           @click="navigate"
         >
+          <i :class="['fa-solid', item.icon, 'me-3 fa-fw']"></i>
           {{ item.name }}
         </li>
       </router-link>
@@ -42,12 +48,22 @@ const isLinkActive = (routeName) => {
 </template>
 
 <style scoped>
-/* CSS Đơn giản: Đảm bảo chỉ có màu vàng cho mục active */
-.sidebar {
-  width: 100%;
+/* CSS cho Sidebar Fixed */
+.fixed-sidebar {
+  width: 250px; /* Chiều rộng cố định cho Sidebar */
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
   background: #fff;
-  border: 1px solid #eee;
-  border-radius: 10px;
+  border-right: 1px solid #eee;
+  padding-top: 20px !important;
+  z-index: 1020;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.admin-menu {
+  padding-top: 10px;
 }
 
 .menu-item {
@@ -57,9 +73,11 @@ const isLinkActive = (routeName) => {
   transition: 0.2s ease;
   font-weight: 500;
   color: #444;
-  margin-bottom: 2px;
-  font-size: 1.1em;
+  margin-bottom: 4px;
+  font-size: 1em;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
 }
 
 .menu-item:hover {
@@ -68,8 +86,8 @@ const isLinkActive = (routeName) => {
 
 .menu-item.active {
   background: #ffca2c;
-  /* Màu vàng cam */
   color: #000;
   font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 </style>

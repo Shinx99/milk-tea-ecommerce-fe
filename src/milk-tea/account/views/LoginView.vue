@@ -21,10 +21,15 @@ const onSubmit = async () => {
     if (remember.value) localStorage.setItem("token", user.token);
     else sessionStorage.setItem("token", user.token);
 
-    if (user.roleName === "admin") router.push("/home");
-    else if (user.roleName === "customer" || user.roleName === "staff")
+    if (user.roleName === "admin") {
+      // ADMIN: Chuyển hướng đến trang Quản lý Danh mục (hoặc /admin)
+      router.push("/admin/categories");
+    } else if (user.roleName === "customer" || user.roleName === "staff") {
+      // CUSTOMER/STAFF: Chuyển hướng đến Home
       router.push("/home");
-    else err.value = "Vai trò không hợp lệ";
+    } else {
+      err.value = "Vai trò không hợp lệ";
+    }
   } catch (e) {
     err.value = e.message || "Đăng nhập thất bại";
   }
