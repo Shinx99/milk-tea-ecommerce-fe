@@ -160,6 +160,22 @@ export default {
 
     const onSubmit = async () => {
       if (loading.value) return;
+
+      // validate client
+      if (!form.value.customerName.trim()) {
+        alert('Vui lòng nhập tên khách hàng');
+        return;
+      }
+      if (!form.value.phone.trim()) {
+        alert('Vui lòng nhập số điện thoại');
+        return;
+      }
+      if (!form.value.address.trim()) {
+        alert('Vui lòng nhập địa chỉ giao hàng');
+        return;
+      }
+
+
       loading.value = true;
       try {
         const payload = { ...form.value };
