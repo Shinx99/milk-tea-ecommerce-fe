@@ -1,5 +1,8 @@
 <script setup>
 import { useRoute } from "vue-router";
+
+import { newPaidCount, resetNewPaidCount } from "@/shared/state/orderNotifyState";
+
 const route = useRoute();
 
 const adminMenuItems = [
@@ -12,8 +15,8 @@ const adminMenuItems = [
     routeName: "admin-addresses",
     icon: "fa-map-location-dot",
   },
-  { name: "VOUCHER", routeName: "admin-vouchers", icon: "fa-tags" },
-  { name: "STATISTICS", routeName: "admin-statistics", icon: "fa-chart-bar" },
+  // { name: "VOUCHER", routeName: "admin-vouchers", icon: "fa-tags" },
+  // { name: "STATISTICS", routeName: "admin-statistics", icon: "fa-chart-bar" },
 ];
 
 const isLinkActive = (routeName) => {
@@ -28,21 +31,34 @@ const isLinkActive = (routeName) => {
       <hr class="mt-0" />
     </div>
     <ul class="list-unstyled admin-menu mb-0">
-      <router-link
-        v-for="item in adminMenuItems"
-        :key="item.routeName"
-        :to="{ name: item.routeName }"
-        custom
-        v-slot="{ navigate }"
+<router-link
+  v-for="item in adminMenuItems"
+  :key="item.routeName"
+  :to="{ name: item.routeName }"
+  custom
+  v-slot="{ navigate, href }"
+>
+  <li
+    :class="['menu-item', { active: isLinkActive(item.routeName) }]"
+    @click="() => {
+      if (item.routeName === 'admin-orders') resetNewPaidCount();
+      navigate();
+    }"
+  >
+    <a :href="href" class="d-flex align-items-center w-100 text-decoration-none text-reset">
+      <i :class="['fa-solid', item.icon, 'me-3 fa-fw']"></i>
+      {{ item.name }}
+
+      <span
+        v-if="item.routeName === 'admin-orders' && newPaidCount > 0"
+        class="badge bg-danger ms-auto"
       >
-        <li
-          :class="['menu-item', { active: isLinkActive(item.routeName) }]"
-          @click="navigate"
-        >
-          <i :class="['fa-solid', item.icon, 'me-3 fa-fw']"></i>
-          {{ item.name }}
-        </li>
-      </router-link>
+        {{ newPaidCount }}
+      </span>
+    </a>
+  </li>
+</router-link>
+
     </ul>
   </div>
 </template>

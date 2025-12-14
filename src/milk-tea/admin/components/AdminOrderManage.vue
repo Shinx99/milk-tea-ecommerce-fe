@@ -17,6 +17,34 @@
           />
         </div>
 
+        <!--Filter status-->
+        <div class="btn-group ms-3" role="group" aria-label="Filter status">
+  <button class="btn btn-outline-primary"
+          :class="{ active: !orderState.status }"
+          @click="setStatus('')">
+    Tất cả
+  </button>
+
+  <button class="btn btn-outline-primary"
+          :class="{ active: orderState.status === 'paid' }"
+          @click="setStatus('paid')">
+    Đã thanh toán
+  </button>
+
+  <button class="btn btn-outline-primary"
+          :class="{ active: orderState.status === 'processing' }"
+          @click="setStatus('processing')">
+    Đang làm
+  </button>
+
+  <button class="btn btn-outline-primary"
+          :class="{ active: orderState.status === 'completed' }"
+          @click="setStatus('completed')">
+    Đã hoàn thành
+  </button>
+</div>
+
+
         <div class="d-flex align-items-center gap-2 ms-3">
           <span class="badge bg-primary-subtle text-primary-emphasis">
             {{ orderState.totalElements }} đơn hàng
@@ -33,12 +61,12 @@
                 <th scope="col">#</th>
                 <th scope="col">Tên khách hàng</th>
                 <th scope="col">Email</th>
-                <th scope="col">Status</th>
-                <th scope="col">Placed At</th>
-                <th scope="col">Subtotal</th>
-                <th scope="col">Discount</th>
-                <th scope="col">Tax</th>
-                <th scope="col">Total</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Thời gian đặt</th>
+                <th scope="col">Tạm tính</th>
+                <th scope="col">Giảm giá</th>
+                <th scope="col">Thuế</th>
+                <th scope="col">Tổng</th>
               </tr>
             </thead>
             <tbody>
@@ -58,7 +86,7 @@
                 <td>{{ o.fullname }}</td>
                 <td>{{ o.email }}</td>
                 <td>{{ o.status }}</td>
-                <td>{{ o.placedAt }}</td>
+                <td>{{ formatDate(o.placedAt) }}</td>
                 <td>{{ o.subtotal }}</td>
                 <td>{{ o.discountTotal }}</td>
                 <td>{{ o.taxTotal }}</td>
@@ -225,16 +253,47 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import {
   orderState,
   loadOrder,
   changePage, nextPage, prevPage
 } from "../composables/UseOrder.js";
 
+import { connectOrderSocket, disconnectOrderSocket } from "@/shared/service/orderSocket.js"; 
+
+import { onOrderPaid } from "@/shared/state/orderNotifyState";
+
+const paidAudio = new Audio("/sounds/order-paid.wav");
+paidAudio.preload = "auto";
+
 onMounted(async () => {
   await loadOrder();
+
+connectOrderSocket(async (dto) => {
+  console.log("WS order notification:", dto);
+
+  const isPaid =
+    dto?.type === "ORDER_PAID" || String(dto?.status || "").toUpperCase() === "PAID";
+
+  if (isPaid) {
+    onOrderPaid(dto); // cập nhật biến chung (badge)
+    paidAudio.currentTime = 0;
+    paidAudio.play().catch((e) => {
+      console.warn("Audio blocked by autoplay policy:", e);
+    });
+  }
+
+  await loadOrder();
 });
+
+
+});
+
+onUnmounted(() => {
+  disconnectOrderSocket();
+});
+
 
 const orders = computed(() => orderState.list);
 
@@ -279,9 +338,26 @@ function closeDetailModal() {
   isDetailModalOpen.value = false;
 }
 
+function setStatus(newStatus) {
+  orderState.status = newStatus;
+  orderState.page = 0;
+  loadOrder();
+}
+
+
 //Format createdAt va updatedAt theo dd/MM//yyyy
 function formatDate(dateString) {
   if (!dateString) return "";
-  return new Date(dateString).toLocaleDateString("en-GB");
+  const d = new Date(dateString);
+  return d.toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    // second: "2-digit", // bật dòng này nếu muốn hiện giây
+    hour12: false,
+  });
 }
+
 </script>

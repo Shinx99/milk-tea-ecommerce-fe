@@ -4,6 +4,7 @@ import apiClient from '@/shared/service/apiClient.js';
 export async function fetchAdminOrder(params = {}) {
     const {
         keyword,
+        status,
         page = 0,
         size = 0,
     } = params;
@@ -14,6 +15,10 @@ export async function fetchAdminOrder(params = {}) {
     if(keyword && keyword.trim() !== ""){
         searchParams.append('keyword', keyword);
     };
+
+    if(status && status.trim() !== ""){
+        searchParams.append('status', status);
+    }
 
     searchParams.set('page', page);
     searchParams.set('size', size);

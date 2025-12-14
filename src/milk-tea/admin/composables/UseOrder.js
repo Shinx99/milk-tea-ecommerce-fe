@@ -8,6 +8,7 @@ export const orderState = reactive({
     error: null,
 
     keyword: '',
+    status: '',
     searchTimeout: null,
 
     page: 0,
@@ -26,6 +27,7 @@ export async function loadOrder() {
     try {
         const params = {
             keyword: orderState.keyword,
+            status: orderState.status,
             page: orderState.page,
             size: orderState.size
         };
