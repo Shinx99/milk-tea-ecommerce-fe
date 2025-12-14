@@ -39,6 +39,7 @@
 
           <div class="mt-3">
             <label class="form-label d-block">Phương thức thanh toán *</label>
+            <!--
             <div class="form-check">
               <input class="form-check-input"
                     type="radio"
@@ -47,6 +48,7 @@
                     v-model="form.paymentMethod" />
               <label class="form-check-label" for="pm-cod">Thanh toán khi nhận hàng (COD)</label>
             </div>
+          -->
             <div class="form-check">
               <input class="form-check-input"
                     type="radio"
@@ -152,7 +154,7 @@ export default {
       phone: '',
       address: '',
       note: '',
-      paymentMethod: 'COD'
+      paymentMethod: 'VNPAY'
     });
 
     const money = v =>
@@ -185,13 +187,6 @@ export default {
           // Chuyển hướng sang trang thanh toán VNPay
           const payment = await paymentStore.createVnpayPayment(order.id);
           window.location.href = payment.paymentUrl;
-
-          // if(payment?.paymentUrl) {
-          //   window.location.href = payment.paymentUrl;
-          // } else {
-          //   alert('Không thể tạo link thanh toán VNPay');
-          //   return;
-          // }
 
         }else{
           // Thanh toán COD
