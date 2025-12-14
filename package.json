@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.1",
+    "@stomp/stompjs": "^7.2.1",
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
     "file-saver": "^2.0.5",
     "pinia": "^3.0.3",
+    "sockjs-client": "^1.6.1",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1",
     "xlsx": "^0.18.5"
