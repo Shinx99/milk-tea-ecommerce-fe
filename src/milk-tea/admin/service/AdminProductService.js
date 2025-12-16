@@ -101,8 +101,6 @@ export async function createProducts(payload) {
             throw new Error('Bạn cần đăng nhập quyền Admin để thực hiện thao tác này.');
         }
 
-        // 1. Gọi API POST
-        // Payload phải match với ProductRequest (name, categoryId, price, imageUrl...)
         const response = await apiClient.post('/products', payload, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -110,21 +108,16 @@ export async function createProducts(payload) {
             }
         });
 
-        // 2. Xử lý Response thành công
-        // Backend trả về: 201 Created + Body JSON (ProductResponse)
-        // apiClient thường đã tự parse JSON vào response.data
-        return response.data; // Trả về ProductResponse để UI cập nhật list
+        return response.data;
 
     } catch (error) {
         console.error("Lỗi khi tạo sản phẩm:", error);
 
-        // Xử lý lỗi chi tiết từ Backend (Validation error, Authorization...)
         if (error.response) {
             const status = error.response.status;
             const message = error.response.data?.message || 'Lỗi không xác định từ server';
             
             if (status === 400) {
-                // Lỗi Validation (vd: thiếu tên, giá âm...)
                 throw new Error(`Dữ liệu không hợp lệ: ${message}`);
             }
             if (status === 401 || status === 403) {
@@ -140,7 +133,6 @@ export async function createProducts(payload) {
 // Hàm update product
 export async function updateProduct(productId, payload) {
     try {
-        // 1. Kiểm tra ID sản phẩm (Bắt buộc phải có để ghép vào URL)
         if (!productId) {
             throw new Error('Thiếu Product ID để cập nhật.');
         }
@@ -150,9 +142,6 @@ export async function updateProduct(productId, payload) {
             throw new Error('Bạn cần đăng nhập quyền Admin để thực hiện thao tác này.');
         }
 
-        // 2. Gọi API PUT
-        // URL: /products/{id}
-        // Payload: ProductRequest body
         const response = await apiClient.put(`/products/${productId}`, payload, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -160,8 +149,6 @@ export async function updateProduct(productId, payload) {
             }
         });
 
-        // 3. Xử lý Response thành công
-        // Backend trả về: 200 OK + Body JSON (ProductResponse đã update)
         return response.data; 
 
     } catch (error) {
@@ -188,7 +175,6 @@ export async function updateProduct(productId, payload) {
 }
 
 
-// Hàm delete product (Soft Delete theo logic backend)
 export async function deleteProduct(productId) {
     try {
         // 1. Validate ID
@@ -209,11 +195,6 @@ export async function deleteProduct(productId) {
             }
         });
 
-        // 3. Xử lý Response
-        // Backend trả về: 204 No Content (Thành công nhưng không có Body)
-        // Không cần đọc response.data vì nó rỗng hoặc undefined
-        
-        // Nếu không ném lỗi ở dòng await delete, tức là thành công (Status 2xx)
         return true; 
 
     } catch (error) {
@@ -228,7 +209,6 @@ export async function deleteProduct(productId) {
             if (status === 401 || status === 403) {
                 throw new Error('Bạn không có quyền thực hiện thao tác này.');
             }
-            // Có thể xử lý thêm lỗi 409 Conflict nếu SP đang có trong đơn hàng (tùy logic BE)
         }
 
         throw new Error('Không thể xóa sản phẩm. Vui lòng thử lại sau.');

@@ -1,9 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { RouterLink } from "vue-router";
-// 1. Import composable mới
 import { useProfile } from "@/milk-tea/account/composables/customer/UseProfile";
-// Vẫn cần UserStore chỉ để lấy ID người dùng hiện tại
 import { useUserStore } from "@/milk-tea/account/store";
 
 // 2. Sử dụng composable mới

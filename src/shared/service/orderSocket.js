@@ -26,5 +26,5 @@ export function connectOrderSocket(onMessage) {
 export function disconnectOrderSocket() {
   subscription?.unsubscribe();
   subscription = null;
-  stompClient?.deactivate(); // deactivate là cách chuẩn để disconnect và dừng auto-reconnect
+  stompClient?.deactivate();
 }
