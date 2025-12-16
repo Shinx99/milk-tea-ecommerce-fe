@@ -108,6 +108,8 @@ export async function createProducts(payload) {
             }
         });
 
+        return response.data;
+
     } catch (error) {
         console.error("Lỗi khi tạo sản phẩm:", error);
 
