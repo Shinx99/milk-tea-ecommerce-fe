@@ -311,7 +311,6 @@ function formatDate(dateString) {
           <button
             :class="[
               'btn',
-              // Nút Xác nhận dùng DANGER (Đỏ) khi là confirm, và SUCCESS khi là alert OK
               popupState.isConfirm ? 'btn-danger' : 'btn-success',
             ]"
             @click="handlePopupClose(true)"

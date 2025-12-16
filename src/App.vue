@@ -4,16 +4,13 @@ import Footer from "./shared/components/Footer.vue";
 import ChatBox from "./shared/components/ChatBox.vue";
 import { onMounted, computed } from "vue";
 import { setupCart, watchCartUser } from "./milk-tea/cart/store";
-import { useRoute } from "vue-router"; // QUAN TRỌNG: Import useRoute
+import { useRoute } from "vue-router";
 
-const route = useRoute(); // Sử dụng hook useRoute
+const route = useRoute();
 
-// Logic kiểm tra xem có phải là trang Admin hay không
-// Mọi route có meta.layout = 'admin' sẽ bị ẩn Header/Footer chung.
 const isPublicLayout = computed(() => route.meta?.layout !== "admin");
 
 onMounted(() => {
-  // Logic khởi tạo app
   setupCart();
   watchCartUser();
 });

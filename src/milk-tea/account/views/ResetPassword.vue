@@ -64,7 +64,7 @@ const onSubmit = async () => {
     err.value = "Mật khẩu xác nhận không khớp.";
     return;
   }
-  if (newPassword.value.length < 6) { // Ví dụ: validation đơn giản
+  if (newPassword.value.length < 6) { 
     err.value = "Mật khẩu phải có ít nhất 6 ký tự.";
     return;
   }

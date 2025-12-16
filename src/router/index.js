@@ -16,20 +16,17 @@ const routes = [
   { path: "/", redirect: "/home" },
   { path: "/home", component: Home },
 
-  // === KHỐI ADMIN: TÁCH BIỆT HOÀN TOÀN ===
   {
     path: "/admin",
-    // SỬA: Dùng key 'component' và trỏ đến AdminLayout
     component: AdminLayout,
     meta: {
       authOnly: true,
-      roles: ["admin"], // Nên có logic kiểm tra vai trò tại đây
-      layout: "admin", // <<< QUAN TRỌNG: Flag cho App.vue
+      roles: ["admin"],
+      layout: "admin", 
     },
     children: [
-      // THÊM REDIRECT: Khi truy cập /admin, chuyển hướng đến trang categories (hoặc trang Dashboard chính)
       { path: "", redirect: { name: "admin-categories" } },
-      ...adminRoutes, // Nhúng các route con (products, categories, v.v.)
+      ...adminRoutes, 
     ],
   },
 
@@ -52,12 +49,10 @@ router.beforeEach((to) => {
   const userStore = useUserStore(); // Khởi tạo Store
   const isLoggedIn = !!userStore.token && !!userStore.userInfo;
 
-  // Tùy chọn: Thêm logic kiểm tra roleAdmin vào đây để bảo vệ routes Admin
   const requiresAdmin = to.matched.some(
     (record) => record.meta.roles && record.meta.roles.includes("admin")
   );
   if (requiresAdmin && userStore.userInfo?.roleName !== "admin") {
-    // Nếu yêu cầu Admin nhưng người dùng không phải Admin, chuyển hướng
     return { path: "/home" };
   }
 

@@ -82,7 +82,6 @@ const onSubmit = async () => {
       currentPassword: currentPassword.value,
       newPassword: newPassword.value,
       confirmPassword: confirmPassword.value,
-      // (Backend DTO của bạn có thể không cần confirmPassword, 
     });
 
     // 3. Xử lý thành công
