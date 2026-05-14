@@ -9,7 +9,7 @@ export function connectOrderSocket(onMessage) {
   if (stompClient?.active) return;
 
   stompClient = new Client({
-    webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+    webSocketFactory: () => new SockJS(process.env.VUE_APP_API_BASE_URL + "/ws"),
     reconnectDelay: 5000,
     onConnect: () => {
       // tránh subscribe chồng khi tự reconnect
