@@ -4,6 +4,13 @@ A Vue 3 + Vite template using Vue 3 `<script setup>` Single File Components (SFC
 
 ---
 
+## 🌐 Live Demo & Repos
+
+- **Live site**: https://milk-tea-ecommerce-fe.vercel.app
+- **Frontend repository**: https://github.com/Shinx99/milk-tea-ecommerce-fe
+- **Backend repository**: https://github.com/Shinx99/milk-tea-ecommerce-be
+
+
 ## 🚀 Installation & Running Guide
 
 ### 1. 🔽 Clone the project
